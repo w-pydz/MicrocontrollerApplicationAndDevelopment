@@ -1,0 +1,298 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: ?Vision V5.28.0.0
+Copyright (C) 2019 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: Piyada Thongtem, King Mongkut's Institute of Technology, Ladkrabang, LIC=P6FVE-5ZSXD-157TV-P373N-GC9L8-RWJFE
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Professional  Version: 5.28.0.0
+Toolchain Path:  D:\Keil\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 6 (build 750)
+Assembler:       Armasm.exe V5.06 update 6 (build 750)
+Linker/Locator:  ArmLink.exe V5.06 update 6 (build 750)
+Library Manager: ArmAr.exe V5.06 update 6 (build 750)
+Hex Converter:   FromElf.exe V5.06 update 6 (build 750)
+CPU DLL:         SARMCM3.DLL V5.28.0.0
+Dialog DLL:      DCM.DLL V1.17.3.0
+Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V3.0.6.0
+Dialog DLL:      TCM.DLL V1.36.2.0
+ 
+<h2>Project:</h2>
+D:\CE_MAD_Project\Assignment1\MDK-ARM\Assignment1.uvprojx
+Project File Date:  11/08/2020
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 6 (build 750)', folder: 'D:\Keil\ARM\ARMCC\Bin'
+Build target 'Assignment1'
+compiling ws2812b.c...
+compiling gpio.c...
+compiling main.c...
+../Src/main.c(82): warning:  #1295-D: Deprecated declaration colorsMatching - give arg types
+  void colorsMatching() ;
+../Src/main.c(83): warning:  #1295-D: Deprecated declaration checkSW - give arg types
+  void checkSW();
+../Src/main.c(84): warning:  #1295-D: Deprecated declaration closeLED - give arg types
+  void closeLED();
+../Src/main.c(89): warning:  #1295-D: Deprecated declaration Mode1setAllColors - give arg types
+  uint16_t Mode1setAllColors();
+../Src/main.c(140): warning:  #223-D: function "led_init" declared implicitly
+  	led_init();
+../Src/main.c(171): warning:  #111-D: statement is unreachable
+  	sprintf(tmp, "\n\n\rD E A D\n\rYour score : %d\n\rHigh score : XX", point);
+../Src/main.c(175): warning:  #223-D: function "led_set_color_all" declared implicitly
+  	led_set_color_all(0, 0, 0);
+../Src/main.c(177): warning:  #223-D: function "led_display" declared implicitly
+  	led_display();
+../Src/main.c(250): warning:  #223-D: function "led_set_color" declared implicitly
+  	led_set_color(5,color_r, color_g, color_b);
+../Src/main.c(273): warning:  #223-D: function "led_display" declared implicitly
+  	led_display();
+../Src/main.c(245): warning:  #177-D: variable "i"  was declared but never referenced
+  	uint16_t i;
+../Src/main.c(283): warning:  #223-D: function "led_set_color_all" declared implicitly
+  	led_set_color_all(color_r, color_g, color_b);
+../Src/main.c(298): warning:  #223-D: function "led_set_color" declared implicitly
+  	led_set_color(j, r1, g1, b1);
+../Src/main.c(299): warning:  #223-D: function "led_display" declared implicitly
+  	led_display();
+../Src/main.c(278): warning:  #177-D: variable "i"  was declared but never referenced
+  	uint16_t i;
+../Src/main.c(309): warning:  #223-D: function "led_set_color_all" declared implicitly
+  	led_set_color_all(color_r, color_g, color_b);
+../Src/main.c(349): warning:  #223-D: function "led_set_color" declared implicitly
+  	led_set_color(j, r1, g1, b1);
+../Src/main.c(351): warning:  #223-D: function "led_display" declared implicitly
+  	led_display();
+../Src/main.c(304): warning:  #177-D: variable "i"  was declared but never referenced
+  	uint16_t i;
+../Src/main.c(965): warning:  #223-D: function "led_init" declared implicitly
+  	led_init();
+../Src/main.c(966): warning:  #223-D: function "led_set_color_all" declared implicitly
+  	led_set_color_all(0x0F, 0x0F, 0x0F);  
+../Src/main.c(967): warning:  #223-D: function "led_display" declared implicitly
+  	led_display();
+../Src/main.c(981): warning:  #223-D: function "led_set_color" declared implicitly
+  		led_set_color(i, color_r, color_g, color_b);
+../Src/main.c(983): warning:  #223-D: function "led_display" declared implicitly
+  	led_display();
+../Src/main.c(992): warning:  #223-D: function "led_set_color" declared implicitly
+  		led_set_color(index, color_r, color_g, color_b);
+../Src/main.c(993): warning:  #223-D: function "led_display" declared implicitly
+  	  led_display();
+../Src/main.c(998): warning:  #223-D: function "led_set_color_all" declared implicitly
+  	led_set_color_all(0, 0, 0);
+../Src/main.c(999): warning:  #223-D: function "led_display" declared implicitly
+  	led_display();
+../Src/main.c(1003): warning:  #223-D: function "led_set_color" declared implicitly
+  	led_set_color(index, 0,0,0);
+../Src/main.c(1004): warning:  #223-D: function "led_display" declared implicitly
+  	led_display();
+../Src/main.c(1029): warning:  #177-D: variable "j"  was declared but never referenced
+  			for(uint8_t j=0;i<2;i++){tempRGB[i][0]=255;tempRGB[i][1]=0;tempRGB[i][2]=0;}       //red 255 0 0
+../Src/main.c(1030): warning:  #177-D: variable "j"  was declared but never referenced
+  			for(uint8_t j=2;i<4;i++){tempRGB[i][0]=0;tempRGB[i][1]=255;tempRGB[i][2]=0;}       //green 0 255 0
+../Src/main.c(1031): warning:  #177-D: variable "j"  was declared but never referenced
+  			for(uint8_t j=4;i<6;i++){tempRGB[i][0]=0;tempRGB[i][1]=0;tempRGB[i][2]=255;}       //blue 0 0 255
+../Src/main.c(1032): warning:  #177-D: variable "j"  was declared but never referenced
+  		  for(uint8_t j=6;i<8;i++){tempRGB[i][0]=255;tempRGB[i][1]=255;tempRGB[i][2]=0;}     //yellow 255 255 0
+../Src/main.c(1033): warning:  #177-D: variable "j"  was declared but never referenced
+  			for(uint8_t j=8;i<10;i++){tempRGB[i][0]=255;tempRGB[i][1]=0;tempRGB[i][2]=255;}    //pink 255 0 255
+../Src/main.c(1034): warning:  #177-D: variable "j"  was declared but never referenced
+  			for(uint8_t j=10;i<12;i++){tempRGB[i][0]=255;tempRGB[i][1]=50;tempRGB[i][2]=0;}   //orenge 255 128 0
+../Src/main.c(1035): warning:  #177-D: variable "j"  was declared but never referenced
+  			for(uint8_t j=12;i<14;i++){tempRGB[i][0]=0;tempRGB[i][1]=255;tempRGB[i][2]=255;} //sky blue 153 255 255
+../Src/main.c(1036): warning:  #177-D: variable "j"  was declared but never referenced
+  			for(uint8_t j=14;i<16;i++){tempRGB[i][0]=255;tempRGB[i][1]=255;tempRGB[i][2]=255;} //white 255 255 255
+../Src/main.c(1098): warning:  #223-D: function "led_set_color" declared implicitly
+  					led_set_color(i,tempWrite[i][0],tempWrite[i][1],tempWrite[i][2]);
+../Src/main.c(1099): warning:  #223-D: function "led_display" declared implicitly
+  					led_display();
+../Src/main.c(1112): warning:  #223-D: function "led_set_color_all" declared implicitly
+  					led_set_color_all(255,0,0);
+../Src/main.c(1113): warning:  #223-D: function "led_display" declared implicitly
+  					led_display();
+../Src/main.c(1124): warning:  #223-D: function "led_set_color_all" declared implicitly
+  					led_set_color_all(255,0,0);
+../Src/main.c(1125): warning:  #223-D: function "led_display" declared implicitly
+  					led_display();
+../Src/main.c(1134): warning:  #223-D: function "led_set_color_all" declared implicitly
+  					led_set_color_all(255,0,0);
+../Src/main.c(1135): warning:  #223-D: function "led_display" declared implicitly
+  					led_display();
+../Src/main.c(1144): warning:  #223-D: function "led_set_color_all" declared implicitly
+  					led_set_color_all(255,0,0);
+../Src/main.c(1145): warning:  #223-D: function "led_display" declared implicitly
+  					led_display();
+../Src/main.c(1157): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(0,tempWrite[0][0],tempWrite[0][1],tempWrite[0][2]);
+../Src/main.c(1162): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(1,tempWrite[1][0],tempWrite[1][1],tempWrite[1][2]);
+../Src/main.c(1167): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(2,tempWrite[2][0],tempWrite[2][1],tempWrite[2][2]);
+../Src/main.c(1172): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(3,tempWrite[3][0],tempWrite[3][1],tempWrite[3][2]);
+../Src/main.c(1177): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(4,tempWrite[4][0],tempWrite[4][1],tempWrite[4][2]);
+../Src/main.c(1182): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(5,tempWrite[5][0],tempWrite[5][1],tempWrite[5][2]);
+../Src/main.c(1187): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(6,tempWrite[6][0],tempWrite[6][1],tempWrite[6][2]);
+../Src/main.c(1192): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(7,tempWrite[7][0],tempWrite[7][1],tempWrite[7][2]);
+../Src/main.c(1197): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(8,tempWrite[8][0],tempWrite[8][1],tempWrite[8][2]);
+../Src/main.c(1202): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(9,tempWrite[9][0],tempWrite[9][1],tempWrite[9][2]);
+../Src/main.c(1207): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(10,tempWrite[10][0],tempWrite[10][1],tempWrite[10][2]);
+../Src/main.c(1212): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(11,tempWrite[11][0],tempWrite[11][1],tempWrite[11][2]);
+../Src/main.c(1217): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(12,tempWrite[12][0],tempWrite[12][1],tempWrite[12][2]);
+../Src/main.c(1222): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(13,tempWrite[13][0],tempWrite[13][1],tempWrite[13][2]);
+../Src/main.c(1227): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(14,tempWrite[14][0],tempWrite[14][1],tempWrite[14][2]);
+../Src/main.c(1232): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(15,tempWrite[15][0],tempWrite[15][1],tempWrite[15][2]);
+../Src/main.c(1253): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(0,tempWrite[0][0],tempWrite[0][1],tempWrite[0][2]);
+../Src/main.c(1258): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(1,tempWrite[1][0],tempWrite[1][1],tempWrite[1][2]);
+../Src/main.c(1263): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(2,tempWrite[2][0],tempWrite[2][1],tempWrite[2][2]);
+../Src/main.c(1268): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(3,tempWrite[3][0],tempWrite[3][1],tempWrite[3][2]);
+../Src/main.c(1273): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(4,tempWrite[4][0],tempWrite[4][1],tempWrite[4][2]);
+../Src/main.c(1278): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(5,tempWrite[5][0],tempWrite[5][1],tempWrite[5][2]);
+../Src/main.c(1283): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(6,tempWrite[6][0],tempWrite[6][1],tempWrite[6][2]);
+../Src/main.c(1288): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(7,tempWrite[7][0],tempWrite[7][1],tempWrite[7][2]);
+../Src/main.c(1293): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(8,tempWrite[8][0],tempWrite[8][1],tempWrite[8][2]);
+../Src/main.c(1298): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(9,tempWrite[9][0],tempWrite[9][1],tempWrite[9][2]);
+../Src/main.c(1303): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(10,tempWrite[10][0],tempWrite[10][1],tempWrite[10][2]);
+../Src/main.c(1308): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(11,tempWrite[11][0],tempWrite[11][1],tempWrite[11][2]);
+../Src/main.c(1313): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(12,tempWrite[12][0],tempWrite[12][1],tempWrite[12][2]);
+../Src/main.c(1318): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(13,tempWrite[13][0],tempWrite[13][1],tempWrite[13][2]);
+../Src/main.c(1323): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(14,tempWrite[14][0],tempWrite[14][1],tempWrite[14][2]);
+../Src/main.c(1328): warning:  #223-D: function "led_set_color" declared implicitly
+  							led_set_color(15,tempWrite[15][0],tempWrite[15][1],tempWrite[15][2]);
+../Src/main.c(1330): warning:  #223-D: function "led_display" declared implicitly
+  						led_display();
+../Src/main.c(1373): warning:  #223-D: function "led_set_color" declared implicitly
+  								led_set_color(p1[0],tempWrite[p1[0]][0],tempWrite[p1[0]][1],tempWrite[p1[0]][2]);
+../Src/main.c(1375): warning:  #223-D: function "led_display" declared implicitly
+  						  	led_display();
+../Src/main.c(1379): warning:  #223-D: function "led_set_color" declared implicitly
+  								led_set_color(p2[0],tempWrite[p2[0]][0],tempWrite[p2[0]][1],tempWrite[p2[0]][2]);
+../Src/main.c(1381): warning:  #223-D: function "led_display" declared implicitly
+  						  	led_display();
+../Src/main.c(1385): warning:  #223-D: function "led_set_color" declared implicitly
+  								led_set_color(p3[0],tempWrite[p3[0]][0],tempWrite[p3[0]][1],tempWrite[p3[0]][2]);
+../Src/main.c(1387): warning:  #223-D: function "led_display" declared implicitly
+  						  	led_display();
+../Src/main.c(1391): warning:  #223-D: function "led_set_color" declared implicitly
+  								led_set_color(p4[0],tempWrite[p4[0]][0],tempWrite[p4[0]][1],tempWrite[p4[0]][2]);
+../Src/main.c(1393): warning:  #223-D: function "led_display" declared implicitly
+  						  	led_display();
+../Src/main.c(1397): warning:  #223-D: function "led_set_color" declared implicitly
+  								led_set_color(p5[0],tempWrite[p5[0]][0],tempWrite[p5[0]][1],tempWrite[p5[0]][2]);
+../Src/main.c(1399): warning:  #223-D: function "led_display" declared implicitly
+  						  	led_display();
+../Src/main.c(1403): warning:  #223-D: function "led_set_color" declared implicitly
+  								led_set_color(p6[0],tempWrite[p6[0]][0],tempWrite[p6[0]][1],tempWrite[p6[0]][2]);
+../Src/main.c(1405): warning:  #223-D: function "led_display" declared implicitly
+  						  	led_display();
+../Src/main.c(1409): warning:  #223-D: function "led_set_color" declared implicitly
+  								led_set_color(p7[0],tempWrite[p7[0]][0],tempWrite[p7[0]][1],tempWrite[p7[0]][2]);
+../Src/main.c(1411): warning:  #223-D: function "led_display" declared implicitly
+  						  	led_display();
+../Src/main.c(1415): warning:  #223-D: function "led_set_color" declared implicitly
+  								led_set_color(p8[0],tempWrite[p8[0]][0],tempWrite[p8[0]][1],tempWrite[p8[0]][2]);
+../Src/main.c(1417): warning:  #223-D: function "led_display" declared implicitly
+  						  	led_display();
+../Src/main.c(1024): warning:  #177-D: variable "checkPress"  was declared but never referenced
+  	int checkPress=0;
+../Src/main.c(1434): warning:  #223-D: function "led_set_color_all" declared implicitly
+  		led_set_color_all(red,green,blue);
+../Src/main.c(1435): warning:  #223-D: function "led_display" declared implicitly
+  		led_display();
+../Src/main.c(1436): warning:  #940-D: missing return statement at end of non-void function "Mode1setAllColors" 
+  }
+../Src/main.c: 101 warnings, 0 errors
+compiling dma.c...
+compiling adc.c...
+compiling i2c.c...
+compiling sys.c...
+compiling rng.c...
+compiling spi.c...
+compiling stm32f7xx_hal_msp.c...
+compiling usart.c...
+compiling tim.c...
+compiling stm32f7xx_hal_adc_ex.c...
+compiling stm32f7xx_hal_adc.c...
+compiling stm32f7xx_hal_rcc.c...
+compiling stm32f7xx_hal_flash.c...
+compiling stm32f7xx_hal_flash_ex.c...
+compiling stm32f7xx_hal_rcc_ex.c...
+compiling stm32f7xx_hal_dma.c...
+compiling stm32f7xx_hal_gpio.c...
+compiling stm32f7xx_hal_dma_ex.c...
+compiling stm32f7xx_hal_cortex.c...
+compiling stm32f7xx_hal_pwr.c...
+compiling stm32f7xx_hal_pwr_ex.c...
+compiling stm32f7xx_hal_i2c_ex.c...
+compiling stm32f7xx_hal.c...
+compiling stm32f7xx_hal_i2c.c...
+compiling stm32f7xx_hal_rng.c...
+compiling stm32f7xx_hal_exti.c...
+compiling stm32f7xx_hal_spi.c...
+compiling stm32f7xx_hal_spi_ex.c...
+compiling stm32f7xx_hal_tim_ex.c...
+compiling stm32f7xx_hal_tim.c...
+compiling stm32f7xx_hal_uart_ex.c...
+compiling system_stm32f7xx.c...
+compiling stm32f7xx_hal_uart.c...
+linking...
+Program Size: Code=16888 RO-data=568 RW-data=84 ZI-data=6876  
+FromELF: creating hex file...
+"Assignment1\Assignment1.axf" - 0 Error(s), 101 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.5.7.0.pack
+                ARM.CMSIS.5.7.0
+                CMSIS (Cortex Microcontroller Software Interface Standard)
+   * Component: CORE Version: 5.4.0
+
+Package Vendor: Keil
+                http://www.keil.com/pack/Keil.STM32F7xx_DFP.2.13.0.pack
+                Keil.STM32F7xx_DFP.2.13.0
+                STMicroelectronics STM32F7 Series Device Support, Drivers and Examples
+
+<h2>Collection of Component include folders:</h2>
+  .\RTE\_Assignment1
+  D:\Keil\ARM\CMSIS\5.7.0\CMSIS\Core\Include
+  D:\Keil\Keil\STM32F7xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM::CMSIS:CORE:5.4.0
+Build Time Elapsed:  00:01:37
+</pre>
+</body>
+</html>
