@@ -1,0 +1,454 @@
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\cc3Li61c.s 			page 1
+
+
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 1
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"usart.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.section	.text.MX_USART3_UART_Init,"ax",%progbits
+  17              		.align	1
+  18              		.global	MX_USART3_UART_Init
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv5-d16
+  25              	MX_USART3_UART_Init:
+  26              	.LFB141:
+  27              		.file 1 "Src/usart.c"
+   1:Src/usart.c   **** /**
+   2:Src/usart.c   ****   ******************************************************************************
+   3:Src/usart.c   ****   * File Name          : USART.c
+   4:Src/usart.c   ****   * Description        : This file provides code for the configuration
+   5:Src/usart.c   ****   *                      of the USART instances.
+   6:Src/usart.c   ****   ******************************************************************************
+   7:Src/usart.c   ****   * @attention
+   8:Src/usart.c   ****   *
+   9:Src/usart.c   ****   * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
+  10:Src/usart.c   ****   * All rights reserved.</center></h2>
+  11:Src/usart.c   ****   *
+  12:Src/usart.c   ****   * This software component is licensed by ST under BSD 3-Clause license,
+  13:Src/usart.c   ****   * the "License"; You may not use this file except in compliance with the
+  14:Src/usart.c   ****   * License. You may obtain a copy of the License at:
+  15:Src/usart.c   ****   *                        opensource.org/licenses/BSD-3-Clause
+  16:Src/usart.c   ****   *
+  17:Src/usart.c   ****   ******************************************************************************
+  18:Src/usart.c   ****   */
+  19:Src/usart.c   **** 
+  20:Src/usart.c   **** /* Includes ------------------------------------------------------------------*/
+  21:Src/usart.c   **** #include "usart.h"
+  22:Src/usart.c   **** 
+  23:Src/usart.c   **** /* USER CODE BEGIN 0 */
+  24:Src/usart.c   **** 
+  25:Src/usart.c   **** /* USER CODE END 0 */
+  26:Src/usart.c   **** 
+  27:Src/usart.c   **** UART_HandleTypeDef huart3;
+  28:Src/usart.c   **** 
+  29:Src/usart.c   **** /* USART3 init function */
+  30:Src/usart.c   **** 
+  31:Src/usart.c   **** void MX_USART3_UART_Init(void)
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\cc3Li61c.s 			page 2
+
+
+  32:Src/usart.c   **** {
+  28              		.loc 1 32 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 08B5     		push	{r3, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 3, -8
+  36              		.cfi_offset 14, -4
+  33:Src/usart.c   **** 
+  34:Src/usart.c   ****   huart3.Instance = USART3;
+  37              		.loc 1 34 3 view .LVU1
+  38              		.loc 1 34 19 is_stmt 0 view .LVU2
+  39 0002 0B48     		ldr	r0, .L5
+  40 0004 0B4B     		ldr	r3, .L5+4
+  41 0006 0360     		str	r3, [r0]
+  35:Src/usart.c   ****   huart3.Init.BaudRate = 115200;
+  42              		.loc 1 35 3 is_stmt 1 view .LVU3
+  43              		.loc 1 35 24 is_stmt 0 view .LVU4
+  44 0008 4FF4E133 		mov	r3, #115200
+  45 000c 4360     		str	r3, [r0, #4]
+  36:Src/usart.c   ****   huart3.Init.WordLength = UART_WORDLENGTH_8B;
+  46              		.loc 1 36 3 is_stmt 1 view .LVU5
+  47              		.loc 1 36 26 is_stmt 0 view .LVU6
+  48 000e 0023     		movs	r3, #0
+  49 0010 8360     		str	r3, [r0, #8]
+  37:Src/usart.c   ****   huart3.Init.StopBits = UART_STOPBITS_1;
+  50              		.loc 1 37 3 is_stmt 1 view .LVU7
+  51              		.loc 1 37 24 is_stmt 0 view .LVU8
+  52 0012 C360     		str	r3, [r0, #12]
+  38:Src/usart.c   ****   huart3.Init.Parity = UART_PARITY_NONE;
+  53              		.loc 1 38 3 is_stmt 1 view .LVU9
+  54              		.loc 1 38 22 is_stmt 0 view .LVU10
+  55 0014 0361     		str	r3, [r0, #16]
+  39:Src/usart.c   ****   huart3.Init.Mode = UART_MODE_TX_RX;
+  56              		.loc 1 39 3 is_stmt 1 view .LVU11
+  57              		.loc 1 39 20 is_stmt 0 view .LVU12
+  58 0016 0C22     		movs	r2, #12
+  59 0018 4261     		str	r2, [r0, #20]
+  40:Src/usart.c   ****   huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  60              		.loc 1 40 3 is_stmt 1 view .LVU13
+  61              		.loc 1 40 25 is_stmt 0 view .LVU14
+  62 001a 8361     		str	r3, [r0, #24]
+  41:Src/usart.c   ****   huart3.Init.OverSampling = UART_OVERSAMPLING_16;
+  63              		.loc 1 41 3 is_stmt 1 view .LVU15
+  64              		.loc 1 41 28 is_stmt 0 view .LVU16
+  65 001c C361     		str	r3, [r0, #28]
+  42:Src/usart.c   ****   huart3.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  66              		.loc 1 42 3 is_stmt 1 view .LVU17
+  67              		.loc 1 42 30 is_stmt 0 view .LVU18
+  68 001e 0362     		str	r3, [r0, #32]
+  43:Src/usart.c   ****   huart3.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  69              		.loc 1 43 3 is_stmt 1 view .LVU19
+  70              		.loc 1 43 38 is_stmt 0 view .LVU20
+  71 0020 4362     		str	r3, [r0, #36]
+  44:Src/usart.c   ****   if (HAL_UART_Init(&huart3) != HAL_OK)
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\cc3Li61c.s 			page 3
+
+
+  72              		.loc 1 44 3 is_stmt 1 view .LVU21
+  73              		.loc 1 44 7 is_stmt 0 view .LVU22
+  74 0022 FFF7FEFF 		bl	HAL_UART_Init
+  75              	.LVL0:
+  76              		.loc 1 44 6 view .LVU23
+  77 0026 00B9     		cbnz	r0, .L4
+  78              	.L1:
+  45:Src/usart.c   ****   {
+  46:Src/usart.c   ****     Error_Handler();
+  47:Src/usart.c   ****   }
+  48:Src/usart.c   **** 
+  49:Src/usart.c   **** }
+  79              		.loc 1 49 1 view .LVU24
+  80 0028 08BD     		pop	{r3, pc}
+  81              	.L4:
+  46:Src/usart.c   ****   }
+  82              		.loc 1 46 5 is_stmt 1 view .LVU25
+  83 002a FFF7FEFF 		bl	Error_Handler
+  84              	.LVL1:
+  85              		.loc 1 49 1 is_stmt 0 view .LVU26
+  86 002e FBE7     		b	.L1
+  87              	.L6:
+  88              		.align	2
+  89              	.L5:
+  90 0030 00000000 		.word	huart3
+  91 0034 00480040 		.word	1073760256
+  92              		.cfi_endproc
+  93              	.LFE141:
+  95              		.section	.text.HAL_UART_MspInit,"ax",%progbits
+  96              		.align	1
+  97              		.global	HAL_UART_MspInit
+  98              		.syntax unified
+  99              		.thumb
+ 100              		.thumb_func
+ 101              		.fpu fpv5-d16
+ 103              	HAL_UART_MspInit:
+ 104              	.LVL2:
+ 105              	.LFB142:
+  50:Src/usart.c   **** 
+  51:Src/usart.c   **** void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
+  52:Src/usart.c   **** {
+ 106              		.loc 1 52 1 is_stmt 1 view -0
+ 107              		.cfi_startproc
+ 108              		@ args = 0, pretend = 0, frame = 32
+ 109              		@ frame_needed = 0, uses_anonymous_args = 0
+ 110              		.loc 1 52 1 is_stmt 0 view .LVU28
+ 111 0000 00B5     		push	{lr}
+ 112              	.LCFI1:
+ 113              		.cfi_def_cfa_offset 4
+ 114              		.cfi_offset 14, -4
+ 115 0002 89B0     		sub	sp, sp, #36
+ 116              	.LCFI2:
+ 117              		.cfi_def_cfa_offset 40
+  53:Src/usart.c   **** 
+  54:Src/usart.c   ****   GPIO_InitTypeDef GPIO_InitStruct = {0};
+ 118              		.loc 1 54 3 is_stmt 1 view .LVU29
+ 119              		.loc 1 54 20 is_stmt 0 view .LVU30
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\cc3Li61c.s 			page 4
+
+
+ 120 0004 0023     		movs	r3, #0
+ 121 0006 0393     		str	r3, [sp, #12]
+ 122 0008 0493     		str	r3, [sp, #16]
+ 123 000a 0593     		str	r3, [sp, #20]
+ 124 000c 0693     		str	r3, [sp, #24]
+ 125 000e 0793     		str	r3, [sp, #28]
+  55:Src/usart.c   ****   if(uartHandle->Instance==USART3)
+ 126              		.loc 1 55 3 is_stmt 1 view .LVU31
+ 127              		.loc 1 55 16 is_stmt 0 view .LVU32
+ 128 0010 0268     		ldr	r2, [r0]
+ 129              		.loc 1 55 5 view .LVU33
+ 130 0012 154B     		ldr	r3, .L11
+ 131 0014 9A42     		cmp	r2, r3
+ 132 0016 02D0     		beq	.L10
+ 133              	.LVL3:
+ 134              	.L7:
+  56:Src/usart.c   ****   {
+  57:Src/usart.c   ****   /* USER CODE BEGIN USART3_MspInit 0 */
+  58:Src/usart.c   **** 
+  59:Src/usart.c   ****   /* USER CODE END USART3_MspInit 0 */
+  60:Src/usart.c   ****     /* USART3 clock enable */
+  61:Src/usart.c   ****     __HAL_RCC_USART3_CLK_ENABLE();
+  62:Src/usart.c   ****   
+  63:Src/usart.c   ****     __HAL_RCC_GPIOD_CLK_ENABLE();
+  64:Src/usart.c   ****     /**USART3 GPIO Configuration    
+  65:Src/usart.c   ****     PD8     ------> USART3_TX
+  66:Src/usart.c   ****     PD9     ------> USART3_RX 
+  67:Src/usart.c   ****     */
+  68:Src/usart.c   ****     GPIO_InitStruct.Pin = STLK_RX_Pin|STLK_TX_Pin;
+  69:Src/usart.c   ****     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  70:Src/usart.c   ****     GPIO_InitStruct.Pull = GPIO_NOPULL;
+  71:Src/usart.c   ****     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  72:Src/usart.c   ****     GPIO_InitStruct.Alternate = GPIO_AF7_USART3;
+  73:Src/usart.c   ****     HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+  74:Src/usart.c   **** 
+  75:Src/usart.c   ****   /* USER CODE BEGIN USART3_MspInit 1 */
+  76:Src/usart.c   **** 
+  77:Src/usart.c   ****   /* USER CODE END USART3_MspInit 1 */
+  78:Src/usart.c   ****   }
+  79:Src/usart.c   **** }
+ 135              		.loc 1 79 1 view .LVU34
+ 136 0018 09B0     		add	sp, sp, #36
+ 137              	.LCFI3:
+ 138              		.cfi_remember_state
+ 139              		.cfi_def_cfa_offset 4
+ 140              		@ sp needed
+ 141 001a 5DF804FB 		ldr	pc, [sp], #4
+ 142              	.LVL4:
+ 143              	.L10:
+ 144              	.LCFI4:
+ 145              		.cfi_restore_state
+  61:Src/usart.c   ****   
+ 146              		.loc 1 61 5 is_stmt 1 view .LVU35
+ 147              	.LBB2:
+  61:Src/usart.c   ****   
+ 148              		.loc 1 61 5 view .LVU36
+  61:Src/usart.c   ****   
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\cc3Li61c.s 			page 5
+
+
+ 149              		.loc 1 61 5 view .LVU37
+ 150 001e 03F5F833 		add	r3, r3, #126976
+ 151 0022 1A6C     		ldr	r2, [r3, #64]
+ 152 0024 42F48022 		orr	r2, r2, #262144
+ 153 0028 1A64     		str	r2, [r3, #64]
+  61:Src/usart.c   ****   
+ 154              		.loc 1 61 5 view .LVU38
+ 155 002a 1A6C     		ldr	r2, [r3, #64]
+ 156 002c 02F48022 		and	r2, r2, #262144
+ 157 0030 0192     		str	r2, [sp, #4]
+  61:Src/usart.c   ****   
+ 158              		.loc 1 61 5 view .LVU39
+ 159 0032 019A     		ldr	r2, [sp, #4]
+ 160              	.LBE2:
+  61:Src/usart.c   ****   
+ 161              		.loc 1 61 5 view .LVU40
+  63:Src/usart.c   ****     /**USART3 GPIO Configuration    
+ 162              		.loc 1 63 5 view .LVU41
+ 163              	.LBB3:
+  63:Src/usart.c   ****     /**USART3 GPIO Configuration    
+ 164              		.loc 1 63 5 view .LVU42
+  63:Src/usart.c   ****     /**USART3 GPIO Configuration    
+ 165              		.loc 1 63 5 view .LVU43
+ 166 0034 1A6B     		ldr	r2, [r3, #48]
+ 167 0036 42F00802 		orr	r2, r2, #8
+ 168 003a 1A63     		str	r2, [r3, #48]
+  63:Src/usart.c   ****     /**USART3 GPIO Configuration    
+ 169              		.loc 1 63 5 view .LVU44
+ 170 003c 1B6B     		ldr	r3, [r3, #48]
+ 171 003e 03F00803 		and	r3, r3, #8
+ 172 0042 0293     		str	r3, [sp, #8]
+  63:Src/usart.c   ****     /**USART3 GPIO Configuration    
+ 173              		.loc 1 63 5 view .LVU45
+ 174 0044 029B     		ldr	r3, [sp, #8]
+ 175              	.LBE3:
+  63:Src/usart.c   ****     /**USART3 GPIO Configuration    
+ 176              		.loc 1 63 5 view .LVU46
+  68:Src/usart.c   ****     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+ 177              		.loc 1 68 5 view .LVU47
+  68:Src/usart.c   ****     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+ 178              		.loc 1 68 25 is_stmt 0 view .LVU48
+ 179 0046 4FF44073 		mov	r3, #768
+ 180 004a 0393     		str	r3, [sp, #12]
+  69:Src/usart.c   ****     GPIO_InitStruct.Pull = GPIO_NOPULL;
+ 181              		.loc 1 69 5 is_stmt 1 view .LVU49
+  69:Src/usart.c   ****     GPIO_InitStruct.Pull = GPIO_NOPULL;
+ 182              		.loc 1 69 26 is_stmt 0 view .LVU50
+ 183 004c 0223     		movs	r3, #2
+ 184 004e 0493     		str	r3, [sp, #16]
+  70:Src/usart.c   ****     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+ 185              		.loc 1 70 5 is_stmt 1 view .LVU51
+  70:Src/usart.c   ****     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+ 186              		.loc 1 70 26 is_stmt 0 view .LVU52
+ 187 0050 0023     		movs	r3, #0
+ 188 0052 0593     		str	r3, [sp, #20]
+  71:Src/usart.c   ****     GPIO_InitStruct.Alternate = GPIO_AF7_USART3;
+ 189              		.loc 1 71 5 is_stmt 1 view .LVU53
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\cc3Li61c.s 			page 6
+
+
+  71:Src/usart.c   ****     GPIO_InitStruct.Alternate = GPIO_AF7_USART3;
+ 190              		.loc 1 71 27 is_stmt 0 view .LVU54
+ 191 0054 0323     		movs	r3, #3
+ 192 0056 0693     		str	r3, [sp, #24]
+  72:Src/usart.c   ****     HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+ 193              		.loc 1 72 5 is_stmt 1 view .LVU55
+  72:Src/usart.c   ****     HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+ 194              		.loc 1 72 31 is_stmt 0 view .LVU56
+ 195 0058 0723     		movs	r3, #7
+ 196 005a 0793     		str	r3, [sp, #28]
+  73:Src/usart.c   **** 
+ 197              		.loc 1 73 5 is_stmt 1 view .LVU57
+ 198 005c 03A9     		add	r1, sp, #12
+ 199 005e 0348     		ldr	r0, .L11+4
+ 200              	.LVL5:
+  73:Src/usart.c   **** 
+ 201              		.loc 1 73 5 is_stmt 0 view .LVU58
+ 202 0060 FFF7FEFF 		bl	HAL_GPIO_Init
+ 203              	.LVL6:
+ 204              		.loc 1 79 1 view .LVU59
+ 205 0064 D8E7     		b	.L7
+ 206              	.L12:
+ 207 0066 00BF     		.align	2
+ 208              	.L11:
+ 209 0068 00480040 		.word	1073760256
+ 210 006c 000C0240 		.word	1073875968
+ 211              		.cfi_endproc
+ 212              	.LFE142:
+ 214              		.section	.text.HAL_UART_MspDeInit,"ax",%progbits
+ 215              		.align	1
+ 216              		.global	HAL_UART_MspDeInit
+ 217              		.syntax unified
+ 218              		.thumb
+ 219              		.thumb_func
+ 220              		.fpu fpv5-d16
+ 222              	HAL_UART_MspDeInit:
+ 223              	.LVL7:
+ 224              	.LFB143:
+  80:Src/usart.c   **** 
+  81:Src/usart.c   **** void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
+  82:Src/usart.c   **** {
+ 225              		.loc 1 82 1 is_stmt 1 view -0
+ 226              		.cfi_startproc
+ 227              		@ args = 0, pretend = 0, frame = 0
+ 228              		@ frame_needed = 0, uses_anonymous_args = 0
+ 229              		.loc 1 82 1 is_stmt 0 view .LVU61
+ 230 0000 08B5     		push	{r3, lr}
+ 231              	.LCFI5:
+ 232              		.cfi_def_cfa_offset 8
+ 233              		.cfi_offset 3, -8
+ 234              		.cfi_offset 14, -4
+  83:Src/usart.c   **** 
+  84:Src/usart.c   ****   if(uartHandle->Instance==USART3)
+ 235              		.loc 1 84 3 is_stmt 1 view .LVU62
+ 236              		.loc 1 84 16 is_stmt 0 view .LVU63
+ 237 0002 0268     		ldr	r2, [r0]
+ 238              		.loc 1 84 5 view .LVU64
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\cc3Li61c.s 			page 7
+
+
+ 239 0004 074B     		ldr	r3, .L17
+ 240 0006 9A42     		cmp	r2, r3
+ 241 0008 00D0     		beq	.L16
+ 242              	.LVL8:
+ 243              	.L13:
+  85:Src/usart.c   ****   {
+  86:Src/usart.c   ****   /* USER CODE BEGIN USART3_MspDeInit 0 */
+  87:Src/usart.c   **** 
+  88:Src/usart.c   ****   /* USER CODE END USART3_MspDeInit 0 */
+  89:Src/usart.c   ****     /* Peripheral clock disable */
+  90:Src/usart.c   ****     __HAL_RCC_USART3_CLK_DISABLE();
+  91:Src/usart.c   ****   
+  92:Src/usart.c   ****     /**USART3 GPIO Configuration    
+  93:Src/usart.c   ****     PD8     ------> USART3_TX
+  94:Src/usart.c   ****     PD9     ------> USART3_RX 
+  95:Src/usart.c   ****     */
+  96:Src/usart.c   ****     HAL_GPIO_DeInit(GPIOD, STLK_RX_Pin|STLK_TX_Pin);
+  97:Src/usart.c   **** 
+  98:Src/usart.c   ****   /* USER CODE BEGIN USART3_MspDeInit 1 */
+  99:Src/usart.c   **** 
+ 100:Src/usart.c   ****   /* USER CODE END USART3_MspDeInit 1 */
+ 101:Src/usart.c   ****   }
+ 102:Src/usart.c   **** } 
+ 244              		.loc 1 102 1 view .LVU65
+ 245 000a 08BD     		pop	{r3, pc}
+ 246              	.LVL9:
+ 247              	.L16:
+  90:Src/usart.c   ****   
+ 248              		.loc 1 90 5 is_stmt 1 view .LVU66
+ 249 000c 064A     		ldr	r2, .L17+4
+ 250 000e 136C     		ldr	r3, [r2, #64]
+ 251 0010 23F48023 		bic	r3, r3, #262144
+ 252 0014 1364     		str	r3, [r2, #64]
+  96:Src/usart.c   **** 
+ 253              		.loc 1 96 5 view .LVU67
+ 254 0016 4FF44071 		mov	r1, #768
+ 255 001a 0448     		ldr	r0, .L17+8
+ 256              	.LVL10:
+  96:Src/usart.c   **** 
+ 257              		.loc 1 96 5 is_stmt 0 view .LVU68
+ 258 001c FFF7FEFF 		bl	HAL_GPIO_DeInit
+ 259              	.LVL11:
+ 260              		.loc 1 102 1 view .LVU69
+ 261 0020 F3E7     		b	.L13
+ 262              	.L18:
+ 263 0022 00BF     		.align	2
+ 264              	.L17:
+ 265 0024 00480040 		.word	1073760256
+ 266 0028 00380240 		.word	1073887232
+ 267 002c 000C0240 		.word	1073875968
+ 268              		.cfi_endproc
+ 269              	.LFE143:
+ 271              		.comm	huart3,128,4
+ 272              		.text
+ 273              	.Letext0:
+ 274              		.file 2 "c:\\vsarm\\armcc\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 275              		.file 3 "c:\\vsarm\\armcc\\arm-none-eabi\\include\\sys\\_stdint.h"
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\cc3Li61c.s 			page 8
+
+
+ 276              		.file 4 "Drivers/CMSIS/Include/core_cm7.h"
+ 277              		.file 5 "Drivers/CMSIS/Device/ST/STM32F7xx/Include/system_stm32f7xx.h"
+ 278              		.file 6 "Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f767xx.h"
+ 279              		.file 7 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_def.h"
+ 280              		.file 8 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_gpio.h"
+ 281              		.file 9 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dma.h"
+ 282              		.file 10 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_uart.h"
+ 283              		.file 11 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h"
+ 284              		.file 12 "Inc/usart.h"
+ 285              		.file 13 "Inc/main.h"
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\cc3Li61c.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 usart.c
+C:\Users\Haruka\AppData\Local\Temp\cc3Li61c.s:17     .text.MX_USART3_UART_Init:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\cc3Li61c.s:25     .text.MX_USART3_UART_Init:00000000 MX_USART3_UART_Init
+C:\Users\Haruka\AppData\Local\Temp\cc3Li61c.s:90     .text.MX_USART3_UART_Init:00000030 $d
+                            *COM*:00000080 huart3
+C:\Users\Haruka\AppData\Local\Temp\cc3Li61c.s:96     .text.HAL_UART_MspInit:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\cc3Li61c.s:103    .text.HAL_UART_MspInit:00000000 HAL_UART_MspInit
+C:\Users\Haruka\AppData\Local\Temp\cc3Li61c.s:209    .text.HAL_UART_MspInit:00000068 $d
+C:\Users\Haruka\AppData\Local\Temp\cc3Li61c.s:215    .text.HAL_UART_MspDeInit:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\cc3Li61c.s:222    .text.HAL_UART_MspDeInit:00000000 HAL_UART_MspDeInit
+C:\Users\Haruka\AppData\Local\Temp\cc3Li61c.s:265    .text.HAL_UART_MspDeInit:00000024 $d
+
+UNDEFINED SYMBOLS
+HAL_UART_Init
+Error_Handler
+HAL_GPIO_Init
+HAL_GPIO_DeInit
