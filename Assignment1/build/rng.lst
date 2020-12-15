@@ -1,0 +1,280 @@
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccaMr6Mw.s 			page 1
+
+
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 1
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"rng.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.section	.text.MX_RNG_Init,"ax",%progbits
+  17              		.align	1
+  18              		.global	MX_RNG_Init
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv5-d16
+  25              	MX_RNG_Init:
+  26              	.LFB141:
+  27              		.file 1 "Src/rng.c"
+   1:Src/rng.c     **** /**
+   2:Src/rng.c     ****   ******************************************************************************
+   3:Src/rng.c     ****   * File Name          : RNG.c
+   4:Src/rng.c     ****   * Description        : This file provides code for the configuration
+   5:Src/rng.c     ****   *                      of the RNG instances.
+   6:Src/rng.c     ****   ******************************************************************************
+   7:Src/rng.c     ****   * @attention
+   8:Src/rng.c     ****   *
+   9:Src/rng.c     ****   * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
+  10:Src/rng.c     ****   * All rights reserved.</center></h2>
+  11:Src/rng.c     ****   *
+  12:Src/rng.c     ****   * This software component is licensed by ST under BSD 3-Clause license,
+  13:Src/rng.c     ****   * the "License"; You may not use this file except in compliance with the
+  14:Src/rng.c     ****   * License. You may obtain a copy of the License at:
+  15:Src/rng.c     ****   *                        opensource.org/licenses/BSD-3-Clause
+  16:Src/rng.c     ****   *
+  17:Src/rng.c     ****   ******************************************************************************
+  18:Src/rng.c     ****   */
+  19:Src/rng.c     **** 
+  20:Src/rng.c     **** /* Includes ------------------------------------------------------------------*/
+  21:Src/rng.c     **** #include "rng.h"
+  22:Src/rng.c     **** 
+  23:Src/rng.c     **** /* USER CODE BEGIN 0 */
+  24:Src/rng.c     **** 
+  25:Src/rng.c     **** /* USER CODE END 0 */
+  26:Src/rng.c     **** 
+  27:Src/rng.c     **** RNG_HandleTypeDef hrng;
+  28:Src/rng.c     **** 
+  29:Src/rng.c     **** /* RNG init function */
+  30:Src/rng.c     **** void MX_RNG_Init(void)
+  31:Src/rng.c     **** {
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccaMr6Mw.s 			page 2
+
+
+  28              		.loc 1 31 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 08B5     		push	{r3, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 3, -8
+  36              		.cfi_offset 14, -4
+  32:Src/rng.c     **** 
+  33:Src/rng.c     ****   hrng.Instance = RNG;
+  37              		.loc 1 33 3 view .LVU1
+  38              		.loc 1 33 17 is_stmt 0 view .LVU2
+  39 0002 0548     		ldr	r0, .L5
+  40 0004 054B     		ldr	r3, .L5+4
+  41 0006 0360     		str	r3, [r0]
+  34:Src/rng.c     ****   if (HAL_RNG_Init(&hrng) != HAL_OK)
+  42              		.loc 1 34 3 is_stmt 1 view .LVU3
+  43              		.loc 1 34 7 is_stmt 0 view .LVU4
+  44 0008 FFF7FEFF 		bl	HAL_RNG_Init
+  45              	.LVL0:
+  46              		.loc 1 34 6 view .LVU5
+  47 000c 00B9     		cbnz	r0, .L4
+  48              	.L1:
+  35:Src/rng.c     ****   {
+  36:Src/rng.c     ****     Error_Handler();
+  37:Src/rng.c     ****   }
+  38:Src/rng.c     **** 
+  39:Src/rng.c     **** }
+  49              		.loc 1 39 1 view .LVU6
+  50 000e 08BD     		pop	{r3, pc}
+  51              	.L4:
+  36:Src/rng.c     ****   }
+  52              		.loc 1 36 5 is_stmt 1 view .LVU7
+  53 0010 FFF7FEFF 		bl	Error_Handler
+  54              	.LVL1:
+  55              		.loc 1 39 1 is_stmt 0 view .LVU8
+  56 0014 FBE7     		b	.L1
+  57              	.L6:
+  58 0016 00BF     		.align	2
+  59              	.L5:
+  60 0018 00000000 		.word	hrng
+  61 001c 00080650 		.word	1342572544
+  62              		.cfi_endproc
+  63              	.LFE141:
+  65              		.section	.text.HAL_RNG_MspInit,"ax",%progbits
+  66              		.align	1
+  67              		.global	HAL_RNG_MspInit
+  68              		.syntax unified
+  69              		.thumb
+  70              		.thumb_func
+  71              		.fpu fpv5-d16
+  73              	HAL_RNG_MspInit:
+  74              	.LVL2:
+  75              	.LFB142:
+  40:Src/rng.c     **** 
+  41:Src/rng.c     **** void HAL_RNG_MspInit(RNG_HandleTypeDef* rngHandle)
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccaMr6Mw.s 			page 3
+
+
+  42:Src/rng.c     **** {
+  76              		.loc 1 42 1 is_stmt 1 view -0
+  77              		.cfi_startproc
+  78              		@ args = 0, pretend = 0, frame = 8
+  79              		@ frame_needed = 0, uses_anonymous_args = 0
+  80              		@ link register save eliminated.
+  43:Src/rng.c     **** 
+  44:Src/rng.c     ****   if(rngHandle->Instance==RNG)
+  81              		.loc 1 44 3 view .LVU10
+  82              		.loc 1 44 15 is_stmt 0 view .LVU11
+  83 0000 0268     		ldr	r2, [r0]
+  84              		.loc 1 44 5 view .LVU12
+  85 0002 084B     		ldr	r3, .L14
+  86 0004 9A42     		cmp	r2, r3
+  87 0006 00D0     		beq	.L13
+  88 0008 7047     		bx	lr
+  89              	.L13:
+  42:Src/rng.c     **** 
+  90              		.loc 1 42 1 view .LVU13
+  91 000a 82B0     		sub	sp, sp, #8
+  92              	.LCFI1:
+  93              		.cfi_def_cfa_offset 8
+  45:Src/rng.c     ****   {
+  46:Src/rng.c     ****   /* USER CODE BEGIN RNG_MspInit 0 */
+  47:Src/rng.c     **** 
+  48:Src/rng.c     ****   /* USER CODE END RNG_MspInit 0 */
+  49:Src/rng.c     ****     /* RNG clock enable */
+  50:Src/rng.c     ****     __HAL_RCC_RNG_CLK_ENABLE();
+  94              		.loc 1 50 5 is_stmt 1 view .LVU14
+  95              	.LBB2:
+  96              		.loc 1 50 5 view .LVU15
+  97              		.loc 1 50 5 view .LVU16
+  98 000c 064B     		ldr	r3, .L14+4
+  99 000e 5A6B     		ldr	r2, [r3, #52]
+ 100 0010 42F04002 		orr	r2, r2, #64
+ 101 0014 5A63     		str	r2, [r3, #52]
+ 102              		.loc 1 50 5 view .LVU17
+ 103 0016 5B6B     		ldr	r3, [r3, #52]
+ 104 0018 03F04003 		and	r3, r3, #64
+ 105 001c 0193     		str	r3, [sp, #4]
+ 106              		.loc 1 50 5 view .LVU18
+ 107 001e 019B     		ldr	r3, [sp, #4]
+ 108              	.LBE2:
+ 109              		.loc 1 50 5 view .LVU19
+  51:Src/rng.c     ****   /* USER CODE BEGIN RNG_MspInit 1 */
+  52:Src/rng.c     **** 
+  53:Src/rng.c     ****   /* USER CODE END RNG_MspInit 1 */
+  54:Src/rng.c     ****   }
+  55:Src/rng.c     **** }
+ 110              		.loc 1 55 1 is_stmt 0 view .LVU20
+ 111 0020 02B0     		add	sp, sp, #8
+ 112              	.LCFI2:
+ 113              		.cfi_def_cfa_offset 0
+ 114              		@ sp needed
+ 115 0022 7047     		bx	lr
+ 116              	.L15:
+ 117              		.align	2
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccaMr6Mw.s 			page 4
+
+
+ 118              	.L14:
+ 119 0024 00080650 		.word	1342572544
+ 120 0028 00380240 		.word	1073887232
+ 121              		.cfi_endproc
+ 122              	.LFE142:
+ 124              		.section	.text.HAL_RNG_MspDeInit,"ax",%progbits
+ 125              		.align	1
+ 126              		.global	HAL_RNG_MspDeInit
+ 127              		.syntax unified
+ 128              		.thumb
+ 129              		.thumb_func
+ 130              		.fpu fpv5-d16
+ 132              	HAL_RNG_MspDeInit:
+ 133              	.LVL3:
+ 134              	.LFB143:
+  56:Src/rng.c     **** 
+  57:Src/rng.c     **** void HAL_RNG_MspDeInit(RNG_HandleTypeDef* rngHandle)
+  58:Src/rng.c     **** {
+ 135              		.loc 1 58 1 is_stmt 1 view -0
+ 136              		.cfi_startproc
+ 137              		@ args = 0, pretend = 0, frame = 0
+ 138              		@ frame_needed = 0, uses_anonymous_args = 0
+ 139              		@ link register save eliminated.
+  59:Src/rng.c     **** 
+  60:Src/rng.c     ****   if(rngHandle->Instance==RNG)
+ 140              		.loc 1 60 3 view .LVU22
+ 141              		.loc 1 60 15 is_stmt 0 view .LVU23
+ 142 0000 0268     		ldr	r2, [r0]
+ 143              		.loc 1 60 5 view .LVU24
+ 144 0002 054B     		ldr	r3, .L19
+ 145 0004 9A42     		cmp	r2, r3
+ 146 0006 00D0     		beq	.L18
+ 147              	.L16:
+  61:Src/rng.c     ****   {
+  62:Src/rng.c     ****   /* USER CODE BEGIN RNG_MspDeInit 0 */
+  63:Src/rng.c     **** 
+  64:Src/rng.c     ****   /* USER CODE END RNG_MspDeInit 0 */
+  65:Src/rng.c     ****     /* Peripheral clock disable */
+  66:Src/rng.c     ****     __HAL_RCC_RNG_CLK_DISABLE();
+  67:Src/rng.c     ****   /* USER CODE BEGIN RNG_MspDeInit 1 */
+  68:Src/rng.c     **** 
+  69:Src/rng.c     ****   /* USER CODE END RNG_MspDeInit 1 */
+  70:Src/rng.c     ****   }
+  71:Src/rng.c     **** } 
+ 148              		.loc 1 71 1 view .LVU25
+ 149 0008 7047     		bx	lr
+ 150              	.L18:
+  66:Src/rng.c     ****   /* USER CODE BEGIN RNG_MspDeInit 1 */
+ 151              		.loc 1 66 5 is_stmt 1 view .LVU26
+ 152 000a 044A     		ldr	r2, .L19+4
+ 153 000c 536B     		ldr	r3, [r2, #52]
+ 154 000e 23F04003 		bic	r3, r3, #64
+ 155 0012 5363     		str	r3, [r2, #52]
+ 156              		.loc 1 71 1 is_stmt 0 view .LVU27
+ 157 0014 F8E7     		b	.L16
+ 158              	.L20:
+ 159 0016 00BF     		.align	2
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccaMr6Mw.s 			page 5
+
+
+ 160              	.L19:
+ 161 0018 00080650 		.word	1342572544
+ 162 001c 00380240 		.word	1073887232
+ 163              		.cfi_endproc
+ 164              	.LFE143:
+ 166              		.comm	hrng,16,4
+ 167              		.text
+ 168              	.Letext0:
+ 169              		.file 2 "c:\\vsarm\\armcc\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 170              		.file 3 "c:\\vsarm\\armcc\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 171              		.file 4 "Drivers/CMSIS/Include/core_cm7.h"
+ 172              		.file 5 "Drivers/CMSIS/Device/ST/STM32F7xx/Include/system_stm32f7xx.h"
+ 173              		.file 6 "Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f767xx.h"
+ 174              		.file 7 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_def.h"
+ 175              		.file 8 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rng.h"
+ 176              		.file 9 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h"
+ 177              		.file 10 "Inc/rng.h"
+ 178              		.file 11 "Inc/main.h"
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccaMr6Mw.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 rng.c
+C:\Users\Haruka\AppData\Local\Temp\ccaMr6Mw.s:17     .text.MX_RNG_Init:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccaMr6Mw.s:25     .text.MX_RNG_Init:00000000 MX_RNG_Init
+C:\Users\Haruka\AppData\Local\Temp\ccaMr6Mw.s:60     .text.MX_RNG_Init:00000018 $d
+                            *COM*:00000010 hrng
+C:\Users\Haruka\AppData\Local\Temp\ccaMr6Mw.s:66     .text.HAL_RNG_MspInit:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccaMr6Mw.s:73     .text.HAL_RNG_MspInit:00000000 HAL_RNG_MspInit
+C:\Users\Haruka\AppData\Local\Temp\ccaMr6Mw.s:119    .text.HAL_RNG_MspInit:00000024 $d
+C:\Users\Haruka\AppData\Local\Temp\ccaMr6Mw.s:125    .text.HAL_RNG_MspDeInit:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccaMr6Mw.s:132    .text.HAL_RNG_MspDeInit:00000000 HAL_RNG_MspDeInit
+C:\Users\Haruka\AppData\Local\Temp\ccaMr6Mw.s:161    .text.HAL_RNG_MspDeInit:00000018 $d
+
+UNDEFINED SYMBOLS
+HAL_RNG_Init
+Error_Handler

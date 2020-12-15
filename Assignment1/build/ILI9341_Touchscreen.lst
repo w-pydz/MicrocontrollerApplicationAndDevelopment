@@ -1,0 +1,825 @@
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s 			page 1
+
+
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 1
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"ILI9341_Touchscreen.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.section	.text.TP_Read,"ax",%progbits
+  17              		.align	1
+  18              		.global	TP_Read
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv5-d16
+  25              	TP_Read:
+  26              	.LFB141:
+  27              		.file 1 "Src/ILI9341_Touchscreen.c"
+   1:Src/ILI9341_Touchscreen.c **** //	MIT License
+   2:Src/ILI9341_Touchscreen.c **** //
+   3:Src/ILI9341_Touchscreen.c **** //	Copyright (c) 2017 Matej Artnak
+   4:Src/ILI9341_Touchscreen.c **** //
+   5:Src/ILI9341_Touchscreen.c **** //	Permission is hereby granted, free of charge, to any person obtaining a copy
+   6:Src/ILI9341_Touchscreen.c **** //	of this software and associated documentation files (the "Software"), to deal
+   7:Src/ILI9341_Touchscreen.c **** //	in the Software without restriction, including without limitation the rights
+   8:Src/ILI9341_Touchscreen.c **** //	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   9:Src/ILI9341_Touchscreen.c **** //	copies of the Software, and to permit persons to whom the Software is
+  10:Src/ILI9341_Touchscreen.c **** //	furnished to do so, subject to the following conditions:
+  11:Src/ILI9341_Touchscreen.c **** //
+  12:Src/ILI9341_Touchscreen.c **** //	The above copyright notice and this permission notice shall be included in all
+  13:Src/ILI9341_Touchscreen.c **** //	copies or substantial portions of the Software.
+  14:Src/ILI9341_Touchscreen.c **** //
+  15:Src/ILI9341_Touchscreen.c **** //	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  16:Src/ILI9341_Touchscreen.c **** //	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  17:Src/ILI9341_Touchscreen.c **** //	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  18:Src/ILI9341_Touchscreen.c **** //	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  19:Src/ILI9341_Touchscreen.c **** //	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  20:Src/ILI9341_Touchscreen.c **** //	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  21:Src/ILI9341_Touchscreen.c **** //	SOFTWARE.
+  22:Src/ILI9341_Touchscreen.c **** //
+  23:Src/ILI9341_Touchscreen.c **** //
+  24:Src/ILI9341_Touchscreen.c **** //-----------------------------------
+  25:Src/ILI9341_Touchscreen.c **** //	ILI9341 Touchscreen library for STM32
+  26:Src/ILI9341_Touchscreen.c **** //-----------------------------------
+  27:Src/ILI9341_Touchscreen.c **** //
+  28:Src/ILI9341_Touchscreen.c **** //	Very simple Touchscreen library for ILI9341.
+  29:Src/ILI9341_Touchscreen.c **** //	Extremly basic reading of position. No runtime calibration, No prediction, basic noise removal. 
+  30:Src/ILI9341_Touchscreen.c **** //	Basic hardcoded calibration values saved in .h file
+  31:Src/ILI9341_Touchscreen.c **** //
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s 			page 2
+
+
+  32:Src/ILI9341_Touchscreen.c **** //	Library is written for STM32 HAL library and supports STM32CUBEMX. To use the library with Cube 
+  33:Src/ILI9341_Touchscreen.c **** //	you need to tick the box that generates peripheral initialization code in their own respective .
+  34:Src/ILI9341_Touchscreen.c **** //
+  35:Src/ILI9341_Touchscreen.c **** //
+  36:Src/ILI9341_Touchscreen.c **** //-----------------------------------
+  37:Src/ILI9341_Touchscreen.c **** //	How to use this library
+  38:Src/ILI9341_Touchscreen.c **** //-----------------------------------
+  39:Src/ILI9341_Touchscreen.c **** //
+  40:Src/ILI9341_Touchscreen.c **** //	-If using MCUs other than STM32F7 you will have to change the #include "stm32f7xx_hal.h" in the 
+  41:Src/ILI9341_Touchscreen.c **** //	-define GPIO inputs and outputs then map the Pins and Ports inside the ILI9341_Touchscreen.h
+  42:Src/ILI9341_Touchscreen.c **** //	-Library does not require any initialization calls apart from GPIO initialization. Initialize GP
+  43:Src/ILI9341_Touchscreen.c **** //
+  44:Src/ILI9341_Touchscreen.c **** //		Touchpad GPIO defines
+  45:Src/ILI9341_Touchscreen.c **** //			Outputs:
+  46:Src/ILI9341_Touchscreen.c **** //				CLK
+  47:Src/ILI9341_Touchscreen.c **** //				MOSI
+  48:Src/ILI9341_Touchscreen.c **** //				CS
+  49:Src/ILI9341_Touchscreen.c **** //
+  50:Src/ILI9341_Touchscreen.c **** //			Inputs:
+  51:Src/ILI9341_Touchscreen.c **** //				IRQ
+  52:Src/ILI9341_Touchscreen.c **** //				MISO
+  53:Src/ILI9341_Touchscreen.c **** //
+  54:Src/ILI9341_Touchscreen.c **** //
+  55:Src/ILI9341_Touchscreen.c **** //	-Touchpad library bitbangs SPI interface and only requires basic GPIOs.
+  56:Src/ILI9341_Touchscreen.c **** //	-Setting GPIOs as FREQ_VERY_HIGH Recommended
+  57:Src/ILI9341_Touchscreen.c **** //
+  58:Src/ILI9341_Touchscreen.c **** //	-Warning! Library is written for "ILI9341_Set_Rotation(SCREEN_VERTICAL_1)"	(See ILI9341_STM32_Dr
+  59:Src/ILI9341_Touchscreen.c **** //	-If using different layout you will have to Re-Map X and Y coordinates of the Screen
+  60:Src/ILI9341_Touchscreen.c **** //
+  61:Src/ILI9341_Touchscreen.c **** //
+  62:Src/ILI9341_Touchscreen.c **** //	-NO_OF_POSITION_SAMPLES makes location output less noisy but increases reading time. Increase an
+  63:Src/ILI9341_Touchscreen.c **** //
+  64:Src/ILI9341_Touchscreen.c **** //----------EXAMPLE------------------
+  65:Src/ILI9341_Touchscreen.c **** /*
+  66:Src/ILI9341_Touchscreen.c **** if(TP_Touchpad_Pressed())
+  67:Src/ILI9341_Touchscreen.c **** 	{					
+  68:Src/ILI9341_Touchscreen.c **** 		uint16_t x_pos = 0;
+  69:Src/ILI9341_Touchscreen.c **** 		uint16_t y_pos = 0;
+  70:Src/ILI9341_Touchscreen.c **** 		
+  71:Src/ILI9341_Touchscreen.c **** 		uint16_t position_array[2];
+  72:Src/ILI9341_Touchscreen.c **** 		if(TP_Read_Coordinates(position_array) == TOUCHPAD_DATA_OK)
+  73:Src/ILI9341_Touchscreen.c **** 		{
+  74:Src/ILI9341_Touchscreen.c **** 		x_pos = position_array[0];
+  75:Src/ILI9341_Touchscreen.c **** 		y_pos = position_array[1];
+  76:Src/ILI9341_Touchscreen.c **** 		}							
+  77:Src/ILI9341_Touchscreen.c **** 	}
+  78:Src/ILI9341_Touchscreen.c **** */
+  79:Src/ILI9341_Touchscreen.c **** //-----------------------------------
+  80:Src/ILI9341_Touchscreen.c **** 
+  81:Src/ILI9341_Touchscreen.c **** 
+  82:Src/ILI9341_Touchscreen.c **** #include "ILI9341_Touchscreen.h"
+  83:Src/ILI9341_Touchscreen.c **** #include "stm32f7xx_hal.h"
+  84:Src/ILI9341_Touchscreen.c **** 
+  85:Src/ILI9341_Touchscreen.c **** //Internal Touchpad command, do not call directly
+  86:Src/ILI9341_Touchscreen.c **** uint16_t TP_Read(void)
+  87:Src/ILI9341_Touchscreen.c **** {
+  28              		.loc 1 87 1 view -0
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s 			page 3
+
+
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 70B5     		push	{r4, r5, r6, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 16
+  35              		.cfi_offset 4, -16
+  36              		.cfi_offset 5, -12
+  37              		.cfi_offset 6, -8
+  38              		.cfi_offset 14, -4
+  88:Src/ILI9341_Touchscreen.c ****     uint8_t i = 16;
+  39              		.loc 1 88 5 view .LVU1
+  40              	.LVL0:
+  89:Src/ILI9341_Touchscreen.c ****     uint16_t value = 0;
+  41              		.loc 1 89 5 view .LVU2
+  90:Src/ILI9341_Touchscreen.c **** 
+  91:Src/ILI9341_Touchscreen.c ****     while(i > 0x00)
+  42              		.loc 1 91 5 view .LVU3
+  89:Src/ILI9341_Touchscreen.c ****     uint16_t value = 0;
+  43              		.loc 1 89 14 is_stmt 0 view .LVU4
+  44 0002 0024     		movs	r4, #0
+  88:Src/ILI9341_Touchscreen.c ****     uint16_t value = 0;
+  45              		.loc 1 88 13 view .LVU5
+  46 0004 1025     		movs	r5, #16
+  47              		.loc 1 91 10 view .LVU6
+  48 0006 01E0     		b	.L2
+  49              	.LVL1:
+  50              	.L3:
+  92:Src/ILI9341_Touchscreen.c ****     {
+  93:Src/ILI9341_Touchscreen.c ****         value <<= 1;
+  94:Src/ILI9341_Touchscreen.c **** 
+  95:Src/ILI9341_Touchscreen.c **** 				HAL_GPIO_WritePin(TP_CLK_PORT, TP_CLK_PIN, GPIO_PIN_SET);
+  96:Src/ILI9341_Touchscreen.c **** 				HAL_GPIO_WritePin(TP_CLK_PORT, TP_CLK_PIN, GPIO_PIN_RESET);
+  97:Src/ILI9341_Touchscreen.c **** 			
+  98:Src/ILI9341_Touchscreen.c ****         if(HAL_GPIO_ReadPin(TP_MISO_PORT, TP_MISO_PIN) != 0)
+  99:Src/ILI9341_Touchscreen.c ****         {
+ 100:Src/ILI9341_Touchscreen.c ****             value++;
+ 101:Src/ILI9341_Touchscreen.c ****         }
+ 102:Src/ILI9341_Touchscreen.c **** 
+ 103:Src/ILI9341_Touchscreen.c ****         i--;
+  51              		.loc 1 103 9 is_stmt 1 view .LVU7
+  52              		.loc 1 103 10 is_stmt 0 view .LVU8
+  53 0008 013D     		subs	r5, r5, #1
+  54              	.LVL2:
+  55              		.loc 1 103 10 view .LVU9
+  56 000a EDB2     		uxtb	r5, r5
+  57              	.LVL3:
+  58              	.L2:
+  91:Src/ILI9341_Touchscreen.c ****     {
+  59              		.loc 1 91 10 is_stmt 1 view .LVU10
+  60 000c ADB1     		cbz	r5, .L6
+  93:Src/ILI9341_Touchscreen.c **** 
+  61              		.loc 1 93 9 view .LVU11
+  93:Src/ILI9341_Touchscreen.c **** 
+  62              		.loc 1 93 15 is_stmt 0 view .LVU12
+  63 000e 6400     		lsls	r4, r4, #1
+  64              	.LVL4:
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s 			page 4
+
+
+  93:Src/ILI9341_Touchscreen.c **** 
+  65              		.loc 1 93 15 view .LVU13
+  66 0010 A4B2     		uxth	r4, r4
+  67              	.LVL5:
+  95:Src/ILI9341_Touchscreen.c **** 				HAL_GPIO_WritePin(TP_CLK_PORT, TP_CLK_PIN, GPIO_PIN_RESET);
+  68              		.loc 1 95 5 is_stmt 1 view .LVU14
+  69 0012 0B4E     		ldr	r6, .L7
+  70 0014 0122     		movs	r2, #1
+  71 0016 0821     		movs	r1, #8
+  72 0018 3046     		mov	r0, r6
+  73 001a FFF7FEFF 		bl	HAL_GPIO_WritePin
+  74              	.LVL6:
+  96:Src/ILI9341_Touchscreen.c **** 			
+  75              		.loc 1 96 5 view .LVU15
+  76 001e 0022     		movs	r2, #0
+  77 0020 0821     		movs	r1, #8
+  78 0022 3046     		mov	r0, r6
+  79 0024 FFF7FEFF 		bl	HAL_GPIO_WritePin
+  80              	.LVL7:
+  98:Src/ILI9341_Touchscreen.c ****         {
+  81              		.loc 1 98 9 view .LVU16
+  98:Src/ILI9341_Touchscreen.c ****         {
+  82              		.loc 1 98 12 is_stmt 0 view .LVU17
+  83 0028 1021     		movs	r1, #16
+  84 002a 3046     		mov	r0, r6
+  85 002c FFF7FEFF 		bl	HAL_GPIO_ReadPin
+  86              	.LVL8:
+  98:Src/ILI9341_Touchscreen.c ****         {
+  87              		.loc 1 98 11 view .LVU18
+  88 0030 0028     		cmp	r0, #0
+  89 0032 E9D0     		beq	.L3
+ 100:Src/ILI9341_Touchscreen.c ****         }
+  90              		.loc 1 100 13 is_stmt 1 view .LVU19
+ 100:Src/ILI9341_Touchscreen.c ****         }
+  91              		.loc 1 100 18 is_stmt 0 view .LVU20
+  92 0034 0134     		adds	r4, r4, #1
+  93              	.LVL9:
+ 100:Src/ILI9341_Touchscreen.c ****         }
+  94              		.loc 1 100 18 view .LVU21
+  95 0036 A4B2     		uxth	r4, r4
+  96              	.LVL10:
+ 100:Src/ILI9341_Touchscreen.c ****         }
+  97              		.loc 1 100 18 view .LVU22
+  98 0038 E6E7     		b	.L3
+  99              	.L6:
+ 104:Src/ILI9341_Touchscreen.c ****     };
+ 100              		.loc 1 104 6 is_stmt 1 view .LVU23
+ 105:Src/ILI9341_Touchscreen.c **** 
+ 106:Src/ILI9341_Touchscreen.c ****     return value;
+ 101              		.loc 1 106 5 view .LVU24
+ 107:Src/ILI9341_Touchscreen.c **** }
+ 102              		.loc 1 107 1 is_stmt 0 view .LVU25
+ 103 003a 2046     		mov	r0, r4
+ 104 003c 70BD     		pop	{r4, r5, r6, pc}
+ 105              	.LVL11:
+ 106              	.L8:
+ 107              		.loc 1 107 1 view .LVU26
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s 			page 5
+
+
+ 108 003e 00BF     		.align	2
+ 109              	.L7:
+ 110 0040 00100240 		.word	1073876992
+ 111              		.cfi_endproc
+ 112              	.LFE141:
+ 114              		.section	.text.TP_Write,"ax",%progbits
+ 115              		.align	1
+ 116              		.global	TP_Write
+ 117              		.syntax unified
+ 118              		.thumb
+ 119              		.thumb_func
+ 120              		.fpu fpv5-d16
+ 122              	TP_Write:
+ 123              	.LVL12:
+ 124              	.LFB142:
+ 108:Src/ILI9341_Touchscreen.c **** 
+ 109:Src/ILI9341_Touchscreen.c **** //Internal Touchpad command, do not call directly
+ 110:Src/ILI9341_Touchscreen.c **** void TP_Write(uint8_t value)
+ 111:Src/ILI9341_Touchscreen.c **** {
+ 125              		.loc 1 111 1 is_stmt 1 view -0
+ 126              		.cfi_startproc
+ 127              		@ args = 0, pretend = 0, frame = 0
+ 128              		@ frame_needed = 0, uses_anonymous_args = 0
+ 129              		.loc 1 111 1 is_stmt 0 view .LVU28
+ 130 0000 70B5     		push	{r4, r5, r6, lr}
+ 131              	.LCFI1:
+ 132              		.cfi_def_cfa_offset 16
+ 133              		.cfi_offset 4, -16
+ 134              		.cfi_offset 5, -12
+ 135              		.cfi_offset 6, -8
+ 136              		.cfi_offset 14, -4
+ 137 0002 0446     		mov	r4, r0
+ 112:Src/ILI9341_Touchscreen.c ****     uint8_t i = 0x08;
+ 138              		.loc 1 112 5 is_stmt 1 view .LVU29
+ 139              	.LVL13:
+ 113:Src/ILI9341_Touchscreen.c **** 
+ 114:Src/ILI9341_Touchscreen.c **** 		HAL_GPIO_WritePin(TP_CLK_PORT, TP_CLK_PIN, GPIO_PIN_RESET);	
+ 140              		.loc 1 114 3 view .LVU30
+ 141 0004 0022     		movs	r2, #0
+ 142 0006 0821     		movs	r1, #8
+ 143 0008 1148     		ldr	r0, .L17
+ 144              	.LVL14:
+ 145              		.loc 1 114 3 is_stmt 0 view .LVU31
+ 146 000a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 147              	.LVL15:
+ 115:Src/ILI9341_Touchscreen.c **** 	
+ 116:Src/ILI9341_Touchscreen.c ****     while(i > 0)
+ 148              		.loc 1 116 5 is_stmt 1 view .LVU32
+ 112:Src/ILI9341_Touchscreen.c **** 
+ 149              		.loc 1 112 13 is_stmt 0 view .LVU33
+ 150 000e 0825     		movs	r5, #8
+ 151              		.loc 1 116 10 view .LVU34
+ 152 0010 13E0     		b	.L10
+ 153              	.LVL16:
+ 154              	.L16:
+ 117:Src/ILI9341_Touchscreen.c ****     {
+ 118:Src/ILI9341_Touchscreen.c ****         if((value & 0x80) != 0x00)
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s 			page 6
+
+
+ 119:Src/ILI9341_Touchscreen.c ****         {
+ 120:Src/ILI9341_Touchscreen.c **** 						HAL_GPIO_WritePin(TP_MOSI_PORT, TP_MOSI_PIN, GPIO_PIN_SET);
+ 155              		.loc 1 120 7 is_stmt 1 view .LVU35
+ 156 0012 0122     		movs	r2, #1
+ 157 0014 2021     		movs	r1, #32
+ 158 0016 0E48     		ldr	r0, .L17
+ 159 0018 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 160              	.LVL17:
+ 161              	.L12:
+ 121:Src/ILI9341_Touchscreen.c ****         }
+ 122:Src/ILI9341_Touchscreen.c ****         else
+ 123:Src/ILI9341_Touchscreen.c ****         {
+ 124:Src/ILI9341_Touchscreen.c **** 						HAL_GPIO_WritePin(TP_MOSI_PORT, TP_MOSI_PIN, GPIO_PIN_RESET);
+ 125:Src/ILI9341_Touchscreen.c ****         }
+ 126:Src/ILI9341_Touchscreen.c **** 
+ 127:Src/ILI9341_Touchscreen.c ****         value <<= 1;
+ 162              		.loc 1 127 9 view .LVU36
+ 163              		.loc 1 127 15 is_stmt 0 view .LVU37
+ 164 001c 6400     		lsls	r4, r4, #1
+ 165              	.LVL18:
+ 166              		.loc 1 127 15 view .LVU38
+ 167 001e E4B2     		uxtb	r4, r4
+ 168              	.LVL19:
+ 128:Src/ILI9341_Touchscreen.c **** 				HAL_GPIO_WritePin(TP_CLK_PORT, TP_CLK_PIN, GPIO_PIN_SET);
+ 169              		.loc 1 128 5 is_stmt 1 view .LVU39
+ 170 0020 0B4E     		ldr	r6, .L17
+ 171 0022 0122     		movs	r2, #1
+ 172 0024 0821     		movs	r1, #8
+ 173 0026 3046     		mov	r0, r6
+ 174 0028 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 175              	.LVL20:
+ 129:Src/ILI9341_Touchscreen.c **** 				HAL_GPIO_WritePin(TP_CLK_PORT, TP_CLK_PIN, GPIO_PIN_RESET);        
+ 176              		.loc 1 129 5 view .LVU40
+ 177 002c 0022     		movs	r2, #0
+ 178 002e 0821     		movs	r1, #8
+ 179 0030 3046     		mov	r0, r6
+ 180 0032 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 181              	.LVL21:
+ 130:Src/ILI9341_Touchscreen.c ****         i--;
+ 182              		.loc 1 130 9 view .LVU41
+ 183              		.loc 1 130 10 is_stmt 0 view .LVU42
+ 184 0036 013D     		subs	r5, r5, #1
+ 185              	.LVL22:
+ 186              		.loc 1 130 10 view .LVU43
+ 187 0038 EDB2     		uxtb	r5, r5
+ 188              	.LVL23:
+ 189              	.L10:
+ 116:Src/ILI9341_Touchscreen.c ****     {
+ 190              		.loc 1 116 10 is_stmt 1 view .LVU44
+ 191 003a 45B1     		cbz	r5, .L15
+ 118:Src/ILI9341_Touchscreen.c ****         {
+ 192              		.loc 1 118 9 view .LVU45
+ 118:Src/ILI9341_Touchscreen.c ****         {
+ 193              		.loc 1 118 11 is_stmt 0 view .LVU46
+ 194 003c 14F0800F 		tst	r4, #128
+ 195 0040 E7D1     		bne	.L16
+ 124:Src/ILI9341_Touchscreen.c ****         }
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s 			page 7
+
+
+ 196              		.loc 1 124 7 is_stmt 1 view .LVU47
+ 197 0042 0022     		movs	r2, #0
+ 198 0044 2021     		movs	r1, #32
+ 199 0046 0248     		ldr	r0, .L17
+ 200 0048 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 201              	.LVL24:
+ 202 004c E6E7     		b	.L12
+ 203              	.L15:
+ 131:Src/ILI9341_Touchscreen.c ****     };
+ 132:Src/ILI9341_Touchscreen.c **** }
+ 204              		.loc 1 132 1 is_stmt 0 view .LVU48
+ 205 004e 70BD     		pop	{r4, r5, r6, pc}
+ 206              	.LVL25:
+ 207              	.L18:
+ 208              		.loc 1 132 1 view .LVU49
+ 209              		.align	2
+ 210              	.L17:
+ 211 0050 00100240 		.word	1073876992
+ 212              		.cfi_endproc
+ 213              	.LFE142:
+ 215              		.section	.text.TP_Read_Coordinates,"ax",%progbits
+ 216              		.align	1
+ 217              		.global	TP_Read_Coordinates
+ 218              		.syntax unified
+ 219              		.thumb
+ 220              		.thumb_func
+ 221              		.fpu fpv5-d16
+ 223              	TP_Read_Coordinates:
+ 224              	.LVL26:
+ 225              	.LFB143:
+ 133:Src/ILI9341_Touchscreen.c **** 
+ 134:Src/ILI9341_Touchscreen.c **** 
+ 135:Src/ILI9341_Touchscreen.c **** 
+ 136:Src/ILI9341_Touchscreen.c **** //Read coordinates of touchscreen press. Position[0] = X, Position[1] = Y
+ 137:Src/ILI9341_Touchscreen.c **** uint8_t TP_Read_Coordinates(uint16_t Coordinates[2])
+ 138:Src/ILI9341_Touchscreen.c **** {
+ 226              		.loc 1 138 1 is_stmt 1 view -0
+ 227              		.cfi_startproc
+ 228              		@ args = 0, pretend = 0, frame = 0
+ 229              		@ frame_needed = 0, uses_anonymous_args = 0
+ 230              		.loc 1 138 1 is_stmt 0 view .LVU51
+ 231 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 232              	.LCFI2:
+ 233              		.cfi_def_cfa_offset 24
+ 234              		.cfi_offset 4, -24
+ 235              		.cfi_offset 5, -20
+ 236              		.cfi_offset 6, -16
+ 237              		.cfi_offset 7, -12
+ 238              		.cfi_offset 8, -8
+ 239              		.cfi_offset 14, -4
+ 240 0004 0646     		mov	r6, r0
+ 139:Src/ILI9341_Touchscreen.c **** 		HAL_GPIO_WritePin(TP_CLK_PORT, TP_CLK_PIN, GPIO_PIN_SET);		
+ 241              		.loc 1 139 3 is_stmt 1 view .LVU52
+ 242 0006 3C4C     		ldr	r4, .L27+8
+ 243 0008 0122     		movs	r2, #1
+ 244 000a 0821     		movs	r1, #8
+ 245 000c 2046     		mov	r0, r4
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s 			page 8
+
+
+ 246              	.LVL27:
+ 247              		.loc 1 139 3 is_stmt 0 view .LVU53
+ 248 000e FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 249              	.LVL28:
+ 140:Src/ILI9341_Touchscreen.c **** 		HAL_GPIO_WritePin(TP_MOSI_PORT, TP_MOSI_PIN, GPIO_PIN_SET);		
+ 250              		.loc 1 140 3 is_stmt 1 view .LVU54
+ 251 0012 0122     		movs	r2, #1
+ 252 0014 2021     		movs	r1, #32
+ 253 0016 2046     		mov	r0, r4
+ 254 0018 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 255              	.LVL29:
+ 141:Src/ILI9341_Touchscreen.c **** 		HAL_GPIO_WritePin(TP_CS_PORT, TP_CS_PIN, GPIO_PIN_SET);		
+ 256              		.loc 1 141 3 view .LVU55
+ 257 001c 0122     		movs	r2, #1
+ 258 001e 4021     		movs	r1, #64
+ 259 0020 2046     		mov	r0, r4
+ 260 0022 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 261              	.LVL30:
+ 142:Src/ILI9341_Touchscreen.c **** 
+ 143:Src/ILI9341_Touchscreen.c **** 	
+ 144:Src/ILI9341_Touchscreen.c **** 	
+ 145:Src/ILI9341_Touchscreen.c ****     uint32_t avg_x, avg_y = 0;		
+ 262              		.loc 1 145 5 view .LVU56
+ 146:Src/ILI9341_Touchscreen.c **** 		uint16_t rawx, rawy = 0;	
+ 263              		.loc 1 146 3 view .LVU57
+ 147:Src/ILI9341_Touchscreen.c **** 		uint32_t calculating_x, calculating_y = 0;
+ 264              		.loc 1 147 3 view .LVU58
+ 148:Src/ILI9341_Touchscreen.c **** 	
+ 149:Src/ILI9341_Touchscreen.c ****     uint32_t samples = NO_OF_POSITION_SAMPLES;
+ 265              		.loc 1 149 5 view .LVU59
+ 150:Src/ILI9341_Touchscreen.c ****     uint32_t counted_samples = 0;
+ 266              		.loc 1 150 5 view .LVU60
+ 151:Src/ILI9341_Touchscreen.c **** 
+ 152:Src/ILI9341_Touchscreen.c **** 		HAL_GPIO_WritePin(TP_CS_PORT, TP_CS_PIN, GPIO_PIN_RESET);
+ 267              		.loc 1 152 3 view .LVU61
+ 268 0026 0022     		movs	r2, #0
+ 269 0028 4021     		movs	r1, #64
+ 270 002a 2046     		mov	r0, r4
+ 271 002c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 272              	.LVL31:
+ 153:Src/ILI9341_Touchscreen.c **** 
+ 154:Src/ILI9341_Touchscreen.c **** 	
+ 155:Src/ILI9341_Touchscreen.c ****     while((samples > 0)&&(HAL_GPIO_ReadPin(TP_IRQ_PORT, TP_IRQ_PIN) == 0))
+ 273              		.loc 1 155 5 view .LVU62
+ 150:Src/ILI9341_Touchscreen.c **** 
+ 274              		.loc 1 150 14 is_stmt 0 view .LVU63
+ 275 0030 0027     		movs	r7, #0
+ 149:Src/ILI9341_Touchscreen.c ****     uint32_t counted_samples = 0;
+ 276              		.loc 1 149 14 view .LVU64
+ 277 0032 4FF47A74 		mov	r4, #1000
+ 147:Src/ILI9341_Touchscreen.c **** 	
+ 278              		.loc 1 147 27 view .LVU65
+ 279 0036 3D46     		mov	r5, r7
+ 280              		.loc 1 155 10 view .LVU66
+ 281 0038 0DE0     		b	.L20
+ 282              	.LVL32:
+ 283              	.L22:
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s 			page 9
+
+
+ 156:Src/ILI9341_Touchscreen.c ****     {			
+ 157:Src/ILI9341_Touchscreen.c ****         TP_Write(CMD_RDY);
+ 284              		.loc 1 157 9 is_stmt 1 view .LVU67
+ 285 003a 9020     		movs	r0, #144
+ 286 003c FFF7FEFF 		bl	TP_Write
+ 287              	.LVL33:
+ 158:Src/ILI9341_Touchscreen.c **** 
+ 159:Src/ILI9341_Touchscreen.c **** 				rawy = TP_Read();	
+ 288              		.loc 1 159 5 view .LVU68
+ 289              		.loc 1 159 12 is_stmt 0 view .LVU69
+ 290 0040 FFF7FEFF 		bl	TP_Read
+ 291              	.LVL34:
+ 160:Src/ILI9341_Touchscreen.c **** 				avg_y += rawy;
+ 292              		.loc 1 160 5 is_stmt 1 view .LVU70
+ 161:Src/ILI9341_Touchscreen.c **** 				calculating_y += rawy;
+ 293              		.loc 1 161 5 view .LVU71
+ 294              		.loc 1 161 19 is_stmt 0 view .LVU72
+ 295 0044 0544     		add	r5, r5, r0
+ 296              	.LVL35:
+ 162:Src/ILI9341_Touchscreen.c **** 
+ 163:Src/ILI9341_Touchscreen.c **** 				
+ 164:Src/ILI9341_Touchscreen.c ****         TP_Write(CMD_RDX);
+ 297              		.loc 1 164 9 is_stmt 1 view .LVU73
+ 298 0046 D020     		movs	r0, #208
+ 299              	.LVL36:
+ 300              		.loc 1 164 9 is_stmt 0 view .LVU74
+ 301 0048 FFF7FEFF 		bl	TP_Write
+ 302              	.LVL37:
+ 165:Src/ILI9341_Touchscreen.c ****         rawx = TP_Read();
+ 303              		.loc 1 165 9 is_stmt 1 view .LVU75
+ 304              		.loc 1 165 16 is_stmt 0 view .LVU76
+ 305 004c FFF7FEFF 		bl	TP_Read
+ 306              	.LVL38:
+ 166:Src/ILI9341_Touchscreen.c **** 				avg_x += rawx;
+ 307              		.loc 1 166 5 is_stmt 1 view .LVU77
+ 167:Src/ILI9341_Touchscreen.c **** 				calculating_x += rawx;
+ 308              		.loc 1 167 5 view .LVU78
+ 309              		.loc 1 167 19 is_stmt 0 view .LVU79
+ 310 0050 8044     		add	r8, r8, r0
+ 311              	.LVL39:
+ 168:Src/ILI9341_Touchscreen.c ****         samples--;
+ 312              		.loc 1 168 9 is_stmt 1 view .LVU80
+ 313              		.loc 1 168 16 is_stmt 0 view .LVU81
+ 314 0052 013C     		subs	r4, r4, #1
+ 315              	.LVL40:
+ 169:Src/ILI9341_Touchscreen.c **** 				counted_samples++;
+ 316              		.loc 1 169 5 is_stmt 1 view .LVU82
+ 317              		.loc 1 169 20 is_stmt 0 view .LVU83
+ 318 0054 0137     		adds	r7, r7, #1
+ 319              	.LVL41:
+ 320              	.L20:
+ 155:Src/ILI9341_Touchscreen.c ****     {			
+ 321              		.loc 1 155 10 is_stmt 1 view .LVU84
+ 322 0056 2CB1     		cbz	r4, .L21
+ 155:Src/ILI9341_Touchscreen.c ****     {			
+ 323              		.loc 1 155 27 is_stmt 0 discriminator 1 view .LVU85
+ 324 0058 0421     		movs	r1, #4
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s 			page 10
+
+
+ 325 005a 2748     		ldr	r0, .L27+8
+ 326 005c FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 327              	.LVL42:
+ 155:Src/ILI9341_Touchscreen.c ****     {			
+ 328              		.loc 1 155 24 discriminator 1 view .LVU86
+ 329 0060 0028     		cmp	r0, #0
+ 330 0062 EAD0     		beq	.L22
+ 331              	.L21:
+ 170:Src/ILI9341_Touchscreen.c ****     };
+ 332              		.loc 1 170 6 is_stmt 1 view .LVU87
+ 171:Src/ILI9341_Touchscreen.c **** 		
+ 172:Src/ILI9341_Touchscreen.c **** 		HAL_GPIO_WritePin(TP_CS_PORT, TP_CS_PIN, GPIO_PIN_SET);
+ 333              		.loc 1 172 3 view .LVU88
+ 334 0064 0122     		movs	r2, #1
+ 335 0066 4021     		movs	r1, #64
+ 336 0068 2348     		ldr	r0, .L27+8
+ 337 006a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 338              	.LVL43:
+ 173:Src/ILI9341_Touchscreen.c **** 
+ 174:Src/ILI9341_Touchscreen.c **** 		
+ 175:Src/ILI9341_Touchscreen.c **** 		if((counted_samples == NO_OF_POSITION_SAMPLES)&&(HAL_GPIO_ReadPin(TP_IRQ_PORT, TP_IRQ_PIN) == 0))
+ 339              		.loc 1 175 3 view .LVU89
+ 340              		.loc 1 175 5 is_stmt 0 view .LVU90
+ 341 006e B7F57A7F 		cmp	r7, #1000
+ 342 0072 04D0     		beq	.L26
+ 343              	.L23:
+ 176:Src/ILI9341_Touchscreen.c **** 		{
+ 177:Src/ILI9341_Touchscreen.c **** 		
+ 178:Src/ILI9341_Touchscreen.c **** 		calculating_x /= counted_samples;
+ 179:Src/ILI9341_Touchscreen.c **** 		calculating_y /= counted_samples;
+ 180:Src/ILI9341_Touchscreen.c **** 		
+ 181:Src/ILI9341_Touchscreen.c **** 		rawx = calculating_x;
+ 182:Src/ILI9341_Touchscreen.c **** 		rawy = calculating_y;		
+ 183:Src/ILI9341_Touchscreen.c **** 		
+ 184:Src/ILI9341_Touchscreen.c **** 		rawx *= -1;
+ 185:Src/ILI9341_Touchscreen.c **** 		rawy *= -1;
+ 186:Src/ILI9341_Touchscreen.c **** 		
+ 187:Src/ILI9341_Touchscreen.c **** 		//CONVERTING 16bit Value to Screen coordinates
+ 188:Src/ILI9341_Touchscreen.c ****     // 65535/273 = 240!
+ 189:Src/ILI9341_Touchscreen.c **** 		// 65535/204 = 320!
+ 190:Src/ILI9341_Touchscreen.c ****     Coordinates[0] = ((240 - (rawx/X_TRANSLATION)) - X_OFFSET)*X_MAGNITUDE;
+ 191:Src/ILI9341_Touchscreen.c **** 		Coordinates[1] = ((rawy/Y_TRANSLATION)- Y_OFFSET)*Y_MAGNITUDE;
+ 192:Src/ILI9341_Touchscreen.c **** 		
+ 193:Src/ILI9341_Touchscreen.c **** 		return TOUCHPAD_DATA_OK;			
+ 194:Src/ILI9341_Touchscreen.c **** 		}
+ 195:Src/ILI9341_Touchscreen.c **** 		else
+ 196:Src/ILI9341_Touchscreen.c **** 		{
+ 197:Src/ILI9341_Touchscreen.c **** 			Coordinates[0] = 0;
+ 344              		.loc 1 197 4 is_stmt 1 view .LVU91
+ 345              		.loc 1 197 19 is_stmt 0 view .LVU92
+ 346 0074 0020     		movs	r0, #0
+ 347 0076 3080     		strh	r0, [r6]	@ movhi
+ 198:Src/ILI9341_Touchscreen.c **** 			Coordinates[1] = 0;
+ 348              		.loc 1 198 4 is_stmt 1 view .LVU93
+ 349              		.loc 1 198 19 is_stmt 0 view .LVU94
+ 350 0078 7080     		strh	r0, [r6, #2]	@ movhi
+ 199:Src/ILI9341_Touchscreen.c **** 			return TOUCHPAD_DATA_NOISY;
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s 			page 11
+
+
+ 351              		.loc 1 199 4 is_stmt 1 view .LVU95
+ 352              	.LVL44:
+ 353              	.L24:
+ 200:Src/ILI9341_Touchscreen.c **** 		}
+ 201:Src/ILI9341_Touchscreen.c **** }
+ 354              		.loc 1 201 1 is_stmt 0 view .LVU96
+ 355 007a BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 356              	.LVL45:
+ 357              	.L26:
+ 175:Src/ILI9341_Touchscreen.c **** 		{
+ 358              		.loc 1 175 52 discriminator 1 view .LVU97
+ 359 007e 0421     		movs	r1, #4
+ 360 0080 1D48     		ldr	r0, .L27+8
+ 361 0082 FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 362              	.LVL46:
+ 175:Src/ILI9341_Touchscreen.c **** 		{
+ 363              		.loc 1 175 49 discriminator 1 view .LVU98
+ 364 0086 0028     		cmp	r0, #0
+ 365 0088 F4D1     		bne	.L23
+ 178:Src/ILI9341_Touchscreen.c **** 		calculating_y /= counted_samples;
+ 366              		.loc 1 178 3 is_stmt 1 view .LVU99
+ 178:Src/ILI9341_Touchscreen.c **** 		calculating_y /= counted_samples;
+ 367              		.loc 1 178 17 is_stmt 0 view .LVU100
+ 368 008a B8FBF7F2 		udiv	r2, r8, r7
+ 369              	.LVL47:
+ 179:Src/ILI9341_Touchscreen.c **** 		
+ 370              		.loc 1 179 3 is_stmt 1 view .LVU101
+ 179:Src/ILI9341_Touchscreen.c **** 		
+ 371              		.loc 1 179 17 is_stmt 0 view .LVU102
+ 372 008e B5FBF7F3 		udiv	r3, r5, r7
+ 373              	.LVL48:
+ 181:Src/ILI9341_Touchscreen.c **** 		rawy = calculating_y;		
+ 374              		.loc 1 181 3 is_stmt 1 view .LVU103
+ 181:Src/ILI9341_Touchscreen.c **** 		rawy = calculating_y;		
+ 375              		.loc 1 181 8 is_stmt 0 view .LVU104
+ 376 0092 92B2     		uxth	r2, r2
+ 377              	.LVL49:
+ 182:Src/ILI9341_Touchscreen.c **** 		
+ 378              		.loc 1 182 3 is_stmt 1 view .LVU105
+ 182:Src/ILI9341_Touchscreen.c **** 		
+ 379              		.loc 1 182 8 is_stmt 0 view .LVU106
+ 380 0094 9BB2     		uxth	r3, r3
+ 381              	.LVL50:
+ 184:Src/ILI9341_Touchscreen.c **** 		rawy *= -1;
+ 382              		.loc 1 184 3 is_stmt 1 view .LVU107
+ 184:Src/ILI9341_Touchscreen.c **** 		rawy *= -1;
+ 383              		.loc 1 184 8 is_stmt 0 view .LVU108
+ 384 0096 5242     		rsbs	r2, r2, #0
+ 385              	.LVL51:
+ 184:Src/ILI9341_Touchscreen.c **** 		rawy *= -1;
+ 386              		.loc 1 184 8 view .LVU109
+ 387 0098 92B2     		uxth	r2, r2
+ 388              	.LVL52:
+ 185:Src/ILI9341_Touchscreen.c **** 		
+ 389              		.loc 1 185 3 is_stmt 1 view .LVU110
+ 185:Src/ILI9341_Touchscreen.c **** 		
+ 390              		.loc 1 185 8 is_stmt 0 view .LVU111
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s 			page 12
+
+
+ 391 009a 5B42     		rsbs	r3, r3, #0
+ 392              	.LVL53:
+ 185:Src/ILI9341_Touchscreen.c **** 		
+ 393              		.loc 1 185 8 view .LVU112
+ 394 009c 9BB2     		uxth	r3, r3
+ 395              	.LVL54:
+ 190:Src/ILI9341_Touchscreen.c **** 		Coordinates[1] = ((rawy/Y_TRANSLATION)- Y_OFFSET)*Y_MAGNITUDE;
+ 396              		.loc 1 190 5 is_stmt 1 view .LVU113
+ 190:Src/ILI9341_Touchscreen.c **** 		Coordinates[1] = ((rawy/Y_TRANSLATION)- Y_OFFSET)*Y_MAGNITUDE;
+ 397              		.loc 1 190 35 is_stmt 0 view .LVU114
+ 398 009e 1749     		ldr	r1, .L27+12
+ 399 00a0 A1FB0201 		umull	r0, r1, r1, r2
+ 400 00a4 521A     		subs	r2, r2, r1
+ 401              	.LVL55:
+ 190:Src/ILI9341_Touchscreen.c **** 		Coordinates[1] = ((rawy/Y_TRANSLATION)- Y_OFFSET)*Y_MAGNITUDE;
+ 402              		.loc 1 190 35 view .LVU115
+ 403 00a6 01EB5202 		add	r2, r1, r2, lsr #1
+ 404 00aa C2F30F22 		ubfx	r2, r2, #8, #16
+ 190:Src/ILI9341_Touchscreen.c **** 		Coordinates[1] = ((rawy/Y_TRANSLATION)- Y_OFFSET)*Y_MAGNITUDE;
+ 405              		.loc 1 190 52 view .LVU116
+ 406 00ae C2F1E302 		rsb	r2, r2, #227
+ 407 00b2 07EE102A 		vmov	s14, r2	@ int
+ 190:Src/ILI9341_Touchscreen.c **** 		Coordinates[1] = ((rawy/Y_TRANSLATION)- Y_OFFSET)*Y_MAGNITUDE;
+ 408              		.loc 1 190 63 view .LVU117
+ 409 00b6 B8EEC77B 		vcvt.f64.s32	d7, s14
+ 410 00ba 9FED0D6B 		vldr.64	d6, .L27
+ 411 00be 27EE067B 		vmul.f64	d7, d7, d6
+ 190:Src/ILI9341_Touchscreen.c **** 		Coordinates[1] = ((rawy/Y_TRANSLATION)- Y_OFFSET)*Y_MAGNITUDE;
+ 412              		.loc 1 190 20 view .LVU118
+ 413 00c2 BCEEC77B 		vcvt.u32.f64	s14, d7
+ 414 00c6 17EE102A 		vmov	r2, s14	@ int
+ 415 00ca 3280     		strh	r2, [r6]	@ movhi
+ 191:Src/ILI9341_Touchscreen.c **** 		
+ 416              		.loc 1 191 3 is_stmt 1 view .LVU119
+ 191:Src/ILI9341_Touchscreen.c **** 		
+ 417              		.loc 1 191 26 is_stmt 0 view .LVU120
+ 418 00cc 0C4A     		ldr	r2, .L27+16
+ 419 00ce A2FB0323 		umull	r2, r3, r2, r3
+ 420              	.LVL56:
+ 191:Src/ILI9341_Touchscreen.c **** 		
+ 421              		.loc 1 191 26 view .LVU121
+ 422 00d2 DB09     		lsrs	r3, r3, #7
+ 191:Src/ILI9341_Touchscreen.c **** 		
+ 423              		.loc 1 191 41 view .LVU122
+ 424 00d4 0F3B     		subs	r3, r3, #15
+ 425 00d6 07EE103A 		vmov	s14, r3	@ int
+ 191:Src/ILI9341_Touchscreen.c **** 		
+ 426              		.loc 1 191 52 view .LVU123
+ 427 00da B8EEC77B 		vcvt.f64.s32	d7, s14
+ 428 00de 27EE067B 		vmul.f64	d7, d7, d6
+ 191:Src/ILI9341_Touchscreen.c **** 		
+ 429              		.loc 1 191 18 view .LVU124
+ 430 00e2 BCEEC77B 		vcvt.u32.f64	s14, d7
+ 431 00e6 17EE103A 		vmov	r3, s14	@ int
+ 432 00ea 7380     		strh	r3, [r6, #2]	@ movhi
+ 193:Src/ILI9341_Touchscreen.c **** 		}
+ 433              		.loc 1 193 3 is_stmt 1 view .LVU125
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s 			page 13
+
+
+ 193:Src/ILI9341_Touchscreen.c **** 		}
+ 434              		.loc 1 193 10 is_stmt 0 view .LVU126
+ 435 00ec 0120     		movs	r0, #1
+ 436 00ee C4E7     		b	.L24
+ 437              	.L28:
+ 438              		.align	3
+ 439              	.L27:
+ 440 00f0 8FC2F528 		.word	687194767
+ 441 00f4 5C8FF23F 		.word	1072861020
+ 442 00f8 00100240 		.word	1073876992
+ 443 00fc E1011EE0 		.word	-534904351
+ 444 0100 A1A0A0A0 		.word	-1600085855
+ 445              		.cfi_endproc
+ 446              	.LFE143:
+ 448              		.section	.text.TP_Touchpad_Pressed,"ax",%progbits
+ 449              		.align	1
+ 450              		.global	TP_Touchpad_Pressed
+ 451              		.syntax unified
+ 452              		.thumb
+ 453              		.thumb_func
+ 454              		.fpu fpv5-d16
+ 456              	TP_Touchpad_Pressed:
+ 457              	.LFB144:
+ 202:Src/ILI9341_Touchscreen.c **** 
+ 203:Src/ILI9341_Touchscreen.c **** //Check if Touchpad was pressed. Returns TOUCHPAD_PRESSED (1) or TOUCHPAD_NOT_PRESSED (0)
+ 204:Src/ILI9341_Touchscreen.c **** uint8_t TP_Touchpad_Pressed(void)
+ 205:Src/ILI9341_Touchscreen.c **** {
+ 458              		.loc 1 205 1 is_stmt 1 view -0
+ 459              		.cfi_startproc
+ 460              		@ args = 0, pretend = 0, frame = 0
+ 461              		@ frame_needed = 0, uses_anonymous_args = 0
+ 462 0000 08B5     		push	{r3, lr}
+ 463              	.LCFI3:
+ 464              		.cfi_def_cfa_offset 8
+ 465              		.cfi_offset 3, -8
+ 466              		.cfi_offset 14, -4
+ 206:Src/ILI9341_Touchscreen.c **** 	if(HAL_GPIO_ReadPin(TP_IRQ_PORT, TP_IRQ_PIN) == 0)
+ 467              		.loc 1 206 2 view .LVU128
+ 468              		.loc 1 206 5 is_stmt 0 view .LVU129
+ 469 0002 0421     		movs	r1, #4
+ 470 0004 0348     		ldr	r0, .L33
+ 471 0006 FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 472              	.LVL57:
+ 473              		.loc 1 206 4 view .LVU130
+ 474 000a 08B9     		cbnz	r0, .L31
+ 207:Src/ILI9341_Touchscreen.c **** 	{
+ 208:Src/ILI9341_Touchscreen.c **** 		return TOUCHPAD_PRESSED;
+ 475              		.loc 1 208 10 view .LVU131
+ 476 000c 0120     		movs	r0, #1
+ 477              	.L30:
+ 209:Src/ILI9341_Touchscreen.c **** 	}
+ 210:Src/ILI9341_Touchscreen.c **** 	else
+ 211:Src/ILI9341_Touchscreen.c **** 	{
+ 212:Src/ILI9341_Touchscreen.c **** 		return TOUCHPAD_NOT_PRESSED;
+ 213:Src/ILI9341_Touchscreen.c **** 	}
+ 214:Src/ILI9341_Touchscreen.c **** }
+ 478              		.loc 1 214 1 view .LVU132
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s 			page 14
+
+
+ 479 000e 08BD     		pop	{r3, pc}
+ 480              	.L31:
+ 212:Src/ILI9341_Touchscreen.c **** 	}
+ 481              		.loc 1 212 10 view .LVU133
+ 482 0010 0020     		movs	r0, #0
+ 483 0012 FCE7     		b	.L30
+ 484              	.L34:
+ 485              		.align	2
+ 486              	.L33:
+ 487 0014 00100240 		.word	1073876992
+ 488              		.cfi_endproc
+ 489              	.LFE144:
+ 491              		.text
+ 492              	.Letext0:
+ 493              		.file 2 "c:\\vsarm\\armcc\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 494              		.file 3 "c:\\vsarm\\armcc\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 495              		.file 4 "Drivers/CMSIS/Include/core_cm7.h"
+ 496              		.file 5 "Drivers/CMSIS/Device/ST/STM32F7xx/Include/system_stm32f7xx.h"
+ 497              		.file 6 "Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f767xx.h"
+ 498              		.file 7 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_gpio.h"
+ 499              		.file 8 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h"
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s 			page 15
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 ILI9341_Touchscreen.c
+C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s:17     .text.TP_Read:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s:25     .text.TP_Read:00000000 TP_Read
+C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s:110    .text.TP_Read:00000040 $d
+C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s:115    .text.TP_Write:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s:122    .text.TP_Write:00000000 TP_Write
+C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s:211    .text.TP_Write:00000050 $d
+C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s:216    .text.TP_Read_Coordinates:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s:223    .text.TP_Read_Coordinates:00000000 TP_Read_Coordinates
+C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s:440    .text.TP_Read_Coordinates:000000f0 $d
+C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s:449    .text.TP_Touchpad_Pressed:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s:456    .text.TP_Touchpad_Pressed:00000000 TP_Touchpad_Pressed
+C:\Users\Haruka\AppData\Local\Temp\ccoa5iZZ.s:487    .text.TP_Touchpad_Pressed:00000014 $d
+
+UNDEFINED SYMBOLS
+HAL_GPIO_WritePin
+HAL_GPIO_ReadPin

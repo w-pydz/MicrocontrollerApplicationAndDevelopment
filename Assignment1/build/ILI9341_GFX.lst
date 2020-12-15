@@ -1,0 +1,2407 @@
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 1
+
+
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 1
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"ILI9341_GFX.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.section	.text.ILI9341_Draw_Hollow_Circle,"ax",%progbits
+  17              		.align	1
+  18              		.global	ILI9341_Draw_Hollow_Circle
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv5-d16
+  25              	ILI9341_Draw_Hollow_Circle:
+  26              	.LVL0:
+  27              	.LFB141:
+  28              		.file 1 "Src/ILI9341_GFX.c"
+   1:Src/ILI9341_GFX.c **** //	MIT License
+   2:Src/ILI9341_GFX.c **** //
+   3:Src/ILI9341_GFX.c **** //	Copyright (c) 2017 Matej Artnak
+   4:Src/ILI9341_GFX.c **** //
+   5:Src/ILI9341_GFX.c **** //	Permission is hereby granted, free of charge, to any person obtaining a copy
+   6:Src/ILI9341_GFX.c **** //	of this software and associated documentation files (the "Software"), to deal
+   7:Src/ILI9341_GFX.c **** //	in the Software without restriction, including without limitation the rights
+   8:Src/ILI9341_GFX.c **** //	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   9:Src/ILI9341_GFX.c **** //	copies of the Software, and to permit persons to whom the Software is
+  10:Src/ILI9341_GFX.c **** //	furnished to do so, subject to the following conditions:
+  11:Src/ILI9341_GFX.c **** //
+  12:Src/ILI9341_GFX.c **** //	The above copyright notice and this permission notice shall be included in all
+  13:Src/ILI9341_GFX.c **** //	copies or substantial portions of the Software.
+  14:Src/ILI9341_GFX.c **** //
+  15:Src/ILI9341_GFX.c **** //	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  16:Src/ILI9341_GFX.c **** //	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  17:Src/ILI9341_GFX.c **** //	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  18:Src/ILI9341_GFX.c **** //	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  19:Src/ILI9341_GFX.c **** //	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  20:Src/ILI9341_GFX.c **** //	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  21:Src/ILI9341_GFX.c **** //	SOFTWARE.
+  22:Src/ILI9341_GFX.c **** //
+  23:Src/ILI9341_GFX.c **** //
+  24:Src/ILI9341_GFX.c **** //
+  25:Src/ILI9341_GFX.c **** //-----------------------------------
+  26:Src/ILI9341_GFX.c **** //	ILI9341 GFX library for STM32
+  27:Src/ILI9341_GFX.c **** //-----------------------------------
+  28:Src/ILI9341_GFX.c **** //
+  29:Src/ILI9341_GFX.c **** //	Very simple GFX library built upon ILI9342_STM32_Driver library.
+  30:Src/ILI9341_GFX.c **** //	Adds basic shapes, image and font drawing capabilities to ILI9341
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 2
+
+
+  31:Src/ILI9341_GFX.c **** //
+  32:Src/ILI9341_GFX.c **** //	Library is written for STM32 HAL library and supports STM32CUBEMX. To use the library with Cube 
+  33:Src/ILI9341_GFX.c **** //	you need to tick the box that generates peripheral initialization code in their own respective .
+  34:Src/ILI9341_GFX.c **** //
+  35:Src/ILI9341_GFX.c **** //
+  36:Src/ILI9341_GFX.c **** //-----------------------------------
+  37:Src/ILI9341_GFX.c **** //	How to use this library
+  38:Src/ILI9341_GFX.c **** //-----------------------------------
+  39:Src/ILI9341_GFX.c **** //
+  40:Src/ILI9341_GFX.c **** //	-If using MCUs other than STM32F7 you will have to change the #include "stm32f7xx_hal.h" in the 
+  41:Src/ILI9341_GFX.c **** //
+  42:Src/ILI9341_GFX.c **** //	If using "ILI9341_STM32_Driver" then all other prequisites to use the library have allready been
+  43:Src/ILI9341_GFX.c **** //	Simply include the library and it is ready to be used
+  44:Src/ILI9341_GFX.c **** //
+  45:Src/ILI9341_GFX.c **** //-----------------------------------
+  46:Src/ILI9341_GFX.c **** 
+  47:Src/ILI9341_GFX.c **** 
+  48:Src/ILI9341_GFX.c **** #include "ILI9341_STM32_Driver.h"
+  49:Src/ILI9341_GFX.c **** #include "ILI9341_GFX.h"
+  50:Src/ILI9341_GFX.c **** #include "5x5_font.h"
+  51:Src/ILI9341_GFX.c **** #include "spi.h"
+  52:Src/ILI9341_GFX.c **** 
+  53:Src/ILI9341_GFX.c **** /*Draw hollow circle at X,Y location with specified radius and colour. X and Y represent circles ce
+  54:Src/ILI9341_GFX.c **** void ILI9341_Draw_Hollow_Circle(uint16_t X, uint16_t Y, uint16_t Radius, uint16_t Colour)
+  55:Src/ILI9341_GFX.c **** {
+  29              		.loc 1 55 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 32
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		.loc 1 55 1 is_stmt 0 view .LVU1
+  34 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 36
+  37              		.cfi_offset 4, -36
+  38              		.cfi_offset 5, -32
+  39              		.cfi_offset 6, -28
+  40              		.cfi_offset 7, -24
+  41              		.cfi_offset 8, -20
+  42              		.cfi_offset 9, -16
+  43              		.cfi_offset 10, -12
+  44              		.cfi_offset 11, -8
+  45              		.cfi_offset 14, -4
+  46 0004 89B0     		sub	sp, sp, #36
+  47              	.LCFI1:
+  48              		.cfi_def_cfa_offset 72
+  49 0006 8146     		mov	r9, r0
+  50 0008 8846     		mov	r8, r1
+  51 000a 1E46     		mov	r6, r3
+  56:Src/ILI9341_GFX.c **** 	int x = Radius-1;
+  52              		.loc 1 56 2 is_stmt 1 view .LVU2
+  53              		.loc 1 56 16 is_stmt 0 view .LVU3
+  54 000c 0792     		str	r2, [sp, #28]
+  55              		.loc 1 56 6 view .LVU4
+  56 000e 531E     		subs	r3, r2, #1
+  57              	.LVL1:
+  58              		.loc 1 56 6 view .LVU5
+  59 0010 0093     		str	r3, [sp]
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 3
+
+
+  60              	.LVL2:
+  57:Src/ILI9341_GFX.c ****     int y = 0;
+  61              		.loc 1 57 5 is_stmt 1 view .LVU6
+  58:Src/ILI9341_GFX.c ****     int dx = 1;
+  62              		.loc 1 58 5 view .LVU7
+  59:Src/ILI9341_GFX.c ****     int dy = 1;
+  63              		.loc 1 59 5 view .LVU8
+  60:Src/ILI9341_GFX.c ****     int err = dx - (Radius << 1);
+  64              		.loc 1 60 5 view .LVU9
+  65              		.loc 1 60 28 is_stmt 0 view .LVU10
+  66 0012 5200     		lsls	r2, r2, #1
+  67              	.LVL3:
+  68              		.loc 1 60 9 view .LVU11
+  69 0014 C2F10107 		rsb	r7, r2, #1
+  70              	.LVL4:
+  61:Src/ILI9341_GFX.c **** 
+  62:Src/ILI9341_GFX.c ****     while (x >= y)
+  71              		.loc 1 62 5 is_stmt 1 view .LVU12
+  59:Src/ILI9341_GFX.c ****     int err = dx - (Radius << 1);
+  72              		.loc 1 59 9 is_stmt 0 view .LVU13
+  73 0018 0123     		movs	r3, #1
+  74              	.LVL5:
+  59:Src/ILI9341_GFX.c ****     int err = dx - (Radius << 1);
+  75              		.loc 1 59 9 view .LVU14
+  76 001a 0693     		str	r3, [sp, #24]
+  58:Src/ILI9341_GFX.c ****     int dy = 1;
+  77              		.loc 1 58 9 view .LVU15
+  78 001c 0593     		str	r3, [sp, #20]
+  57:Src/ILI9341_GFX.c ****     int dx = 1;
+  79              		.loc 1 57 9 view .LVU16
+  80 001e 0023     		movs	r3, #0
+  81 0020 0193     		str	r3, [sp, #4]
+  82              	.LVL6:
+  83              	.L2:
+  84              		.loc 1 62 11 is_stmt 1 view .LVU17
+  85 0022 009B     		ldr	r3, [sp]
+  86 0024 019A     		ldr	r2, [sp, #4]
+  87 0026 9342     		cmp	r3, r2
+  88 0028 61DB     		blt	.L7
+  63:Src/ILI9341_GFX.c ****     {
+  64:Src/ILI9341_GFX.c ****         ILI9341_Draw_Pixel(X + x, Y + y, Colour);
+  89              		.loc 1 64 9 view .LVU18
+  90 002a BDF80050 		ldrh	r5, [sp]
+  91 002e 05EB0903 		add	r3, r5, r9
+  92 0032 9BB2     		uxth	r3, r3
+  93 0034 BDF80440 		ldrh	r4, [sp, #4]
+  94 0038 04EB080B 		add	fp, r4, r8
+  95 003c 1FFA8BFB 		uxth	fp, fp
+  96 0040 3246     		mov	r2, r6
+  97 0042 5946     		mov	r1, fp
+  98 0044 0293     		str	r3, [sp, #8]
+  99 0046 1846     		mov	r0, r3
+ 100 0048 FFF7FEFF 		bl	ILI9341_Draw_Pixel
+ 101              	.LVL7:
+  65:Src/ILI9341_GFX.c ****         ILI9341_Draw_Pixel(X + y, Y + x, Colour);
+ 102              		.loc 1 65 9 view .LVU19
+ 103 004c 04EB0903 		add	r3, r4, r9
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 4
+
+
+ 104 0050 9BB2     		uxth	r3, r3
+ 105 0052 05EB080A 		add	r10, r5, r8
+ 106 0056 1FFA8AFA 		uxth	r10, r10
+ 107 005a 3246     		mov	r2, r6
+ 108 005c 5146     		mov	r1, r10
+ 109 005e 0393     		str	r3, [sp, #12]
+ 110 0060 1846     		mov	r0, r3
+ 111 0062 FFF7FEFF 		bl	ILI9341_Draw_Pixel
+ 112              	.LVL8:
+  66:Src/ILI9341_GFX.c ****         ILI9341_Draw_Pixel(X - y, Y + x, Colour);
+ 113              		.loc 1 66 9 view .LVU20
+ 114 0066 A9EB0403 		sub	r3, r9, r4
+ 115 006a 9AB2     		uxth	r2, r3
+ 116 006c 1346     		mov	r3, r2
+ 117 006e 3246     		mov	r2, r6
+ 118 0070 5146     		mov	r1, r10
+ 119 0072 0493     		str	r3, [sp, #16]
+ 120 0074 1846     		mov	r0, r3
+ 121 0076 FFF7FEFF 		bl	ILI9341_Draw_Pixel
+ 122              	.LVL9:
+  67:Src/ILI9341_GFX.c ****         ILI9341_Draw_Pixel(X - x, Y + y, Colour);
+ 123              		.loc 1 67 9 view .LVU21
+ 124 007a A9EB050A 		sub	r10, r9, r5
+ 125 007e 1FFA8AFA 		uxth	r10, r10
+ 126 0082 3246     		mov	r2, r6
+ 127 0084 5946     		mov	r1, fp
+ 128 0086 5046     		mov	r0, r10
+ 129 0088 FFF7FEFF 		bl	ILI9341_Draw_Pixel
+ 130              	.LVL10:
+  68:Src/ILI9341_GFX.c ****         ILI9341_Draw_Pixel(X - x, Y - y, Colour);
+ 131              		.loc 1 68 9 view .LVU22
+ 132 008c A8EB0404 		sub	r4, r8, r4
+ 133 0090 A4B2     		uxth	r4, r4
+ 134 0092 3246     		mov	r2, r6
+ 135 0094 2146     		mov	r1, r4
+ 136 0096 5046     		mov	r0, r10
+ 137 0098 FFF7FEFF 		bl	ILI9341_Draw_Pixel
+ 138              	.LVL11:
+  69:Src/ILI9341_GFX.c ****         ILI9341_Draw_Pixel(X - y, Y - x, Colour);
+ 139              		.loc 1 69 9 view .LVU23
+ 140 009c A8EB0505 		sub	r5, r8, r5
+ 141 00a0 ADB2     		uxth	r5, r5
+ 142 00a2 3246     		mov	r2, r6
+ 143 00a4 2946     		mov	r1, r5
+ 144 00a6 0498     		ldr	r0, [sp, #16]
+ 145 00a8 FFF7FEFF 		bl	ILI9341_Draw_Pixel
+ 146              	.LVL12:
+  70:Src/ILI9341_GFX.c ****         ILI9341_Draw_Pixel(X + y, Y - x, Colour);
+ 147              		.loc 1 70 9 view .LVU24
+ 148 00ac 3246     		mov	r2, r6
+ 149 00ae 2946     		mov	r1, r5
+ 150 00b0 0398     		ldr	r0, [sp, #12]
+ 151 00b2 FFF7FEFF 		bl	ILI9341_Draw_Pixel
+ 152              	.LVL13:
+  71:Src/ILI9341_GFX.c ****         ILI9341_Draw_Pixel(X + x, Y - y, Colour);
+ 153              		.loc 1 71 9 view .LVU25
+ 154 00b6 3246     		mov	r2, r6
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 5
+
+
+ 155 00b8 2146     		mov	r1, r4
+ 156 00ba 0298     		ldr	r0, [sp, #8]
+ 157 00bc FFF7FEFF 		bl	ILI9341_Draw_Pixel
+ 158              	.LVL14:
+  72:Src/ILI9341_GFX.c **** 
+  73:Src/ILI9341_GFX.c ****         if (err <= 0)
+ 159              		.loc 1 73 9 view .LVU26
+ 160              		.loc 1 73 12 is_stmt 0 view .LVU27
+ 161 00c0 002F     		cmp	r7, #0
+ 162 00c2 0CDD     		ble	.L8
+ 163              	.L3:
+  74:Src/ILI9341_GFX.c ****         {
+  75:Src/ILI9341_GFX.c ****             y++;
+  76:Src/ILI9341_GFX.c ****             err += dy;
+  77:Src/ILI9341_GFX.c ****             dy += 2;
+  78:Src/ILI9341_GFX.c ****         }
+  79:Src/ILI9341_GFX.c ****         if (err > 0)
+ 164              		.loc 1 79 9 is_stmt 1 view .LVU28
+ 165              		.loc 1 79 12 is_stmt 0 view .LVU29
+ 166 00c4 002F     		cmp	r7, #0
+ 167 00c6 ACDD     		ble	.L2
+  80:Src/ILI9341_GFX.c ****         {
+  81:Src/ILI9341_GFX.c ****             x--;
+ 168              		.loc 1 81 13 is_stmt 1 view .LVU30
+ 169              		.loc 1 81 14 is_stmt 0 view .LVU31
+ 170 00c8 009B     		ldr	r3, [sp]
+ 171 00ca 013B     		subs	r3, r3, #1
+ 172 00cc 0093     		str	r3, [sp]
+ 173              	.LVL15:
+  82:Src/ILI9341_GFX.c ****             dx += 2;
+ 174              		.loc 1 82 13 is_stmt 1 view .LVU32
+ 175              		.loc 1 82 16 is_stmt 0 view .LVU33
+ 176 00ce 059B     		ldr	r3, [sp, #20]
+ 177              	.LVL16:
+ 178              		.loc 1 82 16 view .LVU34
+ 179 00d0 0233     		adds	r3, r3, #2
+ 180 00d2 0593     		str	r3, [sp, #20]
+ 181              	.LVL17:
+  83:Src/ILI9341_GFX.c ****             err += (-Radius << 1) + dx;
+ 182              		.loc 1 83 13 is_stmt 1 view .LVU35
+ 183              		.loc 1 83 35 is_stmt 0 view .LVU36
+ 184 00d4 079A     		ldr	r2, [sp, #28]
+ 185 00d6 A3EB4203 		sub	r3, r3, r2, lsl #1
+ 186              	.LVL18:
+ 187              		.loc 1 83 17 view .LVU37
+ 188 00da 1F44     		add	r7, r7, r3
+ 189              	.LVL19:
+ 190              		.loc 1 83 17 view .LVU38
+ 191 00dc A1E7     		b	.L2
+ 192              	.L8:
+  75:Src/ILI9341_GFX.c ****             err += dy;
+ 193              		.loc 1 75 13 is_stmt 1 view .LVU39
+  75:Src/ILI9341_GFX.c ****             err += dy;
+ 194              		.loc 1 75 14 is_stmt 0 view .LVU40
+ 195 00de 019B     		ldr	r3, [sp, #4]
+ 196 00e0 0133     		adds	r3, r3, #1
+ 197 00e2 0193     		str	r3, [sp, #4]
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 6
+
+
+ 198              	.LVL20:
+  76:Src/ILI9341_GFX.c ****             dy += 2;
+ 199              		.loc 1 76 13 is_stmt 1 view .LVU41
+  76:Src/ILI9341_GFX.c ****             dy += 2;
+ 200              		.loc 1 76 17 is_stmt 0 view .LVU42
+ 201 00e4 069B     		ldr	r3, [sp, #24]
+ 202              	.LVL21:
+  76:Src/ILI9341_GFX.c ****             dy += 2;
+ 203              		.loc 1 76 17 view .LVU43
+ 204 00e6 1F44     		add	r7, r7, r3
+ 205              	.LVL22:
+  77:Src/ILI9341_GFX.c ****         }
+ 206              		.loc 1 77 13 is_stmt 1 view .LVU44
+  77:Src/ILI9341_GFX.c ****         }
+ 207              		.loc 1 77 16 is_stmt 0 view .LVU45
+ 208 00e8 0233     		adds	r3, r3, #2
+ 209 00ea 0693     		str	r3, [sp, #24]
+ 210              	.LVL23:
+  77:Src/ILI9341_GFX.c ****         }
+ 211              		.loc 1 77 16 view .LVU46
+ 212 00ec EAE7     		b	.L3
+ 213              	.LVL24:
+ 214              	.L7:
+  84:Src/ILI9341_GFX.c ****         }
+  85:Src/ILI9341_GFX.c ****     }
+  86:Src/ILI9341_GFX.c **** }
+ 215              		.loc 1 86 1 view .LVU47
+ 216 00ee 09B0     		add	sp, sp, #36
+ 217              	.LCFI2:
+ 218              		.cfi_def_cfa_offset 36
+ 219              		@ sp needed
+ 220 00f0 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 221              		.loc 1 86 1 view .LVU48
+ 222              		.cfi_endproc
+ 223              	.LFE141:
+ 225              		.section	.text.ILI9341_Draw_Filled_Circle,"ax",%progbits
+ 226              		.align	1
+ 227              		.global	ILI9341_Draw_Filled_Circle
+ 228              		.syntax unified
+ 229              		.thumb
+ 230              		.thumb_func
+ 231              		.fpu fpv5-d16
+ 233              	ILI9341_Draw_Filled_Circle:
+ 234              	.LVL25:
+ 235              	.LFB142:
+  87:Src/ILI9341_GFX.c **** 
+  88:Src/ILI9341_GFX.c **** /*Draw filled circle at X,Y location with specified radius and colour. X and Y represent circles ce
+  89:Src/ILI9341_GFX.c **** void ILI9341_Draw_Filled_Circle(uint16_t X, uint16_t Y, uint16_t Radius, uint16_t Colour)
+  90:Src/ILI9341_GFX.c **** {
+ 236              		.loc 1 90 1 is_stmt 1 view -0
+ 237              		.cfi_startproc
+ 238              		@ args = 0, pretend = 0, frame = 16
+ 239              		@ frame_needed = 0, uses_anonymous_args = 0
+ 240              		.loc 1 90 1 is_stmt 0 view .LVU50
+ 241 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 242              	.LCFI3:
+ 243              		.cfi_def_cfa_offset 36
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 7
+
+
+ 244              		.cfi_offset 4, -36
+ 245              		.cfi_offset 5, -32
+ 246              		.cfi_offset 6, -28
+ 247              		.cfi_offset 7, -24
+ 248              		.cfi_offset 8, -20
+ 249              		.cfi_offset 9, -16
+ 250              		.cfi_offset 10, -12
+ 251              		.cfi_offset 11, -8
+ 252              		.cfi_offset 14, -4
+ 253 0004 85B0     		sub	sp, sp, #20
+ 254              	.LCFI4:
+ 255              		.cfi_def_cfa_offset 56
+ 256 0006 0290     		str	r0, [sp, #8]
+ 257 0008 0F46     		mov	r7, r1
+ 258 000a 1E46     		mov	r6, r3
+  91:Src/ILI9341_GFX.c **** 	
+  92:Src/ILI9341_GFX.c **** 		int x = Radius;
+ 259              		.loc 1 92 3 is_stmt 1 view .LVU51
+ 260              		.loc 1 92 7 is_stmt 0 view .LVU52
+ 261 000c 9146     		mov	r9, r2
+ 262              	.LVL26:
+  93:Src/ILI9341_GFX.c ****     int y = 0;
+ 263              		.loc 1 93 5 is_stmt 1 view .LVU53
+  94:Src/ILI9341_GFX.c ****     int xChange = 1 - (Radius << 1);
+ 264              		.loc 1 94 5 view .LVU54
+ 265              		.loc 1 94 31 is_stmt 0 view .LVU55
+ 266 000e 5200     		lsls	r2, r2, #1
+ 267              	.LVL27:
+ 268              		.loc 1 94 9 view .LVU56
+ 269 0010 C2F10103 		rsb	r3, r2, #1
+ 270              	.LVL28:
+ 271              		.loc 1 94 9 view .LVU57
+ 272 0014 0393     		str	r3, [sp, #12]
+ 273              	.LVL29:
+  95:Src/ILI9341_GFX.c ****     int yChange = 0;
+ 274              		.loc 1 95 5 is_stmt 1 view .LVU58
+  96:Src/ILI9341_GFX.c ****     int radiusError = 0;
+ 275              		.loc 1 96 5 view .LVU59
+  97:Src/ILI9341_GFX.c **** 
+  98:Src/ILI9341_GFX.c ****     while (x >= y)
+ 276              		.loc 1 98 5 view .LVU60
+  96:Src/ILI9341_GFX.c ****     int radiusError = 0;
+ 277              		.loc 1 96 9 is_stmt 0 view .LVU61
+ 278 0016 0023     		movs	r3, #0
+ 279              	.LVL30:
+  96:Src/ILI9341_GFX.c ****     int radiusError = 0;
+ 280              		.loc 1 96 9 view .LVU62
+ 281 0018 0093     		str	r3, [sp]
+  95:Src/ILI9341_GFX.c ****     int radiusError = 0;
+ 282              		.loc 1 95 9 view .LVU63
+ 283 001a 0193     		str	r3, [sp, #4]
+  93:Src/ILI9341_GFX.c ****     int xChange = 1 - (Radius << 1);
+ 284              		.loc 1 93 9 view .LVU64
+ 285 001c 9846     		mov	r8, r3
+ 286              		.loc 1 98 11 view .LVU65
+ 287 001e 41E0     		b	.L10
+ 288              	.LVL31:
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 8
+
+
+ 289              	.L12:
+ 290              	.LBB2:
+  99:Src/ILI9341_GFX.c ****     {
+ 100:Src/ILI9341_GFX.c ****         for (int i = X - x; i <= X + x; i++)
+ 101:Src/ILI9341_GFX.c ****         {
+ 102:Src/ILI9341_GFX.c ****             ILI9341_Draw_Pixel(i, Y + y,Colour);
+ 291              		.loc 1 102 13 is_stmt 1 discriminator 3 view .LVU66
+ 292 0020 1FFA85FB 		uxth	fp, r5
+ 293 0024 1FFA88F4 		uxth	r4, r8
+ 294 0028 E119     		adds	r1, r4, r7
+ 295 002a 3246     		mov	r2, r6
+ 296 002c 89B2     		uxth	r1, r1
+ 297 002e 5846     		mov	r0, fp
+ 298 0030 FFF7FEFF 		bl	ILI9341_Draw_Pixel
+ 299              	.LVL32:
+ 103:Src/ILI9341_GFX.c ****             ILI9341_Draw_Pixel(i, Y - y,Colour);
+ 300              		.loc 1 103 13 discriminator 3 view .LVU67
+ 301 0034 391B     		subs	r1, r7, r4
+ 302 0036 3246     		mov	r2, r6
+ 303 0038 89B2     		uxth	r1, r1
+ 304 003a 5846     		mov	r0, fp
+ 305 003c FFF7FEFF 		bl	ILI9341_Draw_Pixel
+ 306              	.LVL33:
+ 100:Src/ILI9341_GFX.c ****         {
+ 307              		.loc 1 100 41 discriminator 3 view .LVU68
+ 100:Src/ILI9341_GFX.c ****         {
+ 308              		.loc 1 100 42 is_stmt 0 discriminator 3 view .LVU69
+ 309 0040 0135     		adds	r5, r5, #1
+ 310              	.LVL34:
+ 311              	.L11:
+ 100:Src/ILI9341_GFX.c ****         {
+ 312              		.loc 1 100 29 is_stmt 1 discriminator 1 view .LVU70
+ 100:Src/ILI9341_GFX.c ****         {
+ 313              		.loc 1 100 36 is_stmt 0 discriminator 1 view .LVU71
+ 314 0042 0AEB0903 		add	r3, r10, r9
+ 100:Src/ILI9341_GFX.c ****         {
+ 315              		.loc 1 100 9 discriminator 1 view .LVU72
+ 316 0046 AB42     		cmp	r3, r5
+ 317 0048 EADA     		bge	.L12
+ 100:Src/ILI9341_GFX.c ****         {
+ 318              		.loc 1 100 9 discriminator 1 view .LVU73
+ 319              	.LBE2:
+ 104:Src/ILI9341_GFX.c ****         }
+ 105:Src/ILI9341_GFX.c ****         for (int i = X - y; i <= X + y; i++)
+ 320              		.loc 1 105 9 is_stmt 1 view .LVU74
+ 321              	.LBB3:
+ 322              		.loc 1 105 14 view .LVU75
+ 323              		.loc 1 105 18 is_stmt 0 view .LVU76
+ 324 004a 029B     		ldr	r3, [sp, #8]
+ 325 004c A3EB0805 		sub	r5, r3, r8
+ 326              	.LVL35:
+ 327              		.loc 1 105 9 view .LVU77
+ 328 0050 10E0     		b	.L13
+ 329              	.L14:
+ 106:Src/ILI9341_GFX.c ****         {
+ 107:Src/ILI9341_GFX.c ****             ILI9341_Draw_Pixel(i, Y + x,Colour);
+ 330              		.loc 1 107 13 is_stmt 1 discriminator 3 view .LVU78
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 9
+
+
+ 331 0052 1FFA85FB 		uxth	fp, r5
+ 332 0056 1FFA89F4 		uxth	r4, r9
+ 333 005a E119     		adds	r1, r4, r7
+ 334 005c 3246     		mov	r2, r6
+ 335 005e 89B2     		uxth	r1, r1
+ 336 0060 5846     		mov	r0, fp
+ 337 0062 FFF7FEFF 		bl	ILI9341_Draw_Pixel
+ 338              	.LVL36:
+ 108:Src/ILI9341_GFX.c ****             ILI9341_Draw_Pixel(i, Y - x,Colour);
+ 339              		.loc 1 108 13 discriminator 3 view .LVU79
+ 340 0066 391B     		subs	r1, r7, r4
+ 341 0068 3246     		mov	r2, r6
+ 342 006a 89B2     		uxth	r1, r1
+ 343 006c 5846     		mov	r0, fp
+ 344 006e FFF7FEFF 		bl	ILI9341_Draw_Pixel
+ 345              	.LVL37:
+ 105:Src/ILI9341_GFX.c ****         {
+ 346              		.loc 1 105 41 discriminator 3 view .LVU80
+ 105:Src/ILI9341_GFX.c ****         {
+ 347              		.loc 1 105 42 is_stmt 0 discriminator 3 view .LVU81
+ 348 0072 0135     		adds	r5, r5, #1
+ 349              	.LVL38:
+ 350              	.L13:
+ 105:Src/ILI9341_GFX.c ****         {
+ 351              		.loc 1 105 29 is_stmt 1 discriminator 1 view .LVU82
+ 105:Src/ILI9341_GFX.c ****         {
+ 352              		.loc 1 105 36 is_stmt 0 discriminator 1 view .LVU83
+ 353 0074 0AEB0803 		add	r3, r10, r8
+ 105:Src/ILI9341_GFX.c ****         {
+ 354              		.loc 1 105 9 discriminator 1 view .LVU84
+ 355 0078 AB42     		cmp	r3, r5
+ 356 007a EADA     		bge	.L14
+ 105:Src/ILI9341_GFX.c ****         {
+ 357              		.loc 1 105 9 discriminator 1 view .LVU85
+ 358              	.LBE3:
+ 109:Src/ILI9341_GFX.c ****         }
+ 110:Src/ILI9341_GFX.c **** 
+ 111:Src/ILI9341_GFX.c ****         y++;
+ 359              		.loc 1 111 9 is_stmt 1 view .LVU86
+ 360              		.loc 1 111 10 is_stmt 0 view .LVU87
+ 361 007c 08F10108 		add	r8, r8, #1
+ 362              	.LVL39:
+ 112:Src/ILI9341_GFX.c ****         radiusError += yChange;
+ 363              		.loc 1 112 9 is_stmt 1 view .LVU88
+ 364              		.loc 1 112 21 is_stmt 0 view .LVU89
+ 365 0080 009B     		ldr	r3, [sp]
+ 366 0082 019A     		ldr	r2, [sp, #4]
+ 367 0084 1344     		add	r3, r3, r2
+ 368 0086 0093     		str	r3, [sp]
+ 369              	.LVL40:
+ 113:Src/ILI9341_GFX.c ****         yChange += 2;
+ 370              		.loc 1 113 9 is_stmt 1 view .LVU90
+ 371              		.loc 1 113 17 is_stmt 0 view .LVU91
+ 372 0088 0232     		adds	r2, r2, #2
+ 373 008a 0192     		str	r2, [sp, #4]
+ 374              	.LVL41:
+ 114:Src/ILI9341_GFX.c ****         if (((radiusError << 1) + xChange) > 0)
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 10
+
+
+ 375              		.loc 1 114 9 is_stmt 1 view .LVU92
+ 376              		.loc 1 114 33 is_stmt 0 view .LVU93
+ 377 008c 0399     		ldr	r1, [sp, #12]
+ 378 008e 1A46     		mov	r2, r3
+ 379              	.LVL42:
+ 380              		.loc 1 114 33 view .LVU94
+ 381 0090 01EB4303 		add	r3, r1, r3, lsl #1
+ 382              	.LVL43:
+ 383              		.loc 1 114 12 view .LVU95
+ 384 0094 002B     		cmp	r3, #0
+ 385 0096 05DD     		ble	.L10
+ 115:Src/ILI9341_GFX.c ****         {
+ 116:Src/ILI9341_GFX.c ****             x--;
+ 386              		.loc 1 116 13 is_stmt 1 view .LVU96
+ 387              		.loc 1 116 14 is_stmt 0 view .LVU97
+ 388 0098 09F1FF39 		add	r9, r9, #-1
+ 389              	.LVL44:
+ 117:Src/ILI9341_GFX.c ****             radiusError += xChange;
+ 390              		.loc 1 117 13 is_stmt 1 view .LVU98
+ 391              		.loc 1 117 25 is_stmt 0 view .LVU99
+ 392 009c 0A44     		add	r2, r2, r1
+ 393              	.LVL45:
+ 394              		.loc 1 117 25 view .LVU100
+ 395 009e 0092     		str	r2, [sp]
+ 396              	.LVL46:
+ 118:Src/ILI9341_GFX.c ****             xChange += 2;
+ 397              		.loc 1 118 13 is_stmt 1 view .LVU101
+ 398              		.loc 1 118 21 is_stmt 0 view .LVU102
+ 399 00a0 8B1C     		adds	r3, r1, #2
+ 400 00a2 0393     		str	r3, [sp, #12]
+ 401              	.LVL47:
+ 402              	.L10:
+  98:Src/ILI9341_GFX.c ****     {
+ 403              		.loc 1 98 11 is_stmt 1 view .LVU103
+ 404 00a4 C145     		cmp	r9, r8
+ 405 00a6 04DB     		blt	.L18
+ 100:Src/ILI9341_GFX.c ****         {
+ 406              		.loc 1 100 9 view .LVU104
+ 407              	.LBB4:
+ 100:Src/ILI9341_GFX.c ****         {
+ 408              		.loc 1 100 14 view .LVU105
+ 100:Src/ILI9341_GFX.c ****         {
+ 409              		.loc 1 100 24 is_stmt 0 view .LVU106
+ 410 00a8 029B     		ldr	r3, [sp, #8]
+ 411 00aa 9A46     		mov	r10, r3
+ 100:Src/ILI9341_GFX.c ****         {
+ 412              		.loc 1 100 18 view .LVU107
+ 413 00ac A3EB0905 		sub	r5, r3, r9
+ 414              	.LVL48:
+ 100:Src/ILI9341_GFX.c ****         {
+ 415              		.loc 1 100 9 view .LVU108
+ 416 00b0 C7E7     		b	.L11
+ 417              	.LVL49:
+ 418              	.L18:
+ 100:Src/ILI9341_GFX.c ****         {
+ 419              		.loc 1 100 9 view .LVU109
+ 420              	.LBE4:
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 11
+
+
+ 119:Src/ILI9341_GFX.c ****         }
+ 120:Src/ILI9341_GFX.c ****     }
+ 121:Src/ILI9341_GFX.c **** 		//Really slow implementation, will require future overhaul
+ 122:Src/ILI9341_GFX.c **** 		//TODO:	https://stackoverflow.com/questions/1201200/fast-algorithm-for-drawing-filled-circles	
+ 123:Src/ILI9341_GFX.c **** }
+ 421              		.loc 1 123 1 view .LVU110
+ 422 00b2 05B0     		add	sp, sp, #20
+ 423              	.LCFI5:
+ 424              		.cfi_def_cfa_offset 36
+ 425              	.LVL50:
+ 426              		.loc 1 123 1 view .LVU111
+ 427              		@ sp needed
+ 428 00b4 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 429              		.loc 1 123 1 view .LVU112
+ 430              		.cfi_endproc
+ 431              	.LFE142:
+ 433              		.section	.text.ILI9341_Draw_Hollow_Rectangle_Coord,"ax",%progbits
+ 434              		.align	1
+ 435              		.global	ILI9341_Draw_Hollow_Rectangle_Coord
+ 436              		.syntax unified
+ 437              		.thumb
+ 438              		.thumb_func
+ 439              		.fpu fpv5-d16
+ 441              	ILI9341_Draw_Hollow_Rectangle_Coord:
+ 442              	.LVL51:
+ 443              	.LFB143:
+ 124:Src/ILI9341_GFX.c **** 
+ 125:Src/ILI9341_GFX.c **** /*Draw a hollow rectangle between positions X0,Y0 and X1,Y1 with specified colour*/
+ 126:Src/ILI9341_GFX.c **** void ILI9341_Draw_Hollow_Rectangle_Coord(uint16_t X0, uint16_t Y0, uint16_t X1, uint16_t Y1, uint16
+ 127:Src/ILI9341_GFX.c **** {
+ 444              		.loc 1 127 1 is_stmt 1 view -0
+ 445              		.cfi_startproc
+ 446              		@ args = 4, pretend = 0, frame = 0
+ 447              		@ frame_needed = 0, uses_anonymous_args = 0
+ 448              		.loc 1 127 1 is_stmt 0 view .LVU114
+ 449 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 450              	.LCFI6:
+ 451              		.cfi_def_cfa_offset 32
+ 452              		.cfi_offset 4, -32
+ 453              		.cfi_offset 5, -28
+ 454              		.cfi_offset 6, -24
+ 455              		.cfi_offset 7, -20
+ 456              		.cfi_offset 8, -16
+ 457              		.cfi_offset 9, -12
+ 458              		.cfi_offset 10, -8
+ 459              		.cfi_offset 14, -4
+ 460 0004 0546     		mov	r5, r0
+ 461 0006 0C46     		mov	r4, r1
+ 462 0008 1646     		mov	r6, r2
+ 463 000a 1F46     		mov	r7, r3
+ 464 000c BDF820A0 		ldrh	r10, [sp, #32]
+ 128:Src/ILI9341_GFX.c **** 	uint16_t 	X_length = 0;
+ 465              		.loc 1 128 2 is_stmt 1 view .LVU115
+ 466              	.LVL52:
+ 129:Src/ILI9341_GFX.c **** 	uint16_t 	Y_length = 0;
+ 467              		.loc 1 129 2 view .LVU116
+ 130:Src/ILI9341_GFX.c **** 	uint8_t		Negative_X = 0;
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 12
+
+
+ 468              		.loc 1 130 2 view .LVU117
+ 131:Src/ILI9341_GFX.c **** 	uint8_t 	Negative_Y = 0;
+ 469              		.loc 1 131 2 view .LVU118
+ 132:Src/ILI9341_GFX.c **** 	float 		Calc_Negative = 0;
+ 470              		.loc 1 132 2 view .LVU119
+ 133:Src/ILI9341_GFX.c **** 	
+ 134:Src/ILI9341_GFX.c **** 	Calc_Negative = X1 - X0;
+ 471              		.loc 1 134 2 view .LVU120
+ 472              		.loc 1 134 21 is_stmt 0 view .LVU121
+ 473 0010 131A     		subs	r3, r2, r0
+ 474              	.LVL53:
+ 475              		.loc 1 134 21 view .LVU122
+ 476 0012 07EE903A 		vmov	s15, r3	@ int
+ 477              		.loc 1 134 16 view .LVU123
+ 478 0016 F8EEE77A 		vcvt.f32.s32	s15, s15
+ 479              	.LVL54:
+ 135:Src/ILI9341_GFX.c **** 	if(Calc_Negative < 0) Negative_X = 1;
+ 480              		.loc 1 135 2 is_stmt 1 view .LVU124
+ 481              		.loc 1 135 4 is_stmt 0 view .LVU125
+ 482 001a F5EEC07A 		vcmpe.f32	s15, #0
+ 483 001e F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 484 0022 35D4     		bmi	.L27
+ 130:Src/ILI9341_GFX.c **** 	uint8_t 	Negative_Y = 0;
+ 485              		.loc 1 130 11 view .LVU126
+ 486 0024 0023     		movs	r3, #0
+ 487              	.L20:
+ 488              	.LVL55:
+ 136:Src/ILI9341_GFX.c **** 	Calc_Negative = 0;
+ 489              		.loc 1 136 2 is_stmt 1 view .LVU127
+ 137:Src/ILI9341_GFX.c **** 	
+ 138:Src/ILI9341_GFX.c **** 	Calc_Negative = Y1 - Y0;
+ 490              		.loc 1 138 2 view .LVU128
+ 491              		.loc 1 138 21 is_stmt 0 view .LVU129
+ 492 0026 3A1B     		subs	r2, r7, r4
+ 493              	.LVL56:
+ 494              		.loc 1 138 21 view .LVU130
+ 495 0028 07EE902A 		vmov	s15, r2	@ int
+ 496              		.loc 1 138 16 view .LVU131
+ 497 002c F8EEE77A 		vcvt.f32.s32	s15, s15
+ 498              	.LVL57:
+ 139:Src/ILI9341_GFX.c **** 	if(Calc_Negative < 0) Negative_Y = 1;
+ 499              		.loc 1 139 2 is_stmt 1 view .LVU132
+ 500              		.loc 1 139 4 is_stmt 0 view .LVU133
+ 501 0030 F5EEC07A 		vcmpe.f32	s15, #0
+ 502 0034 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 503 0038 2CD4     		bmi	.L28
+ 131:Src/ILI9341_GFX.c **** 	float 		Calc_Negative = 0;
+ 504              		.loc 1 131 11 view .LVU134
+ 505 003a 4FF00008 		mov	r8, #0
+ 506              	.L21:
+ 507              	.LVL58:
+ 140:Src/ILI9341_GFX.c **** 	
+ 141:Src/ILI9341_GFX.c **** 	
+ 142:Src/ILI9341_GFX.c **** 	//DRAW HORIZONTAL!
+ 143:Src/ILI9341_GFX.c **** 	if(!Negative_X)
+ 508              		.loc 1 143 2 is_stmt 1 view .LVU135
+ 509              		.loc 1 143 4 is_stmt 0 view .LVU136
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 13
+
+
+ 510 003e 63BB     		cbnz	r3, .L22
+ 144:Src/ILI9341_GFX.c **** 	{
+ 145:Src/ILI9341_GFX.c **** 		X_length = X1 - X0;		
+ 511              		.loc 1 145 3 is_stmt 1 view .LVU137
+ 512              		.loc 1 145 12 is_stmt 0 view .LVU138
+ 513 0040 A6EB0509 		sub	r9, r6, r5
+ 514 0044 1FFA89F9 		uxth	r9, r9
+ 515              	.LVL59:
+ 516              	.L23:
+ 146:Src/ILI9341_GFX.c **** 	}
+ 147:Src/ILI9341_GFX.c **** 	else
+ 148:Src/ILI9341_GFX.c **** 	{
+ 149:Src/ILI9341_GFX.c **** 		X_length = X0 - X1;		
+ 150:Src/ILI9341_GFX.c **** 	}
+ 151:Src/ILI9341_GFX.c **** 	ILI9341_Draw_Horizontal_Line(X0, Y0, X_length, Colour);
+ 517              		.loc 1 151 2 is_stmt 1 view .LVU139
+ 518 0048 5346     		mov	r3, r10
+ 519              	.LVL60:
+ 520              		.loc 1 151 2 is_stmt 0 view .LVU140
+ 521 004a 4A46     		mov	r2, r9
+ 522 004c 2146     		mov	r1, r4
+ 523              	.LVL61:
+ 524              		.loc 1 151 2 view .LVU141
+ 525 004e 2846     		mov	r0, r5
+ 526              	.LVL62:
+ 527              		.loc 1 151 2 view .LVU142
+ 528 0050 FFF7FEFF 		bl	ILI9341_Draw_Horizontal_Line
+ 529              	.LVL63:
+ 152:Src/ILI9341_GFX.c **** 	ILI9341_Draw_Horizontal_Line(X0, Y1, X_length, Colour);
+ 530              		.loc 1 152 2 is_stmt 1 view .LVU143
+ 531 0054 5346     		mov	r3, r10
+ 532 0056 4A46     		mov	r2, r9
+ 533 0058 3946     		mov	r1, r7
+ 534 005a 2846     		mov	r0, r5
+ 535 005c FFF7FEFF 		bl	ILI9341_Draw_Horizontal_Line
+ 536              	.LVL64:
+ 153:Src/ILI9341_GFX.c **** 	
+ 154:Src/ILI9341_GFX.c **** 	
+ 155:Src/ILI9341_GFX.c **** 	
+ 156:Src/ILI9341_GFX.c **** 	//DRAW VERTICAL!
+ 157:Src/ILI9341_GFX.c **** 	if(!Negative_Y)
+ 537              		.loc 1 157 2 view .LVU144
+ 538              		.loc 1 157 4 is_stmt 0 view .LVU145
+ 539 0060 B8F1000F 		cmp	r8, #0
+ 540 0064 1ED1     		bne	.L24
+ 158:Src/ILI9341_GFX.c **** 	{
+ 159:Src/ILI9341_GFX.c **** 		Y_length = Y1 - Y0;		
+ 541              		.loc 1 159 3 is_stmt 1 view .LVU146
+ 542              		.loc 1 159 12 is_stmt 0 view .LVU147
+ 543 0066 A7EB0408 		sub	r8, r7, r4
+ 544              	.LVL65:
+ 545              		.loc 1 159 12 view .LVU148
+ 546 006a 1FFA88F8 		uxth	r8, r8
+ 547              	.LVL66:
+ 548              	.L25:
+ 160:Src/ILI9341_GFX.c **** 	}
+ 161:Src/ILI9341_GFX.c **** 	else
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 14
+
+
+ 162:Src/ILI9341_GFX.c **** 	{
+ 163:Src/ILI9341_GFX.c **** 		Y_length = Y0 - Y1;		
+ 164:Src/ILI9341_GFX.c **** 	}
+ 165:Src/ILI9341_GFX.c **** 	ILI9341_Draw_Vertical_Line(X0, Y0, Y_length, Colour);
+ 549              		.loc 1 165 2 is_stmt 1 view .LVU149
+ 550 006e 5346     		mov	r3, r10
+ 551 0070 4246     		mov	r2, r8
+ 552 0072 2146     		mov	r1, r4
+ 553 0074 2846     		mov	r0, r5
+ 554 0076 FFF7FEFF 		bl	ILI9341_Draw_Vertical_Line
+ 555              	.LVL67:
+ 166:Src/ILI9341_GFX.c **** 	ILI9341_Draw_Vertical_Line(X1, Y0, Y_length, Colour);
+ 556              		.loc 1 166 2 view .LVU150
+ 557 007a 5346     		mov	r3, r10
+ 558 007c 4246     		mov	r2, r8
+ 559 007e 2146     		mov	r1, r4
+ 560 0080 3046     		mov	r0, r6
+ 561 0082 FFF7FEFF 		bl	ILI9341_Draw_Vertical_Line
+ 562              	.LVL68:
+ 167:Src/ILI9341_GFX.c **** 	
+ 168:Src/ILI9341_GFX.c **** 	if((X_length > 0)||(Y_length > 0)) 
+ 563              		.loc 1 168 2 view .LVU151
+ 564              		.loc 1 168 4 is_stmt 0 view .LVU152
+ 565 0086 59EA0803 		orrs	r3, r9, r8
+ 566 008a 10D1     		bne	.L30
+ 567              	.L19:
+ 169:Src/ILI9341_GFX.c **** 	{
+ 170:Src/ILI9341_GFX.c **** 		ILI9341_Draw_Pixel(X1, Y1, Colour);
+ 171:Src/ILI9341_GFX.c **** 	}
+ 172:Src/ILI9341_GFX.c **** 	
+ 173:Src/ILI9341_GFX.c **** }
+ 568              		.loc 1 173 1 view .LVU153
+ 569 008c BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 570              	.LVL69:
+ 571              	.L27:
+ 135:Src/ILI9341_GFX.c **** 	Calc_Negative = 0;
+ 572              		.loc 1 135 35 view .LVU154
+ 573 0090 0123     		movs	r3, #1
+ 574 0092 C8E7     		b	.L20
+ 575              	.LVL70:
+ 576              	.L28:
+ 139:Src/ILI9341_GFX.c **** 	
+ 577              		.loc 1 139 35 view .LVU155
+ 578 0094 4FF00108 		mov	r8, #1
+ 579 0098 D1E7     		b	.L21
+ 580              	.LVL71:
+ 581              	.L22:
+ 149:Src/ILI9341_GFX.c **** 	}
+ 582              		.loc 1 149 3 is_stmt 1 view .LVU156
+ 149:Src/ILI9341_GFX.c **** 	}
+ 583              		.loc 1 149 12 is_stmt 0 view .LVU157
+ 584 009a A5EB0609 		sub	r9, r5, r6
+ 585 009e 1FFA89F9 		uxth	r9, r9
+ 586              	.LVL72:
+ 149:Src/ILI9341_GFX.c **** 	}
+ 587              		.loc 1 149 12 view .LVU158
+ 588 00a2 D1E7     		b	.L23
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 15
+
+
+ 589              	.LVL73:
+ 590              	.L24:
+ 163:Src/ILI9341_GFX.c **** 	}
+ 591              		.loc 1 163 3 is_stmt 1 view .LVU159
+ 163:Src/ILI9341_GFX.c **** 	}
+ 592              		.loc 1 163 12 is_stmt 0 view .LVU160
+ 593 00a4 A4EB0708 		sub	r8, r4, r7
+ 594              	.LVL74:
+ 163:Src/ILI9341_GFX.c **** 	}
+ 595              		.loc 1 163 12 view .LVU161
+ 596 00a8 1FFA88F8 		uxth	r8, r8
+ 597              	.LVL75:
+ 163:Src/ILI9341_GFX.c **** 	}
+ 598              		.loc 1 163 12 view .LVU162
+ 599 00ac DFE7     		b	.L25
+ 600              	.L30:
+ 170:Src/ILI9341_GFX.c **** 	}
+ 601              		.loc 1 170 3 is_stmt 1 view .LVU163
+ 602 00ae 5246     		mov	r2, r10
+ 603 00b0 3946     		mov	r1, r7
+ 604 00b2 3046     		mov	r0, r6
+ 605 00b4 FFF7FEFF 		bl	ILI9341_Draw_Pixel
+ 606              	.LVL76:
+ 607              		.loc 1 173 1 is_stmt 0 view .LVU164
+ 608 00b8 E8E7     		b	.L19
+ 609              		.cfi_endproc
+ 610              	.LFE143:
+ 612              		.section	.text.ILI9341_Draw_Filled_Rectangle_Coord,"ax",%progbits
+ 613              		.align	1
+ 614              		.global	ILI9341_Draw_Filled_Rectangle_Coord
+ 615              		.syntax unified
+ 616              		.thumb
+ 617              		.thumb_func
+ 618              		.fpu fpv5-d16
+ 620              	ILI9341_Draw_Filled_Rectangle_Coord:
+ 621              	.LVL77:
+ 622              	.LFB144:
+ 174:Src/ILI9341_GFX.c **** 
+ 175:Src/ILI9341_GFX.c **** /*Draw a filled rectangle between positions X0,Y0 and X1,Y1 with specified colour*/
+ 176:Src/ILI9341_GFX.c **** void ILI9341_Draw_Filled_Rectangle_Coord(uint16_t X0, uint16_t Y0, uint16_t X1, uint16_t Y1, uint16
+ 177:Src/ILI9341_GFX.c **** {
+ 623              		.loc 1 177 1 is_stmt 1 view -0
+ 624              		.cfi_startproc
+ 625              		@ args = 4, pretend = 0, frame = 0
+ 626              		@ frame_needed = 0, uses_anonymous_args = 0
+ 627              		.loc 1 177 1 is_stmt 0 view .LVU166
+ 628 0000 30B5     		push	{r4, r5, lr}
+ 629              	.LCFI7:
+ 630              		.cfi_def_cfa_offset 12
+ 631              		.cfi_offset 4, -12
+ 632              		.cfi_offset 5, -8
+ 633              		.cfi_offset 14, -4
+ 634 0002 83B0     		sub	sp, sp, #12
+ 635              	.LCFI8:
+ 636              		.cfi_def_cfa_offset 24
+ 637 0004 1546     		mov	r5, r2
+ 638 0006 1C46     		mov	r4, r3
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 16
+
+
+ 178:Src/ILI9341_GFX.c **** 	uint16_t 	X_length = 0;
+ 639              		.loc 1 178 2 is_stmt 1 view .LVU167
+ 640              	.LVL78:
+ 179:Src/ILI9341_GFX.c **** 	uint16_t 	Y_length = 0;
+ 641              		.loc 1 179 2 view .LVU168
+ 180:Src/ILI9341_GFX.c **** 	uint8_t		Negative_X = 0;
+ 642              		.loc 1 180 2 view .LVU169
+ 181:Src/ILI9341_GFX.c **** 	uint8_t 	Negative_Y = 0;
+ 643              		.loc 1 181 2 view .LVU170
+ 182:Src/ILI9341_GFX.c **** 	int32_t 	Calc_Negative = 0;
+ 644              		.loc 1 182 2 view .LVU171
+ 183:Src/ILI9341_GFX.c **** 	
+ 184:Src/ILI9341_GFX.c **** 	uint16_t X0_true = 0;
+ 645              		.loc 1 184 2 view .LVU172
+ 185:Src/ILI9341_GFX.c **** 	uint16_t Y0_true = 0;
+ 646              		.loc 1 185 2 view .LVU173
+ 186:Src/ILI9341_GFX.c **** 	
+ 187:Src/ILI9341_GFX.c **** 	Calc_Negative = X1 - X0;
+ 647              		.loc 1 187 2 view .LVU174
+ 648              		.loc 1 187 16 is_stmt 0 view .LVU175
+ 649 0008 131A     		subs	r3, r2, r0
+ 650              	.LVL79:
+ 188:Src/ILI9341_GFX.c **** 	if(Calc_Negative < 0) Negative_X = 1;
+ 651              		.loc 1 188 2 is_stmt 1 view .LVU176
+ 652              		.loc 1 188 4 is_stmt 0 view .LVU177
+ 653 000a 002B     		cmp	r3, #0
+ 654 000c 11DB     		blt	.L38
+ 180:Src/ILI9341_GFX.c **** 	uint8_t 	Negative_Y = 0;
+ 655              		.loc 1 180 11 view .LVU178
+ 656 000e 0022     		movs	r2, #0
+ 657              	.LVL80:
+ 658              	.L32:
+ 189:Src/ILI9341_GFX.c **** 	Calc_Negative = 0;
+ 659              		.loc 1 189 2 is_stmt 1 view .LVU179
+ 190:Src/ILI9341_GFX.c **** 	
+ 191:Src/ILI9341_GFX.c **** 	Calc_Negative = Y1 - Y0;
+ 660              		.loc 1 191 2 view .LVU180
+ 661              		.loc 1 191 16 is_stmt 0 view .LVU181
+ 662 0010 631A     		subs	r3, r4, r1
+ 663              	.LVL81:
+ 192:Src/ILI9341_GFX.c **** 	if(Calc_Negative < 0) Negative_Y = 1;
+ 664              		.loc 1 192 2 is_stmt 1 view .LVU182
+ 665              		.loc 1 192 4 is_stmt 0 view .LVU183
+ 666 0012 002B     		cmp	r3, #0
+ 667 0014 0FDB     		blt	.L39
+ 181:Src/ILI9341_GFX.c **** 	int32_t 	Calc_Negative = 0;
+ 668              		.loc 1 181 11 view .LVU184
+ 669 0016 0023     		movs	r3, #0
+ 670              	.LVL82:
+ 671              	.L33:
+ 193:Src/ILI9341_GFX.c **** 	
+ 194:Src/ILI9341_GFX.c **** 	
+ 195:Src/ILI9341_GFX.c **** 	//DRAW HORIZONTAL!
+ 196:Src/ILI9341_GFX.c **** 	if(!Negative_X)
+ 672              		.loc 1 196 2 is_stmt 1 view .LVU185
+ 673              		.loc 1 196 4 is_stmt 0 view .LVU186
+ 674 0018 7AB9     		cbnz	r2, .L34
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 17
+
+
+ 197:Src/ILI9341_GFX.c **** 	{
+ 198:Src/ILI9341_GFX.c **** 		X_length = X1 - X0;
+ 675              		.loc 1 198 3 is_stmt 1 view .LVU187
+ 676              		.loc 1 198 12 is_stmt 0 view .LVU188
+ 677 001a 2D1A     		subs	r5, r5, r0
+ 678 001c AAB2     		uxth	r2, r5
+ 679              	.LVL83:
+ 199:Src/ILI9341_GFX.c **** 		X0_true = X0;
+ 680              		.loc 1 199 3 is_stmt 1 view .LVU189
+ 681              	.L35:
+ 200:Src/ILI9341_GFX.c **** 	}
+ 201:Src/ILI9341_GFX.c **** 	else
+ 202:Src/ILI9341_GFX.c **** 	{
+ 203:Src/ILI9341_GFX.c **** 		X_length = X0 - X1;
+ 204:Src/ILI9341_GFX.c **** 		X0_true = X1;
+ 205:Src/ILI9341_GFX.c **** 	}
+ 206:Src/ILI9341_GFX.c **** 	
+ 207:Src/ILI9341_GFX.c **** 	//DRAW VERTICAL!
+ 208:Src/ILI9341_GFX.c **** 	if(!Negative_Y)
+ 682              		.loc 1 208 2 view .LVU190
+ 683              		.loc 1 208 4 is_stmt 0 view .LVU191
+ 684 001e 83B9     		cbnz	r3, .L36
+ 209:Src/ILI9341_GFX.c **** 	{
+ 210:Src/ILI9341_GFX.c **** 		Y_length = Y1 - Y0;
+ 685              		.loc 1 210 3 is_stmt 1 view .LVU192
+ 686              		.loc 1 210 12 is_stmt 0 view .LVU193
+ 687 0020 641A     		subs	r4, r4, r1
+ 688              	.LVL84:
+ 689              		.loc 1 210 12 view .LVU194
+ 690 0022 A3B2     		uxth	r3, r4
+ 691              	.LVL85:
+ 211:Src/ILI9341_GFX.c **** 		Y0_true = Y0;		
+ 692              		.loc 1 211 3 is_stmt 1 view .LVU195
+ 693              	.L37:
+ 212:Src/ILI9341_GFX.c **** 	}
+ 213:Src/ILI9341_GFX.c **** 	else
+ 214:Src/ILI9341_GFX.c **** 	{
+ 215:Src/ILI9341_GFX.c **** 		Y_length = Y0 - Y1;
+ 216:Src/ILI9341_GFX.c **** 		Y0_true = Y1;	
+ 217:Src/ILI9341_GFX.c **** 	}
+ 218:Src/ILI9341_GFX.c **** 	
+ 219:Src/ILI9341_GFX.c **** 	ILI9341_Draw_Rectangle(X0_true, Y0_true, X_length, Y_length, Colour);	
+ 694              		.loc 1 219 2 view .LVU196
+ 695 0024 BDF81840 		ldrh	r4, [sp, #24]
+ 696 0028 0094     		str	r4, [sp]
+ 697 002a FFF7FEFF 		bl	ILI9341_Draw_Rectangle
+ 698              	.LVL86:
+ 220:Src/ILI9341_GFX.c **** }
+ 699              		.loc 1 220 1 is_stmt 0 view .LVU197
+ 700 002e 03B0     		add	sp, sp, #12
+ 701              	.LCFI9:
+ 702              		.cfi_remember_state
+ 703              		.cfi_def_cfa_offset 12
+ 704              		@ sp needed
+ 705 0030 30BD     		pop	{r4, r5, pc}
+ 706              	.LVL87:
+ 707              	.L38:
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 18
+
+
+ 708              	.LCFI10:
+ 709              		.cfi_restore_state
+ 188:Src/ILI9341_GFX.c **** 	Calc_Negative = 0;
+ 710              		.loc 1 188 35 view .LVU198
+ 711 0032 0122     		movs	r2, #1
+ 712              	.LVL88:
+ 188:Src/ILI9341_GFX.c **** 	Calc_Negative = 0;
+ 713              		.loc 1 188 35 view .LVU199
+ 714 0034 ECE7     		b	.L32
+ 715              	.LVL89:
+ 716              	.L39:
+ 192:Src/ILI9341_GFX.c **** 	
+ 717              		.loc 1 192 35 view .LVU200
+ 718 0036 0123     		movs	r3, #1
+ 719              	.LVL90:
+ 192:Src/ILI9341_GFX.c **** 	
+ 720              		.loc 1 192 35 view .LVU201
+ 721 0038 EEE7     		b	.L33
+ 722              	.LVL91:
+ 723              	.L34:
+ 203:Src/ILI9341_GFX.c **** 		X0_true = X1;
+ 724              		.loc 1 203 3 is_stmt 1 view .LVU202
+ 203:Src/ILI9341_GFX.c **** 		X0_true = X1;
+ 725              		.loc 1 203 12 is_stmt 0 view .LVU203
+ 726 003a 401B     		subs	r0, r0, r5
+ 727              	.LVL92:
+ 203:Src/ILI9341_GFX.c **** 		X0_true = X1;
+ 728              		.loc 1 203 12 view .LVU204
+ 729 003c 82B2     		uxth	r2, r0
+ 730              	.LVL93:
+ 204:Src/ILI9341_GFX.c **** 	}
+ 731              		.loc 1 204 3 is_stmt 1 view .LVU205
+ 204:Src/ILI9341_GFX.c **** 	}
+ 732              		.loc 1 204 11 is_stmt 0 view .LVU206
+ 733 003e 2846     		mov	r0, r5
+ 734 0040 EDE7     		b	.L35
+ 735              	.LVL94:
+ 736              	.L36:
+ 215:Src/ILI9341_GFX.c **** 		Y0_true = Y1;	
+ 737              		.loc 1 215 3 is_stmt 1 view .LVU207
+ 215:Src/ILI9341_GFX.c **** 		Y0_true = Y1;	
+ 738              		.loc 1 215 12 is_stmt 0 view .LVU208
+ 739 0042 091B     		subs	r1, r1, r4
+ 740              	.LVL95:
+ 215:Src/ILI9341_GFX.c **** 		Y0_true = Y1;	
+ 741              		.loc 1 215 12 view .LVU209
+ 742 0044 8BB2     		uxth	r3, r1
+ 743              	.LVL96:
+ 216:Src/ILI9341_GFX.c **** 	}
+ 744              		.loc 1 216 3 is_stmt 1 view .LVU210
+ 216:Src/ILI9341_GFX.c **** 	}
+ 745              		.loc 1 216 11 is_stmt 0 view .LVU211
+ 746 0046 2146     		mov	r1, r4
+ 747 0048 ECE7     		b	.L37
+ 748              		.cfi_endproc
+ 749              	.LFE144:
+ 751              		.section	.text.ILI9341_Draw_Char,"ax",%progbits
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 19
+
+
+ 752              		.align	1
+ 753              		.global	ILI9341_Draw_Char
+ 754              		.syntax unified
+ 755              		.thumb
+ 756              		.thumb_func
+ 757              		.fpu fpv5-d16
+ 759              	ILI9341_Draw_Char:
+ 760              	.LVL97:
+ 761              	.LFB145:
+ 221:Src/ILI9341_GFX.c **** 
+ 222:Src/ILI9341_GFX.c **** /*Draws a character (fonts imported from fonts.h) at X,Y location with specified font colour, size 
+ 223:Src/ILI9341_GFX.c **** /*See fonts.h implementation of font on what is required for changing to a different font when swit
+ 224:Src/ILI9341_GFX.c **** void ILI9341_Draw_Char(char Character, uint8_t X, uint8_t Y, uint16_t Colour, uint16_t Size, uint16
+ 225:Src/ILI9341_GFX.c **** {
+ 762              		.loc 1 225 1 is_stmt 1 view -0
+ 763              		.cfi_startproc
+ 764              		@ args = 8, pretend = 0, frame = 8
+ 765              		@ frame_needed = 0, uses_anonymous_args = 0
+ 766              		.loc 1 225 1 is_stmt 0 view .LVU213
+ 767 0000 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
+ 768              	.LCFI11:
+ 769              		.cfi_def_cfa_offset 28
+ 770              		.cfi_offset 4, -28
+ 771              		.cfi_offset 5, -24
+ 772              		.cfi_offset 6, -20
+ 773              		.cfi_offset 7, -16
+ 774              		.cfi_offset 8, -12
+ 775              		.cfi_offset 9, -8
+ 776              		.cfi_offset 14, -4
+ 777 0004 85B0     		sub	sp, sp, #20
+ 778              	.LCFI12:
+ 779              		.cfi_def_cfa_offset 48
+ 780 0006 9946     		mov	r9, r3
+ 781 0008 BDF83060 		ldrh	r6, [sp, #48]
+ 226:Src/ILI9341_GFX.c **** 		uint8_t 	function_char;
+ 782              		.loc 1 226 3 is_stmt 1 view .LVU214
+ 227:Src/ILI9341_GFX.c ****     uint8_t 	i,j;
+ 783              		.loc 1 227 5 view .LVU215
+ 228:Src/ILI9341_GFX.c **** 		
+ 229:Src/ILI9341_GFX.c **** 		function_char = Character;
+ 784              		.loc 1 229 3 view .LVU216
+ 785              	.LVL98:
+ 230:Src/ILI9341_GFX.c **** 		
+ 231:Src/ILI9341_GFX.c ****     if (function_char < ' ') {
+ 786              		.loc 1 231 5 view .LVU217
+ 787              		.loc 1 231 8 is_stmt 0 view .LVU218
+ 788 000c 1F28     		cmp	r0, #31
+ 789 000e 01D9     		bls	.L42
+ 232:Src/ILI9341_GFX.c ****         Character = 0;
+ 233:Src/ILI9341_GFX.c ****     } else {
+ 234:Src/ILI9341_GFX.c ****         function_char -= 32;
+ 790              		.loc 1 234 9 is_stmt 1 view .LVU219
+ 791              		.loc 1 234 23 is_stmt 0 view .LVU220
+ 792 0010 2038     		subs	r0, r0, #32
+ 793              	.LVL99:
+ 794              		.loc 1 234 23 view .LVU221
+ 795 0012 C0B2     		uxtb	r0, r0
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 20
+
+
+ 796              	.LVL100:
+ 797              	.L42:
+ 235:Src/ILI9341_GFX.c **** 		}
+ 236:Src/ILI9341_GFX.c ****    	
+ 237:Src/ILI9341_GFX.c **** 		char temp[CHAR_WIDTH];
+ 798              		.loc 1 237 3 is_stmt 1 view .LVU222
+ 238:Src/ILI9341_GFX.c **** 		for(uint8_t k = 0; k<CHAR_WIDTH; k++)
+ 799              		.loc 1 238 3 view .LVU223
+ 800              	.LBB5:
+ 801              		.loc 1 238 7 view .LVU224
+ 802              		.loc 1 238 15 is_stmt 0 view .LVU225
+ 803 0014 0023     		movs	r3, #0
+ 804              	.LVL101:
+ 805              	.L43:
+ 806              		.loc 1 238 22 is_stmt 1 discriminator 1 view .LVU226
+ 807              		.loc 1 238 3 is_stmt 0 discriminator 1 view .LVU227
+ 808 0016 052B     		cmp	r3, #5
+ 809 0018 0CD8     		bhi	.L52
+ 239:Src/ILI9341_GFX.c **** 		{
+ 240:Src/ILI9341_GFX.c **** 		temp[k] = font[function_char][k];
+ 810              		.loc 1 240 3 is_stmt 1 discriminator 3 view .LVU228
+ 811              		.loc 1 240 32 is_stmt 0 discriminator 3 view .LVU229
+ 812 001a 00EB4004 		add	r4, r0, r0, lsl #1
+ 813 001e 254D     		ldr	r5, .L55
+ 814 0020 05EB4404 		add	r4, r5, r4, lsl #1
+ 815 0024 E55C     		ldrb	r5, [r4, r3]	@ zero_extendqisi2
+ 816              		.loc 1 240 11 discriminator 3 view .LVU230
+ 817 0026 04AC     		add	r4, sp, #16
+ 818 0028 1C44     		add	r4, r4, r3
+ 819 002a 04F8085C 		strb	r5, [r4, #-8]
+ 238:Src/ILI9341_GFX.c **** 		for(uint8_t k = 0; k<CHAR_WIDTH; k++)
+ 820              		.loc 1 238 36 is_stmt 1 discriminator 3 view .LVU231
+ 238:Src/ILI9341_GFX.c **** 		for(uint8_t k = 0; k<CHAR_WIDTH; k++)
+ 821              		.loc 1 238 37 is_stmt 0 discriminator 3 view .LVU232
+ 822 002e 0133     		adds	r3, r3, #1
+ 823              	.LVL102:
+ 238:Src/ILI9341_GFX.c **** 		for(uint8_t k = 0; k<CHAR_WIDTH; k++)
+ 824              		.loc 1 238 37 discriminator 3 view .LVU233
+ 825 0030 DBB2     		uxtb	r3, r3
+ 826              	.LVL103:
+ 238:Src/ILI9341_GFX.c **** 		for(uint8_t k = 0; k<CHAR_WIDTH; k++)
+ 827              		.loc 1 238 37 discriminator 3 view .LVU234
+ 828 0032 F0E7     		b	.L43
+ 829              	.L52:
+ 238:Src/ILI9341_GFX.c **** 		for(uint8_t k = 0; k<CHAR_WIDTH; k++)
+ 830              		.loc 1 238 37 discriminator 3 view .LVU235
+ 831              	.LBE5:
+ 241:Src/ILI9341_GFX.c **** 		}
+ 242:Src/ILI9341_GFX.c **** 		
+ 243:Src/ILI9341_GFX.c ****     // Draw pixels
+ 244:Src/ILI9341_GFX.c **** 		ILI9341_Draw_Rectangle(X, Y, CHAR_WIDTH*Size, CHAR_HEIGHT*Size, Background_Colour);
+ 832              		.loc 1 244 3 is_stmt 1 view .LVU236
+ 833 0034 8FB2     		uxth	r7, r1
+ 834 0036 1FFA82F8 		uxth	r8, r2
+ 835 003a F300     		lsls	r3, r6, #3
+ 836              	.LVL104:
+ 837              		.loc 1 244 3 is_stmt 0 view .LVU237
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 21
+
+
+ 838 003c 9BB2     		uxth	r3, r3
+ 839 003e 06EB4602 		add	r2, r6, r6, lsl #1
+ 840              	.LVL105:
+ 841              		.loc 1 244 3 view .LVU238
+ 842 0042 5200     		lsls	r2, r2, #1
+ 843 0044 92B2     		uxth	r2, r2
+ 844 0046 BDF83410 		ldrh	r1, [sp, #52]
+ 845              	.LVL106:
+ 846              		.loc 1 244 3 view .LVU239
+ 847 004a 0091     		str	r1, [sp]
+ 848 004c 4146     		mov	r1, r8
+ 849 004e 3846     		mov	r0, r7
+ 850              	.LVL107:
+ 851              		.loc 1 244 3 view .LVU240
+ 852 0050 FFF7FEFF 		bl	ILI9341_Draw_Rectangle
+ 853              	.LVL108:
+ 245:Src/ILI9341_GFX.c ****     for (j=0; j<CHAR_WIDTH; j++) {
+ 854              		.loc 1 245 5 is_stmt 1 view .LVU241
+ 855              		.loc 1 245 11 is_stmt 0 view .LVU242
+ 856 0054 0025     		movs	r5, #0
+ 857              		.loc 1 245 5 view .LVU243
+ 858 0056 26E0     		b	.L45
+ 859              	.LVL109:
+ 860              	.L47:
+ 246:Src/ILI9341_GFX.c ****         for (i=0; i<CHAR_HEIGHT; i++) {
+ 247:Src/ILI9341_GFX.c ****             if (temp[j] & (1<<i)) {			
+ 248:Src/ILI9341_GFX.c **** 							if(Size == 1)
+ 249:Src/ILI9341_GFX.c **** 							{
+ 250:Src/ILI9341_GFX.c ****               ILI9341_Draw_Pixel(X+j, Y+i, Colour);
+ 251:Src/ILI9341_GFX.c **** 							}
+ 252:Src/ILI9341_GFX.c **** 							else
+ 253:Src/ILI9341_GFX.c **** 							{
+ 254:Src/ILI9341_GFX.c **** 							ILI9341_Draw_Rectangle(X+(j*Size), Y+(i*Size), Size, Size, Colour);
+ 861              		.loc 1 254 8 is_stmt 1 view .LVU244
+ 862              		.loc 1 254 35 is_stmt 0 view .LVU245
+ 863 0058 15FB06F0 		smulbb	r0, r5, r6
+ 864              		.loc 1 254 47 view .LVU246
+ 865 005c 14FB06F1 		smulbb	r1, r4, r6
+ 866              		.loc 1 254 8 view .LVU247
+ 867 0060 18FA81F1 		uxtah	r1, r8, r1
+ 868 0064 17FA80F0 		uxtah	r0, r7, r0
+ 869 0068 CDF80090 		str	r9, [sp]
+ 870 006c 3346     		mov	r3, r6
+ 871 006e 3246     		mov	r2, r6
+ 872 0070 89B2     		uxth	r1, r1
+ 873 0072 80B2     		uxth	r0, r0
+ 874 0074 FFF7FEFF 		bl	ILI9341_Draw_Rectangle
+ 875              	.LVL110:
+ 876              	.L46:
+ 246:Src/ILI9341_GFX.c ****         for (i=0; i<CHAR_HEIGHT; i++) {
+ 877              		.loc 1 246 34 is_stmt 1 discriminator 2 view .LVU248
+ 246:Src/ILI9341_GFX.c ****         for (i=0; i<CHAR_HEIGHT; i++) {
+ 878              		.loc 1 246 35 is_stmt 0 discriminator 2 view .LVU249
+ 879 0078 0134     		adds	r4, r4, #1
+ 880              	.LVL111:
+ 246:Src/ILI9341_GFX.c ****         for (i=0; i<CHAR_HEIGHT; i++) {
+ 881              		.loc 1 246 35 discriminator 2 view .LVU250
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 22
+
+
+ 882 007a E4B2     		uxtb	r4, r4
+ 883              	.LVL112:
+ 884              	.L49:
+ 246:Src/ILI9341_GFX.c ****         for (i=0; i<CHAR_HEIGHT; i++) {
+ 885              		.loc 1 246 19 is_stmt 1 discriminator 1 view .LVU251
+ 246:Src/ILI9341_GFX.c ****         for (i=0; i<CHAR_HEIGHT; i++) {
+ 886              		.loc 1 246 9 is_stmt 0 discriminator 1 view .LVU252
+ 887 007c 072C     		cmp	r4, #7
+ 888 007e 10D8     		bhi	.L53
+ 247:Src/ILI9341_GFX.c **** 							if(Size == 1)
+ 889              		.loc 1 247 13 is_stmt 1 view .LVU253
+ 247:Src/ILI9341_GFX.c **** 							if(Size == 1)
+ 890              		.loc 1 247 21 is_stmt 0 view .LVU254
+ 891 0080 04AB     		add	r3, sp, #16
+ 892 0082 2B44     		add	r3, r3, r5
+ 893 0084 13F8082C 		ldrb	r2, [r3, #-8]	@ zero_extendqisi2
+ 247:Src/ILI9341_GFX.c **** 							if(Size == 1)
+ 894              		.loc 1 247 17 view .LVU255
+ 895 0088 2241     		asrs	r2, r2, r4
+ 247:Src/ILI9341_GFX.c **** 							if(Size == 1)
+ 896              		.loc 1 247 16 view .LVU256
+ 897 008a 12F0010F 		tst	r2, #1
+ 898 008e F3D0     		beq	.L46
+ 248:Src/ILI9341_GFX.c **** 							{
+ 899              		.loc 1 248 8 is_stmt 1 view .LVU257
+ 248:Src/ILI9341_GFX.c **** 							{
+ 900              		.loc 1 248 10 is_stmt 0 view .LVU258
+ 901 0090 012E     		cmp	r6, #1
+ 902 0092 E1D1     		bne	.L47
+ 250:Src/ILI9341_GFX.c **** 							}
+ 903              		.loc 1 250 15 is_stmt 1 view .LVU259
+ 904 0094 4A46     		mov	r2, r9
+ 905 0096 08EB0401 		add	r1, r8, r4
+ 906 009a 7819     		adds	r0, r7, r5
+ 907 009c FFF7FEFF 		bl	ILI9341_Draw_Pixel
+ 908              	.LVL113:
+ 909 00a0 EAE7     		b	.L46
+ 910              	.L53:
+ 245:Src/ILI9341_GFX.c ****         for (i=0; i<CHAR_HEIGHT; i++) {
+ 911              		.loc 1 245 29 discriminator 2 view .LVU260
+ 245:Src/ILI9341_GFX.c ****         for (i=0; i<CHAR_HEIGHT; i++) {
+ 912              		.loc 1 245 30 is_stmt 0 discriminator 2 view .LVU261
+ 913 00a2 0135     		adds	r5, r5, #1
+ 914              	.LVL114:
+ 245:Src/ILI9341_GFX.c ****         for (i=0; i<CHAR_HEIGHT; i++) {
+ 915              		.loc 1 245 30 discriminator 2 view .LVU262
+ 916 00a4 EDB2     		uxtb	r5, r5
+ 917              	.LVL115:
+ 918              	.L45:
+ 245:Src/ILI9341_GFX.c ****         for (i=0; i<CHAR_HEIGHT; i++) {
+ 919              		.loc 1 245 15 is_stmt 1 discriminator 1 view .LVU263
+ 245:Src/ILI9341_GFX.c ****         for (i=0; i<CHAR_HEIGHT; i++) {
+ 920              		.loc 1 245 5 is_stmt 0 discriminator 1 view .LVU264
+ 921 00a6 052D     		cmp	r5, #5
+ 922 00a8 01D8     		bhi	.L54
+ 246:Src/ILI9341_GFX.c ****             if (temp[j] & (1<<i)) {			
+ 923              		.loc 1 246 15 view .LVU265
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 23
+
+
+ 924 00aa 0024     		movs	r4, #0
+ 925 00ac E6E7     		b	.L49
+ 926              	.L54:
+ 255:Src/ILI9341_GFX.c **** 							}
+ 256:Src/ILI9341_GFX.c ****             }						
+ 257:Src/ILI9341_GFX.c ****         }
+ 258:Src/ILI9341_GFX.c ****     }
+ 259:Src/ILI9341_GFX.c **** }
+ 927              		.loc 1 259 1 view .LVU266
+ 928 00ae 05B0     		add	sp, sp, #20
+ 929              	.LCFI13:
+ 930              		.cfi_def_cfa_offset 28
+ 931              		@ sp needed
+ 932 00b0 BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
+ 933              	.LVL116:
+ 934              	.L56:
+ 935              		.loc 1 259 1 view .LVU267
+ 936              		.align	2
+ 937              	.L55:
+ 938 00b4 00000000 		.word	.LANCHOR0
+ 939              		.cfi_endproc
+ 940              	.LFE145:
+ 942              		.section	.text.ILI9341_Draw_Text,"ax",%progbits
+ 943              		.align	1
+ 944              		.global	ILI9341_Draw_Text
+ 945              		.syntax unified
+ 946              		.thumb
+ 947              		.thumb_func
+ 948              		.fpu fpv5-d16
+ 950              	ILI9341_Draw_Text:
+ 951              	.LVL117:
+ 952              	.LFB146:
+ 260:Src/ILI9341_GFX.c **** 
+ 261:Src/ILI9341_GFX.c **** /*Draws an array of characters (fonts imported from fonts.h) at X,Y location with specified font co
+ 262:Src/ILI9341_GFX.c **** /*See fonts.h implementation of font on what is required for changing to a different font when swit
+ 263:Src/ILI9341_GFX.c **** void ILI9341_Draw_Text(const char* Text, uint8_t X, uint8_t Y, uint16_t Colour, uint16_t Size, uint
+ 264:Src/ILI9341_GFX.c **** {
+ 953              		.loc 1 264 1 is_stmt 1 view -0
+ 954              		.cfi_startproc
+ 955              		@ args = 8, pretend = 0, frame = 0
+ 956              		@ frame_needed = 0, uses_anonymous_args = 0
+ 957              		.loc 1 264 1 is_stmt 0 view .LVU269
+ 958 0000 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
+ 959              	.LCFI14:
+ 960              		.cfi_def_cfa_offset 28
+ 961              		.cfi_offset 4, -28
+ 962              		.cfi_offset 5, -24
+ 963              		.cfi_offset 6, -20
+ 964              		.cfi_offset 7, -16
+ 965              		.cfi_offset 8, -12
+ 966              		.cfi_offset 9, -8
+ 967              		.cfi_offset 14, -4
+ 968 0004 83B0     		sub	sp, sp, #12
+ 969              	.LCFI15:
+ 970              		.cfi_def_cfa_offset 40
+ 971 0006 0446     		mov	r4, r0
+ 972 0008 0D46     		mov	r5, r1
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 24
+
+
+ 973 000a 9046     		mov	r8, r2
+ 974 000c 1F46     		mov	r7, r3
+ 975 000e BDF82860 		ldrh	r6, [sp, #40]
+ 976 0012 BDF82C90 		ldrh	r9, [sp, #44]
+ 265:Src/ILI9341_GFX.c ****     while (*Text) {
+ 977              		.loc 1 265 5 is_stmt 1 view .LVU270
+ 978              	.LVL118:
+ 979              	.L58:
+ 980              		.loc 1 265 11 view .LVU271
+ 981              		.loc 1 265 12 is_stmt 0 view .LVU272
+ 982 0016 2078     		ldrb	r0, [r4]	@ zero_extendqisi2
+ 983              		.loc 1 265 11 view .LVU273
+ 984 0018 70B1     		cbz	r0, .L61
+ 266:Src/ILI9341_GFX.c ****         ILI9341_Draw_Char(*Text++, X, Y, Colour, Size, Background_Colour);
+ 985              		.loc 1 266 9 is_stmt 1 view .LVU274
+ 986              		.loc 1 266 32 is_stmt 0 view .LVU275
+ 987 001a 0134     		adds	r4, r4, #1
+ 988              	.LVL119:
+ 989              		.loc 1 266 9 view .LVU276
+ 990 001c CDF80490 		str	r9, [sp, #4]
+ 991 0020 0096     		str	r6, [sp]
+ 992 0022 3B46     		mov	r3, r7
+ 993 0024 4246     		mov	r2, r8
+ 994 0026 2946     		mov	r1, r5
+ 995 0028 FFF7FEFF 		bl	ILI9341_Draw_Char
+ 996              	.LVL120:
+ 267:Src/ILI9341_GFX.c ****         X += CHAR_WIDTH*Size;
+ 997              		.loc 1 267 9 is_stmt 1 view .LVU277
+ 998              		.loc 1 267 11 is_stmt 0 view .LVU278
+ 999 002c 06EB4601 		add	r1, r6, r6, lsl #1
+ 1000 0030 05EB4101 		add	r1, r5, r1, lsl #1
+ 1001 0034 CDB2     		uxtb	r5, r1
+ 1002              	.LVL121:
+ 1003              		.loc 1 267 11 view .LVU279
+ 1004 0036 EEE7     		b	.L58
+ 1005              	.L61:
+ 268:Src/ILI9341_GFX.c ****     }
+ 269:Src/ILI9341_GFX.c **** }
+ 1006              		.loc 1 269 1 view .LVU280
+ 1007 0038 03B0     		add	sp, sp, #12
+ 1008              	.LCFI16:
+ 1009              		.cfi_def_cfa_offset 28
+ 1010              		@ sp needed
+ 1011 003a BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
+ 1012              		.loc 1 269 1 view .LVU281
+ 1013              		.cfi_endproc
+ 1014              	.LFE146:
+ 1016              		.section	.text.ILI9341_Draw_Image,"ax",%progbits
+ 1017              		.align	1
+ 1018              		.global	ILI9341_Draw_Image
+ 1019              		.syntax unified
+ 1020              		.thumb
+ 1021              		.thumb_func
+ 1022              		.fpu fpv5-d16
+ 1024              	ILI9341_Draw_Image:
+ 1025              	.LVL122:
+ 1026              	.LFB147:
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 25
+
+
+ 270:Src/ILI9341_GFX.c **** 
+ 271:Src/ILI9341_GFX.c **** /*Draws a full screen picture from flash. Image converted from RGB .jpeg/other to C array using onl
+ 272:Src/ILI9341_GFX.c **** //USING CONVERTER: http://www.digole.com/tools/PicturetoC_Hex_converter.php
+ 273:Src/ILI9341_GFX.c **** //65K colour (2Bytes / Pixel)
+ 274:Src/ILI9341_GFX.c **** void ILI9341_Draw_Image(const char* Image_Array, uint8_t Orientation)
+ 275:Src/ILI9341_GFX.c **** {
+ 1027              		.loc 1 275 1 is_stmt 1 view -0
+ 1028              		.cfi_startproc
+ 1029              		@ args = 0, pretend = 0, frame = 504
+ 1030              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1031              		.loc 1 275 1 is_stmt 0 view .LVU283
+ 1032 0000 70B5     		push	{r4, r5, r6, lr}
+ 1033              	.LCFI17:
+ 1034              		.cfi_def_cfa_offset 16
+ 1035              		.cfi_offset 4, -16
+ 1036              		.cfi_offset 5, -12
+ 1037              		.cfi_offset 6, -8
+ 1038              		.cfi_offset 14, -4
+ 1039 0002 FEB0     		sub	sp, sp, #504
+ 1040              	.LCFI18:
+ 1041              		.cfi_def_cfa_offset 520
+ 1042 0004 0446     		mov	r4, r0
+ 276:Src/ILI9341_GFX.c **** 	if(Orientation == SCREEN_HORIZONTAL_1)
+ 1043              		.loc 1 276 2 is_stmt 1 view .LVU284
+ 1044              		.loc 1 276 4 is_stmt 0 view .LVU285
+ 1045 0006 0129     		cmp	r1, #1
+ 1046 0008 08D0     		beq	.L84
+ 277:Src/ILI9341_GFX.c **** 	{
+ 278:Src/ILI9341_GFX.c **** 		ILI9341_Set_Rotation(SCREEN_HORIZONTAL_1);
+ 279:Src/ILI9341_GFX.c **** 		ILI9341_Set_Address(0,0,ILI9341_SCREEN_WIDTH,ILI9341_SCREEN_HEIGHT);
+ 280:Src/ILI9341_GFX.c **** 			
+ 281:Src/ILI9341_GFX.c **** 		HAL_GPIO_WritePin(GPIOC, DC_Pin, GPIO_PIN_SET);	
+ 282:Src/ILI9341_GFX.c **** 		HAL_GPIO_WritePin(GPIOC, CS_Pin, GPIO_PIN_RESET);
+ 283:Src/ILI9341_GFX.c **** 		
+ 284:Src/ILI9341_GFX.c **** 		unsigned char Temp_small_buffer[BURST_MAX_SIZE];
+ 285:Src/ILI9341_GFX.c **** 		uint32_t counter = 0;
+ 286:Src/ILI9341_GFX.c **** 		for(uint32_t i = 0; i < ILI9341_SCREEN_WIDTH*ILI9341_SCREEN_HEIGHT*2/BURST_MAX_SIZE; i++)
+ 287:Src/ILI9341_GFX.c **** 		{			
+ 288:Src/ILI9341_GFX.c **** 				for(uint32_t k = 0; k< BURST_MAX_SIZE; k++)
+ 289:Src/ILI9341_GFX.c **** 				{
+ 290:Src/ILI9341_GFX.c **** 					Temp_small_buffer[k]	= Image_Array[counter+k];		
+ 291:Src/ILI9341_GFX.c **** 				}						
+ 292:Src/ILI9341_GFX.c **** 				HAL_SPI_Transmit(&hspi5, (unsigned char*)Temp_small_buffer, BURST_MAX_SIZE, 10);	
+ 293:Src/ILI9341_GFX.c **** 				counter += BURST_MAX_SIZE;			
+ 294:Src/ILI9341_GFX.c **** 		}
+ 295:Src/ILI9341_GFX.c **** 		HAL_GPIO_WritePin(GPIOC, CS_Pin, GPIO_PIN_SET);
+ 296:Src/ILI9341_GFX.c **** 	}
+ 297:Src/ILI9341_GFX.c **** 	else if(Orientation == SCREEN_HORIZONTAL_2)
+ 1047              		.loc 1 297 7 is_stmt 1 view .LVU286
+ 1048              		.loc 1 297 9 is_stmt 0 view .LVU287
+ 1049 000a 0329     		cmp	r1, #3
+ 1050 000c 3ED0     		beq	.L85
+ 298:Src/ILI9341_GFX.c **** 	{
+ 299:Src/ILI9341_GFX.c **** 		ILI9341_Set_Rotation(SCREEN_HORIZONTAL_2);
+ 300:Src/ILI9341_GFX.c **** 		ILI9341_Set_Address(0,0,ILI9341_SCREEN_WIDTH,ILI9341_SCREEN_HEIGHT);
+ 301:Src/ILI9341_GFX.c **** 			
+ 302:Src/ILI9341_GFX.c **** 		HAL_GPIO_WritePin(GPIOC, DC_Pin, GPIO_PIN_SET);	
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 26
+
+
+ 303:Src/ILI9341_GFX.c **** 		HAL_GPIO_WritePin(GPIOC, CS_Pin, GPIO_PIN_RESET);
+ 304:Src/ILI9341_GFX.c **** 		
+ 305:Src/ILI9341_GFX.c **** 		unsigned char Temp_small_buffer[BURST_MAX_SIZE];
+ 306:Src/ILI9341_GFX.c **** 		uint32_t counter = 0;
+ 307:Src/ILI9341_GFX.c **** 		for(uint32_t i = 0; i < ILI9341_SCREEN_WIDTH*ILI9341_SCREEN_HEIGHT*2/BURST_MAX_SIZE; i++)
+ 308:Src/ILI9341_GFX.c **** 		{			
+ 309:Src/ILI9341_GFX.c **** 				for(uint32_t k = 0; k< BURST_MAX_SIZE; k++)
+ 310:Src/ILI9341_GFX.c **** 				{
+ 311:Src/ILI9341_GFX.c **** 					Temp_small_buffer[k]	= Image_Array[counter+k];		
+ 312:Src/ILI9341_GFX.c **** 				}						
+ 313:Src/ILI9341_GFX.c **** 				HAL_SPI_Transmit(&hspi5, (unsigned char*)Temp_small_buffer, BURST_MAX_SIZE, 10);	
+ 314:Src/ILI9341_GFX.c **** 				counter += BURST_MAX_SIZE;			
+ 315:Src/ILI9341_GFX.c **** 		}
+ 316:Src/ILI9341_GFX.c **** 		HAL_GPIO_WritePin(GPIOC, CS_Pin, GPIO_PIN_SET);
+ 317:Src/ILI9341_GFX.c **** 	}
+ 318:Src/ILI9341_GFX.c **** 	else if(Orientation == SCREEN_VERTICAL_2)
+ 1051              		.loc 1 318 7 is_stmt 1 view .LVU288
+ 1052              		.loc 1 318 9 is_stmt 0 view .LVU289
+ 1053 000e 0229     		cmp	r1, #2
+ 1054 0010 74D0     		beq	.L86
+ 319:Src/ILI9341_GFX.c **** 	{
+ 320:Src/ILI9341_GFX.c **** 		ILI9341_Set_Rotation(SCREEN_VERTICAL_2);
+ 321:Src/ILI9341_GFX.c **** 		ILI9341_Set_Address(0,0,ILI9341_SCREEN_HEIGHT,ILI9341_SCREEN_WIDTH);
+ 322:Src/ILI9341_GFX.c **** 			
+ 323:Src/ILI9341_GFX.c **** 		HAL_GPIO_WritePin(GPIOC, DC_Pin, GPIO_PIN_SET);	
+ 324:Src/ILI9341_GFX.c **** 		HAL_GPIO_WritePin(GPIOC, CS_Pin, GPIO_PIN_RESET);
+ 325:Src/ILI9341_GFX.c **** 		
+ 326:Src/ILI9341_GFX.c **** 		unsigned char Temp_small_buffer[BURST_MAX_SIZE];
+ 327:Src/ILI9341_GFX.c **** 		uint32_t counter = 0;
+ 328:Src/ILI9341_GFX.c **** 		for(uint32_t i = 0; i < ILI9341_SCREEN_WIDTH*ILI9341_SCREEN_HEIGHT*2/BURST_MAX_SIZE; i++)
+ 329:Src/ILI9341_GFX.c **** 		{			
+ 330:Src/ILI9341_GFX.c **** 				for(uint32_t k = 0; k< BURST_MAX_SIZE; k++)
+ 331:Src/ILI9341_GFX.c **** 				{
+ 332:Src/ILI9341_GFX.c **** 					Temp_small_buffer[k]	= Image_Array[counter+k];		
+ 333:Src/ILI9341_GFX.c **** 				}						
+ 334:Src/ILI9341_GFX.c **** 				HAL_SPI_Transmit(&hspi5, (unsigned char*)Temp_small_buffer, BURST_MAX_SIZE, 10);	
+ 335:Src/ILI9341_GFX.c **** 				counter += BURST_MAX_SIZE;			
+ 336:Src/ILI9341_GFX.c **** 		}
+ 337:Src/ILI9341_GFX.c **** 		HAL_GPIO_WritePin(GPIOC, CS_Pin, GPIO_PIN_SET);
+ 338:Src/ILI9341_GFX.c **** 	}
+ 339:Src/ILI9341_GFX.c **** 	else if(Orientation == SCREEN_VERTICAL_1)
+ 1055              		.loc 1 339 7 is_stmt 1 view .LVU290
+ 1056              		.loc 1 339 9 is_stmt 0 view .LVU291
+ 1057 0012 0029     		cmp	r1, #0
+ 1058 0014 00F0AA80 		beq	.L87
+ 1059              	.LVL123:
+ 1060              	.L62:
+ 340:Src/ILI9341_GFX.c **** 	{
+ 341:Src/ILI9341_GFX.c **** 		ILI9341_Set_Rotation(SCREEN_VERTICAL_1);
+ 342:Src/ILI9341_GFX.c **** 		ILI9341_Set_Address(0,0,ILI9341_SCREEN_HEIGHT,ILI9341_SCREEN_WIDTH);
+ 343:Src/ILI9341_GFX.c **** 			
+ 344:Src/ILI9341_GFX.c **** 		HAL_GPIO_WritePin(GPIOC, DC_Pin, GPIO_PIN_SET);	
+ 345:Src/ILI9341_GFX.c **** 		HAL_GPIO_WritePin(GPIOC, CS_Pin, GPIO_PIN_RESET);
+ 346:Src/ILI9341_GFX.c **** 		
+ 347:Src/ILI9341_GFX.c **** 		unsigned char Temp_small_buffer[BURST_MAX_SIZE];
+ 348:Src/ILI9341_GFX.c **** 		uint32_t counter = 0;
+ 349:Src/ILI9341_GFX.c **** 		for(uint32_t i = 0; i < ILI9341_SCREEN_WIDTH*ILI9341_SCREEN_HEIGHT*2/BURST_MAX_SIZE; i++)
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 27
+
+
+ 350:Src/ILI9341_GFX.c **** 		{			
+ 351:Src/ILI9341_GFX.c **** 				for(uint32_t k = 0; k< BURST_MAX_SIZE; k++)
+ 352:Src/ILI9341_GFX.c **** 				{
+ 353:Src/ILI9341_GFX.c **** 					Temp_small_buffer[k]	= Image_Array[counter+k];		
+ 354:Src/ILI9341_GFX.c **** 				}						
+ 355:Src/ILI9341_GFX.c **** 				HAL_SPI_Transmit(&hspi5, (unsigned char*)Temp_small_buffer, BURST_MAX_SIZE, 10);	
+ 356:Src/ILI9341_GFX.c **** 				counter += BURST_MAX_SIZE;			
+ 357:Src/ILI9341_GFX.c **** 		}
+ 358:Src/ILI9341_GFX.c **** 		HAL_GPIO_WritePin(GPIOC, CS_Pin, GPIO_PIN_SET);
+ 359:Src/ILI9341_GFX.c **** 	}
+ 360:Src/ILI9341_GFX.c **** }
+ 1061              		.loc 1 360 1 view .LVU292
+ 1062 0018 7EB0     		add	sp, sp, #504
+ 1063              	.LCFI19:
+ 1064              		.cfi_remember_state
+ 1065              		.cfi_def_cfa_offset 16
+ 1066              		@ sp needed
+ 1067 001a 70BD     		pop	{r4, r5, r6, pc}
+ 1068              	.LVL124:
+ 1069              	.L84:
+ 1070              	.LCFI20:
+ 1071              		.cfi_restore_state
+ 1072              	.LBB6:
+ 278:Src/ILI9341_GFX.c **** 		ILI9341_Set_Address(0,0,ILI9341_SCREEN_WIDTH,ILI9341_SCREEN_HEIGHT);
+ 1073              		.loc 1 278 3 is_stmt 1 view .LVU293
+ 1074 001c 0120     		movs	r0, #1
+ 1075              	.LVL125:
+ 278:Src/ILI9341_GFX.c **** 		ILI9341_Set_Address(0,0,ILI9341_SCREEN_WIDTH,ILI9341_SCREEN_HEIGHT);
+ 1076              		.loc 1 278 3 is_stmt 0 view .LVU294
+ 1077 001e FFF7FEFF 		bl	ILI9341_Set_Rotation
+ 1078              	.LVL126:
+ 279:Src/ILI9341_GFX.c **** 			
+ 1079              		.loc 1 279 3 is_stmt 1 view .LVU295
+ 1080 0022 F023     		movs	r3, #240
+ 1081 0024 4FF4A072 		mov	r2, #320
+ 1082 0028 0021     		movs	r1, #0
+ 1083 002a 0846     		mov	r0, r1
+ 1084 002c FFF7FEFF 		bl	ILI9341_Set_Address
+ 1085              	.LVL127:
+ 281:Src/ILI9341_GFX.c **** 		HAL_GPIO_WritePin(GPIOC, CS_Pin, GPIO_PIN_RESET);
+ 1086              		.loc 1 281 3 view .LVU296
+ 1087 0030 6A4D     		ldr	r5, .L95
+ 1088 0032 0122     		movs	r2, #1
+ 1089 0034 4FF40071 		mov	r1, #512
+ 1090 0038 2846     		mov	r0, r5
+ 1091 003a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1092              	.LVL128:
+ 282:Src/ILI9341_GFX.c **** 		
+ 1093              		.loc 1 282 3 view .LVU297
+ 1094 003e 0022     		movs	r2, #0
+ 1095 0040 4FF48071 		mov	r1, #256
+ 1096 0044 2846     		mov	r0, r5
+ 1097 0046 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1098              	.LVL129:
+ 284:Src/ILI9341_GFX.c **** 		uint32_t counter = 0;
+ 1099              		.loc 1 284 3 view .LVU298
+ 285:Src/ILI9341_GFX.c **** 		for(uint32_t i = 0; i < ILI9341_SCREEN_WIDTH*ILI9341_SCREEN_HEIGHT*2/BURST_MAX_SIZE; i++)
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 28
+
+
+ 1100              		.loc 1 285 3 view .LVU299
+ 286:Src/ILI9341_GFX.c **** 		{			
+ 1101              		.loc 1 286 3 view .LVU300
+ 1102              	.LBB7:
+ 286:Src/ILI9341_GFX.c **** 		{			
+ 1103              		.loc 1 286 7 view .LVU301
+ 286:Src/ILI9341_GFX.c **** 		{			
+ 1104              		.loc 1 286 16 is_stmt 0 view .LVU302
+ 1105 004a 0026     		movs	r6, #0
+ 1106              	.LBE7:
+ 285:Src/ILI9341_GFX.c **** 		for(uint32_t i = 0; i < ILI9341_SCREEN_WIDTH*ILI9341_SCREEN_HEIGHT*2/BURST_MAX_SIZE; i++)
+ 1107              		.loc 1 285 12 view .LVU303
+ 1108 004c 3546     		mov	r5, r6
+ 1109              	.LBB10:
+ 286:Src/ILI9341_GFX.c **** 		{			
+ 1110              		.loc 1 286 3 view .LVU304
+ 1111 004e 11E0     		b	.L64
+ 1112              	.LVL130:
+ 1113              	.L65:
+ 1114              	.LBB8:
+ 290:Src/ILI9341_GFX.c **** 				}						
+ 1115              		.loc 1 290 6 is_stmt 1 discriminator 3 view .LVU305
+ 290:Src/ILI9341_GFX.c **** 				}						
+ 1116              		.loc 1 290 48 is_stmt 0 discriminator 3 view .LVU306
+ 1117 0050 EA18     		adds	r2, r5, r3
+ 290:Src/ILI9341_GFX.c **** 				}						
+ 1118              		.loc 1 290 40 discriminator 3 view .LVU307
+ 1119 0052 A15C     		ldrb	r1, [r4, r2]	@ zero_extendqisi2
+ 290:Src/ILI9341_GFX.c **** 				}						
+ 1120              		.loc 1 290 27 discriminator 3 view .LVU308
+ 1121 0054 01AA     		add	r2, sp, #4
+ 1122 0056 D154     		strb	r1, [r2, r3]
+ 288:Src/ILI9341_GFX.c **** 				{
+ 1123              		.loc 1 288 44 is_stmt 1 discriminator 3 view .LVU309
+ 288:Src/ILI9341_GFX.c **** 				{
+ 1124              		.loc 1 288 45 is_stmt 0 discriminator 3 view .LVU310
+ 1125 0058 0133     		adds	r3, r3, #1
+ 1126              	.LVL131:
+ 1127              	.L66:
+ 288:Src/ILI9341_GFX.c **** 				{
+ 1128              		.loc 1 288 25 is_stmt 1 discriminator 1 view .LVU311
+ 288:Src/ILI9341_GFX.c **** 				{
+ 1129              		.loc 1 288 5 is_stmt 0 discriminator 1 view .LVU312
+ 1130 005a B3F5FA7F 		cmp	r3, #500
+ 1131 005e F7D3     		bcc	.L65
+ 1132              	.LBE8:
+ 292:Src/ILI9341_GFX.c **** 				counter += BURST_MAX_SIZE;			
+ 1133              		.loc 1 292 5 is_stmt 1 discriminator 2 view .LVU313
+ 1134 0060 0A23     		movs	r3, #10
+ 1135              	.LVL132:
+ 292:Src/ILI9341_GFX.c **** 				counter += BURST_MAX_SIZE;			
+ 1136              		.loc 1 292 5 is_stmt 0 discriminator 2 view .LVU314
+ 1137 0062 4FF4FA72 		mov	r2, #500
+ 1138 0066 01A9     		add	r1, sp, #4
+ 1139 0068 5D48     		ldr	r0, .L95+4
+ 1140 006a FFF7FEFF 		bl	HAL_SPI_Transmit
+ 1141              	.LVL133:
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 29
+
+
+ 293:Src/ILI9341_GFX.c **** 		}
+ 1142              		.loc 1 293 5 is_stmt 1 discriminator 2 view .LVU315
+ 293:Src/ILI9341_GFX.c **** 		}
+ 1143              		.loc 1 293 13 is_stmt 0 discriminator 2 view .LVU316
+ 1144 006e 05F5FA75 		add	r5, r5, #500
+ 1145              	.LVL134:
+ 286:Src/ILI9341_GFX.c **** 		{			
+ 1146              		.loc 1 286 88 is_stmt 1 discriminator 2 view .LVU317
+ 286:Src/ILI9341_GFX.c **** 		{			
+ 1147              		.loc 1 286 89 is_stmt 0 discriminator 2 view .LVU318
+ 1148 0072 0136     		adds	r6, r6, #1
+ 1149              	.LVL135:
+ 1150              	.L64:
+ 286:Src/ILI9341_GFX.c **** 		{			
+ 1151              		.loc 1 286 23 is_stmt 1 discriminator 1 view .LVU319
+ 286:Src/ILI9341_GFX.c **** 		{			
+ 1152              		.loc 1 286 3 is_stmt 0 discriminator 1 view .LVU320
+ 1153 0074 B6F5997F 		cmp	r6, #306
+ 1154 0078 01D8     		bhi	.L88
+ 1155              	.LBB9:
+ 288:Src/ILI9341_GFX.c **** 				{
+ 1156              		.loc 1 288 18 view .LVU321
+ 1157 007a 0023     		movs	r3, #0
+ 1158 007c EDE7     		b	.L66
+ 1159              	.L88:
+ 1160              	.LBE9:
+ 1161              	.LBE10:
+ 295:Src/ILI9341_GFX.c **** 	}
+ 1162              		.loc 1 295 3 is_stmt 1 view .LVU322
+ 1163 007e 0122     		movs	r2, #1
+ 1164 0080 4FF48071 		mov	r1, #256
+ 1165 0084 5548     		ldr	r0, .L95
+ 1166 0086 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1167              	.LVL136:
+ 1168              	.LBE6:
+ 1169 008a C5E7     		b	.L62
+ 1170              	.LVL137:
+ 1171              	.L85:
+ 1172              	.LBB11:
+ 299:Src/ILI9341_GFX.c **** 		ILI9341_Set_Address(0,0,ILI9341_SCREEN_WIDTH,ILI9341_SCREEN_HEIGHT);
+ 1173              		.loc 1 299 3 view .LVU323
+ 1174 008c 0320     		movs	r0, #3
+ 1175              	.LVL138:
+ 299:Src/ILI9341_GFX.c **** 		ILI9341_Set_Address(0,0,ILI9341_SCREEN_WIDTH,ILI9341_SCREEN_HEIGHT);
+ 1176              		.loc 1 299 3 is_stmt 0 view .LVU324
+ 1177 008e FFF7FEFF 		bl	ILI9341_Set_Rotation
+ 1178              	.LVL139:
+ 300:Src/ILI9341_GFX.c **** 			
+ 1179              		.loc 1 300 3 is_stmt 1 view .LVU325
+ 1180 0092 F023     		movs	r3, #240
+ 1181 0094 4FF4A072 		mov	r2, #320
+ 1182 0098 0021     		movs	r1, #0
+ 1183 009a 0846     		mov	r0, r1
+ 1184 009c FFF7FEFF 		bl	ILI9341_Set_Address
+ 1185              	.LVL140:
+ 302:Src/ILI9341_GFX.c **** 		HAL_GPIO_WritePin(GPIOC, CS_Pin, GPIO_PIN_RESET);
+ 1186              		.loc 1 302 3 view .LVU326
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 30
+
+
+ 1187 00a0 4E4D     		ldr	r5, .L95
+ 1188 00a2 0122     		movs	r2, #1
+ 1189 00a4 4FF40071 		mov	r1, #512
+ 1190 00a8 2846     		mov	r0, r5
+ 1191 00aa FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1192              	.LVL141:
+ 303:Src/ILI9341_GFX.c **** 		
+ 1193              		.loc 1 303 3 view .LVU327
+ 1194 00ae 0022     		movs	r2, #0
+ 1195 00b0 4FF48071 		mov	r1, #256
+ 1196 00b4 2846     		mov	r0, r5
+ 1197 00b6 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1198              	.LVL142:
+ 305:Src/ILI9341_GFX.c **** 		uint32_t counter = 0;
+ 1199              		.loc 1 305 3 view .LVU328
+ 306:Src/ILI9341_GFX.c **** 		for(uint32_t i = 0; i < ILI9341_SCREEN_WIDTH*ILI9341_SCREEN_HEIGHT*2/BURST_MAX_SIZE; i++)
+ 1200              		.loc 1 306 3 view .LVU329
+ 307:Src/ILI9341_GFX.c **** 		{			
+ 1201              		.loc 1 307 3 view .LVU330
+ 1202              	.LBB12:
+ 307:Src/ILI9341_GFX.c **** 		{			
+ 1203              		.loc 1 307 7 view .LVU331
+ 307:Src/ILI9341_GFX.c **** 		{			
+ 1204              		.loc 1 307 16 is_stmt 0 view .LVU332
+ 1205 00ba 0026     		movs	r6, #0
+ 1206              	.LBE12:
+ 306:Src/ILI9341_GFX.c **** 		for(uint32_t i = 0; i < ILI9341_SCREEN_WIDTH*ILI9341_SCREEN_HEIGHT*2/BURST_MAX_SIZE; i++)
+ 1207              		.loc 1 306 12 view .LVU333
+ 1208 00bc 3546     		mov	r5, r6
+ 1209              	.LBB14:
+ 307:Src/ILI9341_GFX.c **** 		{			
+ 1210              		.loc 1 307 3 view .LVU334
+ 1211 00be 09E0     		b	.L69
+ 1212              	.LVL143:
+ 1213              	.L90:
+ 313:Src/ILI9341_GFX.c **** 				counter += BURST_MAX_SIZE;			
+ 1214              		.loc 1 313 5 is_stmt 1 discriminator 2 view .LVU335
+ 1215 00c0 0A23     		movs	r3, #10
+ 1216              	.LVL144:
+ 313:Src/ILI9341_GFX.c **** 				counter += BURST_MAX_SIZE;			
+ 1217              		.loc 1 313 5 is_stmt 0 discriminator 2 view .LVU336
+ 1218 00c2 4FF4FA72 		mov	r2, #500
+ 1219 00c6 01A9     		add	r1, sp, #4
+ 1220 00c8 4548     		ldr	r0, .L95+4
+ 1221 00ca FFF7FEFF 		bl	HAL_SPI_Transmit
+ 1222              	.LVL145:
+ 314:Src/ILI9341_GFX.c **** 		}
+ 1223              		.loc 1 314 5 is_stmt 1 discriminator 2 view .LVU337
+ 314:Src/ILI9341_GFX.c **** 		}
+ 1224              		.loc 1 314 13 is_stmt 0 discriminator 2 view .LVU338
+ 1225 00ce 05F5FA75 		add	r5, r5, #500
+ 1226              	.LVL146:
+ 307:Src/ILI9341_GFX.c **** 		{			
+ 1227              		.loc 1 307 88 is_stmt 1 discriminator 2 view .LVU339
+ 307:Src/ILI9341_GFX.c **** 		{			
+ 1228              		.loc 1 307 89 is_stmt 0 discriminator 2 view .LVU340
+ 1229 00d2 0136     		adds	r6, r6, #1
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 31
+
+
+ 1230              	.LVL147:
+ 1231              	.L69:
+ 307:Src/ILI9341_GFX.c **** 		{			
+ 1232              		.loc 1 307 23 is_stmt 1 discriminator 1 view .LVU341
+ 307:Src/ILI9341_GFX.c **** 		{			
+ 1233              		.loc 1 307 3 is_stmt 0 discriminator 1 view .LVU342
+ 1234 00d4 B6F5997F 		cmp	r6, #306
+ 1235 00d8 09D8     		bhi	.L89
+ 1236              	.LBB13:
+ 309:Src/ILI9341_GFX.c **** 				{
+ 1237              		.loc 1 309 18 view .LVU343
+ 1238 00da 0023     		movs	r3, #0
+ 1239              	.L71:
+ 1240              	.LVL148:
+ 309:Src/ILI9341_GFX.c **** 				{
+ 1241              		.loc 1 309 25 is_stmt 1 discriminator 1 view .LVU344
+ 309:Src/ILI9341_GFX.c **** 				{
+ 1242              		.loc 1 309 5 is_stmt 0 discriminator 1 view .LVU345
+ 1243 00dc B3F5FA7F 		cmp	r3, #500
+ 1244 00e0 EED2     		bcs	.L90
+ 311:Src/ILI9341_GFX.c **** 				}						
+ 1245              		.loc 1 311 6 is_stmt 1 discriminator 3 view .LVU346
+ 311:Src/ILI9341_GFX.c **** 				}						
+ 1246              		.loc 1 311 48 is_stmt 0 discriminator 3 view .LVU347
+ 1247 00e2 EA18     		adds	r2, r5, r3
+ 311:Src/ILI9341_GFX.c **** 				}						
+ 1248              		.loc 1 311 40 discriminator 3 view .LVU348
+ 1249 00e4 A15C     		ldrb	r1, [r4, r2]	@ zero_extendqisi2
+ 311:Src/ILI9341_GFX.c **** 				}						
+ 1250              		.loc 1 311 27 discriminator 3 view .LVU349
+ 1251 00e6 01AA     		add	r2, sp, #4
+ 1252 00e8 D154     		strb	r1, [r2, r3]
+ 309:Src/ILI9341_GFX.c **** 				{
+ 1253              		.loc 1 309 44 is_stmt 1 discriminator 3 view .LVU350
+ 309:Src/ILI9341_GFX.c **** 				{
+ 1254              		.loc 1 309 45 is_stmt 0 discriminator 3 view .LVU351
+ 1255 00ea 0133     		adds	r3, r3, #1
+ 1256              	.LVL149:
+ 309:Src/ILI9341_GFX.c **** 				{
+ 1257              		.loc 1 309 45 discriminator 3 view .LVU352
+ 1258 00ec F6E7     		b	.L71
+ 1259              	.LVL150:
+ 1260              	.L89:
+ 309:Src/ILI9341_GFX.c **** 				{
+ 1261              		.loc 1 309 45 discriminator 3 view .LVU353
+ 1262              	.LBE13:
+ 1263              	.LBE14:
+ 316:Src/ILI9341_GFX.c **** 	}
+ 1264              		.loc 1 316 3 is_stmt 1 view .LVU354
+ 1265 00ee 0122     		movs	r2, #1
+ 1266 00f0 4FF48071 		mov	r1, #256
+ 1267 00f4 3948     		ldr	r0, .L95
+ 1268 00f6 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1269              	.LVL151:
+ 1270              	.LBE11:
+ 1271 00fa 8DE7     		b	.L62
+ 1272              	.LVL152:
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 32
+
+
+ 1273              	.L86:
+ 1274              	.LBB15:
+ 320:Src/ILI9341_GFX.c **** 		ILI9341_Set_Address(0,0,ILI9341_SCREEN_HEIGHT,ILI9341_SCREEN_WIDTH);
+ 1275              		.loc 1 320 3 view .LVU355
+ 1276 00fc 0220     		movs	r0, #2
+ 1277              	.LVL153:
+ 320:Src/ILI9341_GFX.c **** 		ILI9341_Set_Address(0,0,ILI9341_SCREEN_HEIGHT,ILI9341_SCREEN_WIDTH);
+ 1278              		.loc 1 320 3 is_stmt 0 view .LVU356
+ 1279 00fe FFF7FEFF 		bl	ILI9341_Set_Rotation
+ 1280              	.LVL154:
+ 321:Src/ILI9341_GFX.c **** 			
+ 1281              		.loc 1 321 3 is_stmt 1 view .LVU357
+ 1282 0102 4FF4A073 		mov	r3, #320
+ 1283 0106 F022     		movs	r2, #240
+ 1284 0108 0021     		movs	r1, #0
+ 1285 010a 0846     		mov	r0, r1
+ 1286 010c FFF7FEFF 		bl	ILI9341_Set_Address
+ 1287              	.LVL155:
+ 323:Src/ILI9341_GFX.c **** 		HAL_GPIO_WritePin(GPIOC, CS_Pin, GPIO_PIN_RESET);
+ 1288              		.loc 1 323 3 view .LVU358
+ 1289 0110 324D     		ldr	r5, .L95
+ 1290 0112 0122     		movs	r2, #1
+ 1291 0114 4FF40071 		mov	r1, #512
+ 1292 0118 2846     		mov	r0, r5
+ 1293 011a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1294              	.LVL156:
+ 324:Src/ILI9341_GFX.c **** 		
+ 1295              		.loc 1 324 3 view .LVU359
+ 1296 011e 0022     		movs	r2, #0
+ 1297 0120 4FF48071 		mov	r1, #256
+ 1298 0124 2846     		mov	r0, r5
+ 1299 0126 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1300              	.LVL157:
+ 326:Src/ILI9341_GFX.c **** 		uint32_t counter = 0;
+ 1301              		.loc 1 326 3 view .LVU360
+ 327:Src/ILI9341_GFX.c **** 		for(uint32_t i = 0; i < ILI9341_SCREEN_WIDTH*ILI9341_SCREEN_HEIGHT*2/BURST_MAX_SIZE; i++)
+ 1302              		.loc 1 327 3 view .LVU361
+ 328:Src/ILI9341_GFX.c **** 		{			
+ 1303              		.loc 1 328 3 view .LVU362
+ 1304              	.LBB16:
+ 328:Src/ILI9341_GFX.c **** 		{			
+ 1305              		.loc 1 328 7 view .LVU363
+ 328:Src/ILI9341_GFX.c **** 		{			
+ 1306              		.loc 1 328 16 is_stmt 0 view .LVU364
+ 1307 012a 0026     		movs	r6, #0
+ 1308              	.LBE16:
+ 327:Src/ILI9341_GFX.c **** 		for(uint32_t i = 0; i < ILI9341_SCREEN_WIDTH*ILI9341_SCREEN_HEIGHT*2/BURST_MAX_SIZE; i++)
+ 1309              		.loc 1 327 12 view .LVU365
+ 1310 012c 3546     		mov	r5, r6
+ 1311              	.LBB18:
+ 328:Src/ILI9341_GFX.c **** 		{			
+ 1312              		.loc 1 328 3 view .LVU366
+ 1313 012e 09E0     		b	.L73
+ 1314              	.LVL158:
+ 1315              	.L92:
+ 334:Src/ILI9341_GFX.c **** 				counter += BURST_MAX_SIZE;			
+ 1316              		.loc 1 334 5 is_stmt 1 discriminator 2 view .LVU367
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 33
+
+
+ 1317 0130 0A23     		movs	r3, #10
+ 1318              	.LVL159:
+ 334:Src/ILI9341_GFX.c **** 				counter += BURST_MAX_SIZE;			
+ 1319              		.loc 1 334 5 is_stmt 0 discriminator 2 view .LVU368
+ 1320 0132 4FF4FA72 		mov	r2, #500
+ 1321 0136 01A9     		add	r1, sp, #4
+ 1322 0138 2948     		ldr	r0, .L95+4
+ 1323 013a FFF7FEFF 		bl	HAL_SPI_Transmit
+ 1324              	.LVL160:
+ 335:Src/ILI9341_GFX.c **** 		}
+ 1325              		.loc 1 335 5 is_stmt 1 discriminator 2 view .LVU369
+ 335:Src/ILI9341_GFX.c **** 		}
+ 1326              		.loc 1 335 13 is_stmt 0 discriminator 2 view .LVU370
+ 1327 013e 05F5FA75 		add	r5, r5, #500
+ 1328              	.LVL161:
+ 328:Src/ILI9341_GFX.c **** 		{			
+ 1329              		.loc 1 328 88 is_stmt 1 discriminator 2 view .LVU371
+ 328:Src/ILI9341_GFX.c **** 		{			
+ 1330              		.loc 1 328 89 is_stmt 0 discriminator 2 view .LVU372
+ 1331 0142 0136     		adds	r6, r6, #1
+ 1332              	.LVL162:
+ 1333              	.L73:
+ 328:Src/ILI9341_GFX.c **** 		{			
+ 1334              		.loc 1 328 23 is_stmt 1 discriminator 1 view .LVU373
+ 328:Src/ILI9341_GFX.c **** 		{			
+ 1335              		.loc 1 328 3 is_stmt 0 discriminator 1 view .LVU374
+ 1336 0144 B6F5997F 		cmp	r6, #306
+ 1337 0148 09D8     		bhi	.L91
+ 1338              	.LBB17:
+ 330:Src/ILI9341_GFX.c **** 				{
+ 1339              		.loc 1 330 18 view .LVU375
+ 1340 014a 0023     		movs	r3, #0
+ 1341              	.L75:
+ 1342              	.LVL163:
+ 330:Src/ILI9341_GFX.c **** 				{
+ 1343              		.loc 1 330 25 is_stmt 1 discriminator 1 view .LVU376
+ 330:Src/ILI9341_GFX.c **** 				{
+ 1344              		.loc 1 330 5 is_stmt 0 discriminator 1 view .LVU377
+ 1345 014c B3F5FA7F 		cmp	r3, #500
+ 1346 0150 EED2     		bcs	.L92
+ 332:Src/ILI9341_GFX.c **** 				}						
+ 1347              		.loc 1 332 6 is_stmt 1 discriminator 3 view .LVU378
+ 332:Src/ILI9341_GFX.c **** 				}						
+ 1348              		.loc 1 332 48 is_stmt 0 discriminator 3 view .LVU379
+ 1349 0152 EA18     		adds	r2, r5, r3
+ 332:Src/ILI9341_GFX.c **** 				}						
+ 1350              		.loc 1 332 40 discriminator 3 view .LVU380
+ 1351 0154 A15C     		ldrb	r1, [r4, r2]	@ zero_extendqisi2
+ 332:Src/ILI9341_GFX.c **** 				}						
+ 1352              		.loc 1 332 27 discriminator 3 view .LVU381
+ 1353 0156 01AA     		add	r2, sp, #4
+ 1354 0158 D154     		strb	r1, [r2, r3]
+ 330:Src/ILI9341_GFX.c **** 				{
+ 1355              		.loc 1 330 44 is_stmt 1 discriminator 3 view .LVU382
+ 330:Src/ILI9341_GFX.c **** 				{
+ 1356              		.loc 1 330 45 is_stmt 0 discriminator 3 view .LVU383
+ 1357 015a 0133     		adds	r3, r3, #1
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 34
+
+
+ 1358              	.LVL164:
+ 330:Src/ILI9341_GFX.c **** 				{
+ 1359              		.loc 1 330 45 discriminator 3 view .LVU384
+ 1360 015c F6E7     		b	.L75
+ 1361              	.LVL165:
+ 1362              	.L91:
+ 330:Src/ILI9341_GFX.c **** 				{
+ 1363              		.loc 1 330 45 discriminator 3 view .LVU385
+ 1364              	.LBE17:
+ 1365              	.LBE18:
+ 337:Src/ILI9341_GFX.c **** 	}
+ 1366              		.loc 1 337 3 is_stmt 1 view .LVU386
+ 1367 015e 0122     		movs	r2, #1
+ 1368 0160 4FF48071 		mov	r1, #256
+ 1369 0164 1D48     		ldr	r0, .L95
+ 1370 0166 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1371              	.LVL166:
+ 1372              	.LBE15:
+ 1373 016a 55E7     		b	.L62
+ 1374              	.LVL167:
+ 1375              	.L87:
+ 1376              	.LBB19:
+ 341:Src/ILI9341_GFX.c **** 		ILI9341_Set_Address(0,0,ILI9341_SCREEN_HEIGHT,ILI9341_SCREEN_WIDTH);
+ 1377              		.loc 1 341 3 view .LVU387
+ 1378 016c 0020     		movs	r0, #0
+ 1379              	.LVL168:
+ 341:Src/ILI9341_GFX.c **** 		ILI9341_Set_Address(0,0,ILI9341_SCREEN_HEIGHT,ILI9341_SCREEN_WIDTH);
+ 1380              		.loc 1 341 3 is_stmt 0 view .LVU388
+ 1381 016e FFF7FEFF 		bl	ILI9341_Set_Rotation
+ 1382              	.LVL169:
+ 342:Src/ILI9341_GFX.c **** 			
+ 1383              		.loc 1 342 3 is_stmt 1 view .LVU389
+ 1384 0172 4FF4A073 		mov	r3, #320
+ 1385 0176 F022     		movs	r2, #240
+ 1386 0178 0021     		movs	r1, #0
+ 1387 017a 0846     		mov	r0, r1
+ 1388 017c FFF7FEFF 		bl	ILI9341_Set_Address
+ 1389              	.LVL170:
+ 344:Src/ILI9341_GFX.c **** 		HAL_GPIO_WritePin(GPIOC, CS_Pin, GPIO_PIN_RESET);
+ 1390              		.loc 1 344 3 view .LVU390
+ 1391 0180 164D     		ldr	r5, .L95
+ 1392 0182 0122     		movs	r2, #1
+ 1393 0184 4FF40071 		mov	r1, #512
+ 1394 0188 2846     		mov	r0, r5
+ 1395 018a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1396              	.LVL171:
+ 345:Src/ILI9341_GFX.c **** 		
+ 1397              		.loc 1 345 3 view .LVU391
+ 1398 018e 0022     		movs	r2, #0
+ 1399 0190 4FF48071 		mov	r1, #256
+ 1400 0194 2846     		mov	r0, r5
+ 1401 0196 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1402              	.LVL172:
+ 347:Src/ILI9341_GFX.c **** 		uint32_t counter = 0;
+ 1403              		.loc 1 347 3 view .LVU392
+ 348:Src/ILI9341_GFX.c **** 		for(uint32_t i = 0; i < ILI9341_SCREEN_WIDTH*ILI9341_SCREEN_HEIGHT*2/BURST_MAX_SIZE; i++)
+ 1404              		.loc 1 348 3 view .LVU393
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 35
+
+
+ 349:Src/ILI9341_GFX.c **** 		{			
+ 1405              		.loc 1 349 3 view .LVU394
+ 1406              	.LBB20:
+ 349:Src/ILI9341_GFX.c **** 		{			
+ 1407              		.loc 1 349 7 view .LVU395
+ 349:Src/ILI9341_GFX.c **** 		{			
+ 1408              		.loc 1 349 16 is_stmt 0 view .LVU396
+ 1409 019a 0026     		movs	r6, #0
+ 1410              	.LBE20:
+ 348:Src/ILI9341_GFX.c **** 		for(uint32_t i = 0; i < ILI9341_SCREEN_WIDTH*ILI9341_SCREEN_HEIGHT*2/BURST_MAX_SIZE; i++)
+ 1411              		.loc 1 348 12 view .LVU397
+ 1412 019c 3546     		mov	r5, r6
+ 1413              	.LBB22:
+ 349:Src/ILI9341_GFX.c **** 		{			
+ 1414              		.loc 1 349 3 view .LVU398
+ 1415 019e 09E0     		b	.L76
+ 1416              	.LVL173:
+ 1417              	.L94:
+ 355:Src/ILI9341_GFX.c **** 				counter += BURST_MAX_SIZE;			
+ 1418              		.loc 1 355 5 is_stmt 1 discriminator 2 view .LVU399
+ 1419 01a0 0A23     		movs	r3, #10
+ 1420              	.LVL174:
+ 355:Src/ILI9341_GFX.c **** 				counter += BURST_MAX_SIZE;			
+ 1421              		.loc 1 355 5 is_stmt 0 discriminator 2 view .LVU400
+ 1422 01a2 4FF4FA72 		mov	r2, #500
+ 1423 01a6 01A9     		add	r1, sp, #4
+ 1424 01a8 0D48     		ldr	r0, .L95+4
+ 1425 01aa FFF7FEFF 		bl	HAL_SPI_Transmit
+ 1426              	.LVL175:
+ 356:Src/ILI9341_GFX.c **** 		}
+ 1427              		.loc 1 356 5 is_stmt 1 discriminator 2 view .LVU401
+ 356:Src/ILI9341_GFX.c **** 		}
+ 1428              		.loc 1 356 13 is_stmt 0 discriminator 2 view .LVU402
+ 1429 01ae 05F5FA75 		add	r5, r5, #500
+ 1430              	.LVL176:
+ 349:Src/ILI9341_GFX.c **** 		{			
+ 1431              		.loc 1 349 88 is_stmt 1 discriminator 2 view .LVU403
+ 349:Src/ILI9341_GFX.c **** 		{			
+ 1432              		.loc 1 349 89 is_stmt 0 discriminator 2 view .LVU404
+ 1433 01b2 0136     		adds	r6, r6, #1
+ 1434              	.LVL177:
+ 1435              	.L76:
+ 349:Src/ILI9341_GFX.c **** 		{			
+ 1436              		.loc 1 349 23 is_stmt 1 discriminator 1 view .LVU405
+ 349:Src/ILI9341_GFX.c **** 		{			
+ 1437              		.loc 1 349 3 is_stmt 0 discriminator 1 view .LVU406
+ 1438 01b4 B6F5997F 		cmp	r6, #306
+ 1439 01b8 09D8     		bhi	.L93
+ 1440              	.LBB21:
+ 351:Src/ILI9341_GFX.c **** 				{
+ 1441              		.loc 1 351 18 view .LVU407
+ 1442 01ba 0023     		movs	r3, #0
+ 1443              	.L78:
+ 1444              	.LVL178:
+ 351:Src/ILI9341_GFX.c **** 				{
+ 1445              		.loc 1 351 25 is_stmt 1 discriminator 1 view .LVU408
+ 351:Src/ILI9341_GFX.c **** 				{
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 36
+
+
+ 1446              		.loc 1 351 5 is_stmt 0 discriminator 1 view .LVU409
+ 1447 01bc B3F5FA7F 		cmp	r3, #500
+ 1448 01c0 EED2     		bcs	.L94
+ 353:Src/ILI9341_GFX.c **** 				}						
+ 1449              		.loc 1 353 6 is_stmt 1 discriminator 3 view .LVU410
+ 353:Src/ILI9341_GFX.c **** 				}						
+ 1450              		.loc 1 353 48 is_stmt 0 discriminator 3 view .LVU411
+ 1451 01c2 EA18     		adds	r2, r5, r3
+ 353:Src/ILI9341_GFX.c **** 				}						
+ 1452              		.loc 1 353 40 discriminator 3 view .LVU412
+ 1453 01c4 A15C     		ldrb	r1, [r4, r2]	@ zero_extendqisi2
+ 353:Src/ILI9341_GFX.c **** 				}						
+ 1454              		.loc 1 353 27 discriminator 3 view .LVU413
+ 1455 01c6 01AA     		add	r2, sp, #4
+ 1456 01c8 D154     		strb	r1, [r2, r3]
+ 351:Src/ILI9341_GFX.c **** 				{
+ 1457              		.loc 1 351 44 is_stmt 1 discriminator 3 view .LVU414
+ 351:Src/ILI9341_GFX.c **** 				{
+ 1458              		.loc 1 351 45 is_stmt 0 discriminator 3 view .LVU415
+ 1459 01ca 0133     		adds	r3, r3, #1
+ 1460              	.LVL179:
+ 351:Src/ILI9341_GFX.c **** 				{
+ 1461              		.loc 1 351 45 discriminator 3 view .LVU416
+ 1462 01cc F6E7     		b	.L78
+ 1463              	.LVL180:
+ 1464              	.L93:
+ 351:Src/ILI9341_GFX.c **** 				{
+ 1465              		.loc 1 351 45 discriminator 3 view .LVU417
+ 1466              	.LBE21:
+ 1467              	.LBE22:
+ 358:Src/ILI9341_GFX.c **** 	}
+ 1468              		.loc 1 358 3 is_stmt 1 view .LVU418
+ 1469 01ce 0122     		movs	r2, #1
+ 1470 01d0 4FF48071 		mov	r1, #256
+ 1471 01d4 0148     		ldr	r0, .L95
+ 1472 01d6 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1473              	.LVL181:
+ 1474              	.LBE19:
+ 1475              		.loc 1 360 1 is_stmt 0 view .LVU419
+ 1476 01da 1DE7     		b	.L62
+ 1477              	.L96:
+ 1478              		.align	2
+ 1479              	.L95:
+ 1480 01dc 00080240 		.word	1073874944
+ 1481 01e0 00000000 		.word	hspi5
+ 1482              		.cfi_endproc
+ 1483              	.LFE147:
+ 1485              		.section	.rodata.font,"a"
+ 1486              		.align	2
+ 1487              		.set	.LANCHOR0,. + 0
+ 1490              	font:
+ 1491 0000 00000000 		.ascii	"\000\000\000\000\000\000"
+ 1491      0000
+ 1492 0006 5C000000 		.ascii	"\\\000\000\000\000\000"
+ 1492      0000
+ 1493 000c 06000600 		.ascii	"\006\000\006\000\000\000"
+ 1493      0000
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 37
+
+
+ 1494 0012 287C287C 		.ascii	"(|(|(\000"
+ 1494      2800
+ 1495 0018 5C54FE54 		.ascii	"\\T\376Tt\000"
+ 1495      7400
+ 1496 001e 44201008 		.ascii	"D \020\010D\000"
+ 1496      4400
+ 1497 0024 28545420 		.ascii	"(TT P\000"
+ 1497      5000
+ 1498 002a 06000000 		.ascii	"\006\000\000\000\000\000"
+ 1498      0000
+ 1499 0030 38440000 		.ascii	"8D\000\000\000\000"
+ 1499      0000
+ 1500 0036 44380000 		.ascii	"D8\000\000\000\000"
+ 1500      0000
+ 1501 003c 02070200 		.ascii	"\002\007\002\000\000\000"
+ 1501      0000
+ 1502 0042 10107C10 		.ascii	"\020\020|\020\020\000"
+ 1502      1000
+ 1503 0048 C0000000 		.ascii	"\300\000\000\000\000\000"
+ 1503      0000
+ 1504 004e 10101010 		.ascii	"\020\020\020\020\020\000"
+ 1504      1000
+ 1505 0054 40000000 		.ascii	"@\000\000\000\000\000"
+ 1505      0000
+ 1506 005a 60100C00 		.ascii	"`\020\014\000\000\000"
+ 1506      0000
+ 1507 0060 7C64544C 		.ascii	"|dTL|\000"
+ 1507      7C00
+ 1508 0066 487C4000 		.ascii	"H|@\000\000\000"
+ 1508      0000
+ 1509 006c 64545454 		.ascii	"dTTTH\000"
+ 1509      4800
+ 1510 0072 44545454 		.ascii	"DTTTl\000"
+ 1510      6C00
+ 1511 0078 3C207020 		.ascii	"< p  \000"
+ 1511      2000
+ 1512 007e 5C545454 		.ascii	"\\TTT$\000"
+ 1512      2400
+ 1513 0084 7C545454 		.ascii	"|TTTt\000"
+ 1513      7400
+ 1514 008a 04046414 		.ascii	"\004\004d\024\014\000"
+ 1514      0C00
+ 1515 0090 7C545454 		.ascii	"|TTT|\000"
+ 1515      7C00
+ 1516 0096 5C545454 		.ascii	"\\TTT|\000"
+ 1516      7C00
+ 1517 009c 44000000 		.ascii	"D\000\000\000\000\000"
+ 1517      0000
+ 1518 00a2 C4000000 		.ascii	"\304\000\000\000\000\000"
+ 1518      0000
+ 1519 00a8 10284400 		.ascii	"\020(D\000\000\000"
+ 1519      0000
+ 1520 00ae 28282828 		.ascii	"(((((\000"
+ 1520      2800
+ 1521 00b4 44281000 		.ascii	"D(\020\000\000\000"
+ 1521      0000
+ 1522 00ba 08045408 		.ascii	"\010\004T\010\000\000"
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 38
+
+
+ 1522      0000
+ 1523 00c0 7C445454 		.ascii	"|DTT\\\000"
+ 1523      5C00
+ 1524 00c6 7C242424 		.ascii	"|$$$|\000"
+ 1524      7C00
+ 1525 00cc 7C545454 		.ascii	"|TTTl\000"
+ 1525      6C00
+ 1526 00d2 7C444444 		.ascii	"|DDDD\000"
+ 1526      4400
+ 1527 00d8 7C444444 		.ascii	"|DDD8\000"
+ 1527      3800
+ 1528 00de 7C545454 		.ascii	"|TTTD\000"
+ 1528      4400
+ 1529 00e4 7C141414 		.ascii	"|\024\024\024\004\000"
+ 1529      0400
+ 1530 00ea 7C444454 		.ascii	"|DDTt\000"
+ 1530      7400
+ 1531 00f0 7C101010 		.ascii	"|\020\020\020|\000"
+ 1531      7C00
+ 1532 00f6 44447C44 		.ascii	"DD|DD\000"
+ 1532      4400
+ 1533 00fc 60404044 		.ascii	"`@@D|\000"
+ 1533      7C00
+ 1534 0102 7C101028 		.ascii	"|\020\020(D\000"
+ 1534      4400
+ 1535 0108 7C404040 		.ascii	"|@@@@\000"
+ 1535      4000
+ 1536 010e 7C081008 		.ascii	"|\010\020\010|\000"
+ 1536      7C00
+ 1537 0114 7C081020 		.ascii	"|\010\020 |\000"
+ 1537      7C00
+ 1538 011a 38444444 		.ascii	"8DDD8\000"
+ 1538      3800
+ 1539 0120 7C141414 		.ascii	"|\024\024\024\010\000"
+ 1539      0800
+ 1540 0126 3C246424 		.ascii	"<$d$<\000"
+ 1540      3C00
+ 1541 012c 7C141414 		.ascii	"|\024\024\024h\000"
+ 1541      6800
+ 1542 0132 5C545454 		.ascii	"\\TTTt\000"
+ 1542      7400
+ 1543 0138 04047C04 		.ascii	"\004\004|\004\004\000"
+ 1543      0400
+ 1544 013e 7C404040 		.ascii	"|@@@|\000"
+ 1544      7C00
+ 1545 0144 0C304030 		.ascii	"\0140@0\014\000"
+ 1545      0C00
+ 1546 014a 3C403040 		.ascii	"<@0@<\000"
+ 1546      3C00
+ 1547 0150 44281028 		.ascii	"D(\020(D\000"
+ 1547      4400
+ 1548 0156 0C106010 		.ascii	"\014\020`\020\014\000"
+ 1548      0C00
+ 1549 015c 4464544C 		.ascii	"DdTLD\000"
+ 1549      4400
+ 1550 0162 7C440000 		.ascii	"|D\000\000\000\000"
+ 1550      0000
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 39
+
+
+ 1551 0168 0C106000 		.ascii	"\014\020`\000\000\000"
+ 1551      0000
+ 1552 016e 447C0000 		.ascii	"D|\000\000\000\000"
+ 1552      0000
+ 1553 0174 00010001 		.ascii	"\000\001\000\001\000\000"
+ 1553      0000
+ 1554 017a 40404040 		.ascii	"@@@@@@"
+ 1554      4040
+ 1555 0180 00010000 		.ascii	"\000\001\000\000\000\000"
+ 1555      0000
+ 1556 0186 7C242424 		.ascii	"|$$$|\000"
+ 1556      7C00
+ 1557 018c 7C545454 		.ascii	"|TTTl\000"
+ 1557      6C00
+ 1558 0192 7C444444 		.ascii	"|DDDD\000"
+ 1558      4400
+ 1559 0198 7C444444 		.ascii	"|DDD8\000"
+ 1559      3800
+ 1560 019e 7C545454 		.ascii	"|TTTD\000"
+ 1560      4400
+ 1561 01a4 7C141414 		.ascii	"|\024\024\024\004\000"
+ 1561      0400
+ 1562 01aa 7C444454 		.ascii	"|DDTt\000"
+ 1562      7400
+ 1563 01b0 7C101010 		.ascii	"|\020\020\020|\000"
+ 1563      7C00
+ 1564 01b6 44447C44 		.ascii	"DD|DD\000"
+ 1564      4400
+ 1565 01bc 60404044 		.ascii	"`@@D|\000"
+ 1565      7C00
+ 1566 01c2 7C101028 		.ascii	"|\020\020(D\000"
+ 1566      4400
+ 1567 01c8 7C404040 		.ascii	"|@@@@\000"
+ 1567      4000
+ 1568 01ce 7C081008 		.ascii	"|\010\020\010|\000"
+ 1568      7C00
+ 1569 01d4 7C081020 		.ascii	"|\010\020 |\000"
+ 1569      7C00
+ 1570 01da 38444444 		.ascii	"8DDD8\000"
+ 1570      3800
+ 1571 01e0 7C141414 		.ascii	"|\024\024\024\010\000"
+ 1571      0800
+ 1572 01e6 3C246424 		.ascii	"<$d$<\000"
+ 1572      3C00
+ 1573 01ec 7C141414 		.ascii	"|\024\024\024h\000"
+ 1573      6800
+ 1574 01f2 5C545454 		.ascii	"\\TTTt\000"
+ 1574      7400
+ 1575 01f8 04047C04 		.ascii	"\004\004|\004\004\000"
+ 1575      0400
+ 1576 01fe 7C404040 		.ascii	"|@@@|\000"
+ 1576      7C00
+ 1577 0204 0C304030 		.ascii	"\0140@0\014\000"
+ 1577      0C00
+ 1578 020a 3C403040 		.ascii	"<@0@<\000"
+ 1578      3C00
+ 1579 0210 44281028 		.ascii	"D(\020(D\000"
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 40
+
+
+ 1579      4400
+ 1580 0216 0C106010 		.ascii	"\014\020`\020\014\000"
+ 1580      0C00
+ 1581 021c 4464544C 		.ascii	"DdTLD\000"
+ 1581      4400
+ 1582 0222 107C4400 		.ascii	"\020|D\000\000\000"
+ 1582      0000
+ 1583 0228 6C000000 		.ascii	"l\000\000\000\000\000"
+ 1583      0000
+ 1584 022e 447C1000 		.ascii	"D|\020\000\000\000"
+ 1584      0000
+ 1585 0234 02010201 		.ascii	"\002\001\002\001\000\000"
+ 1585      0000
+ 1586 023a 00000000 		.ascii	"\000\000\000\000\000\000"
+ 1586      0000
+ 1587              		.text
+ 1588              	.Letext0:
+ 1589              		.file 2 "c:\\vsarm\\armcc\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 1590              		.file 3 "c:\\vsarm\\armcc\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 1591              		.file 4 "Drivers/CMSIS/Include/core_cm7.h"
+ 1592              		.file 5 "Drivers/CMSIS/Device/ST/STM32F7xx/Include/system_stm32f7xx.h"
+ 1593              		.file 6 "Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f767xx.h"
+ 1594              		.file 7 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_def.h"
+ 1595              		.file 8 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_gpio.h"
+ 1596              		.file 9 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dma.h"
+ 1597              		.file 10 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_spi.h"
+ 1598              		.file 11 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h"
+ 1599              		.file 12 "Inc/spi.h"
+ 1600              		.file 13 "Inc/5x5_font.h"
+ 1601              		.file 14 "Inc/ILI9341_STM32_Driver.h"
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s 			page 41
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 ILI9341_GFX.c
+C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s:17     .text.ILI9341_Draw_Hollow_Circle:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s:25     .text.ILI9341_Draw_Hollow_Circle:00000000 ILI9341_Draw_Hollow_Circle
+C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s:226    .text.ILI9341_Draw_Filled_Circle:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s:233    .text.ILI9341_Draw_Filled_Circle:00000000 ILI9341_Draw_Filled_Circle
+C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s:434    .text.ILI9341_Draw_Hollow_Rectangle_Coord:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s:441    .text.ILI9341_Draw_Hollow_Rectangle_Coord:00000000 ILI9341_Draw_Hollow_Rectangle_Coord
+C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s:613    .text.ILI9341_Draw_Filled_Rectangle_Coord:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s:620    .text.ILI9341_Draw_Filled_Rectangle_Coord:00000000 ILI9341_Draw_Filled_Rectangle_Coord
+C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s:752    .text.ILI9341_Draw_Char:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s:759    .text.ILI9341_Draw_Char:00000000 ILI9341_Draw_Char
+C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s:938    .text.ILI9341_Draw_Char:000000b4 $d
+C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s:943    .text.ILI9341_Draw_Text:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s:950    .text.ILI9341_Draw_Text:00000000 ILI9341_Draw_Text
+C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s:1017   .text.ILI9341_Draw_Image:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s:1024   .text.ILI9341_Draw_Image:00000000 ILI9341_Draw_Image
+C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s:1480   .text.ILI9341_Draw_Image:000001dc $d
+C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s:1486   .rodata.font:00000000 $d
+C:\Users\Haruka\AppData\Local\Temp\ccZ9SrN7.s:1490   .rodata.font:00000000 font
+
+UNDEFINED SYMBOLS
+ILI9341_Draw_Pixel
+ILI9341_Draw_Horizontal_Line
+ILI9341_Draw_Vertical_Line
+ILI9341_Draw_Rectangle
+ILI9341_Set_Rotation
+ILI9341_Set_Address
+HAL_GPIO_WritePin
+HAL_SPI_Transmit
+hspi5

@@ -1,0 +1,2502 @@
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 1
+
+
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 1
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"ILI9341_STM32_Driver.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.section	.text.ILI9341_SPI_Init,"ax",%progbits
+  17              		.align	1
+  18              		.global	ILI9341_SPI_Init
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv5-d16
+  25              	ILI9341_SPI_Init:
+  26              	.LFB141:
+  27              		.file 1 "Src/ILI9341_STM32_Driver.c"
+   1:Src/ILI9341_STM32_Driver.c **** 
+   2:Src/ILI9341_STM32_Driver.c **** //	MIT License
+   3:Src/ILI9341_STM32_Driver.c **** //
+   4:Src/ILI9341_STM32_Driver.c **** //	Copyright (c) 2017 Matej Artnak
+   5:Src/ILI9341_STM32_Driver.c **** //
+   6:Src/ILI9341_STM32_Driver.c **** //	Permission is hereby granted, free of charge, to any person obtaining a copy
+   7:Src/ILI9341_STM32_Driver.c **** //	of this software and associated documentation files (the "Software"), to deal
+   8:Src/ILI9341_STM32_Driver.c **** //	in the Software without restriction, including without limitation the rights
+   9:Src/ILI9341_STM32_Driver.c **** //	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  10:Src/ILI9341_STM32_Driver.c **** //	copies of the Software, and to permit persons to whom the Software is
+  11:Src/ILI9341_STM32_Driver.c **** //	furnished to do so, subject to the following conditions:
+  12:Src/ILI9341_STM32_Driver.c **** //
+  13:Src/ILI9341_STM32_Driver.c **** //	The above copyright notice and this permission notice shall be included in all
+  14:Src/ILI9341_STM32_Driver.c **** //	copies or substantial portions of the Software.
+  15:Src/ILI9341_STM32_Driver.c **** //
+  16:Src/ILI9341_STM32_Driver.c **** //	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  17:Src/ILI9341_STM32_Driver.c **** //	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  18:Src/ILI9341_STM32_Driver.c **** //	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  19:Src/ILI9341_STM32_Driver.c **** //	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  20:Src/ILI9341_STM32_Driver.c **** //	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  21:Src/ILI9341_STM32_Driver.c **** //	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  22:Src/ILI9341_STM32_Driver.c **** //	SOFTWARE.
+  23:Src/ILI9341_STM32_Driver.c **** //
+  24:Src/ILI9341_STM32_Driver.c **** //
+  25:Src/ILI9341_STM32_Driver.c **** //
+  26:Src/ILI9341_STM32_Driver.c **** //-----------------------------------
+  27:Src/ILI9341_STM32_Driver.c **** //	ILI9341 Driver library for STM32
+  28:Src/ILI9341_STM32_Driver.c **** //-----------------------------------
+  29:Src/ILI9341_STM32_Driver.c **** //
+  30:Src/ILI9341_STM32_Driver.c **** //	While there are other libraries for ILI9341 they mostly require either interrupts, DMA or both f
+  31:Src/ILI9341_STM32_Driver.c **** //	The intent of this library is to offer a simple yet still reasonably fast alternatives for those
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 2
+
+
+  32:Src/ILI9341_STM32_Driver.c **** //	do not wish to use interrupts or DMA in their projects.
+  33:Src/ILI9341_STM32_Driver.c **** //
+  34:Src/ILI9341_STM32_Driver.c **** //	Library is written for STM32 HAL library and supports STM32CUBEMX. To use the library with Cube 
+  35:Src/ILI9341_STM32_Driver.c **** //	you need to tick the box that generates peripheral initialization code in their own respective .
+  36:Src/ILI9341_STM32_Driver.c **** //
+  37:Src/ILI9341_STM32_Driver.c **** //
+  38:Src/ILI9341_STM32_Driver.c **** //-----------------------------------
+  39:Src/ILI9341_STM32_Driver.c **** //	Performance
+  40:Src/ILI9341_STM32_Driver.c **** //-----------------------------------
+  41:Src/ILI9341_STM32_Driver.c **** //	Settings:	
+  42:Src/ILI9341_STM32_Driver.c **** //	--SPI @ 50MHz 
+  43:Src/ILI9341_STM32_Driver.c **** //	--STM32F746ZG Nucleo board
+  44:Src/ILI9341_STM32_Driver.c **** //	--Redraw entire screen
+  45:Src/ILI9341_STM32_Driver.c **** //
+  46:Src/ILI9341_STM32_Driver.c **** //	++		Theoretical maximum FPS with 50Mhz SPI calculated to be 40.69 FPS
+  47:Src/ILI9341_STM32_Driver.c **** //	++		320*240 = 76800 pixels, each pixel contains 16bit colour information (2x8)
+  48:Src/ILI9341_STM32_Driver.c **** //	++		Theoretical Max FPS: 1/((320*240*16)/50000000)
+  49:Src/ILI9341_STM32_Driver.c **** //
+  50:Src/ILI9341_STM32_Driver.c **** //	With ART Accelerator, instruction prefetch, CPI ICACHE and CPU DCACHE enabled:
+  51:Src/ILI9341_STM32_Driver.c **** //
+  52:Src/ILI9341_STM32_Driver.c **** //	-FPS:									39.62
+  53:Src/ILI9341_STM32_Driver.c **** //	-SPI utilization:			97.37%
+  54:Src/ILI9341_STM32_Driver.c **** //	-MB/Second:						6.09
+  55:Src/ILI9341_STM32_Driver.c **** //
+  56:Src/ILI9341_STM32_Driver.c **** //	With ART Accelerator, instruction prefetch, CPI ICACHE and CPU DCACHE disabled:
+  57:Src/ILI9341_STM32_Driver.c **** //
+  58:Src/ILI9341_STM32_Driver.c **** //	-FPS:									35.45
+  59:Src/ILI9341_STM32_Driver.c **** //	-SPI utilization:			87.12%
+  60:Src/ILI9341_STM32_Driver.c **** //	-MB/Second:						5.44
+  61:Src/ILI9341_STM32_Driver.c **** //	
+  62:Src/ILI9341_STM32_Driver.c **** //	ART Accelerator, instruction prefetch, CPI ICACHE and CPU DCACHE settings found in MXCUBE under 
+  63:Src/ILI9341_STM32_Driver.c **** //
+  64:Src/ILI9341_STM32_Driver.c **** //
+  65:Src/ILI9341_STM32_Driver.c **** //
+  66:Src/ILI9341_STM32_Driver.c **** //-----------------------------------
+  67:Src/ILI9341_STM32_Driver.c **** //	How to use this library
+  68:Src/ILI9341_STM32_Driver.c **** //-----------------------------------
+  69:Src/ILI9341_STM32_Driver.c **** //
+  70:Src/ILI9341_STM32_Driver.c **** //	-generate SPI peripheral and 3 GPIO_SPEED_FREQ_VERY_HIGH GPIO outputs
+  71:Src/ILI9341_STM32_Driver.c **** //	 		++Library reinitializes GPIOs and SPIs generated by gpio.c/.h and spi.c/.h using MX_X_Init();
+  72:Src/ILI9341_STM32_Driver.c **** //			++reinitialization will not clash with previous initialization so generated initializations ca
+  73:Src/ILI9341_STM32_Driver.c **** //	-If using MCUs other than STM32F7 you will have to change the #include "stm32f7xx_hal.h" in the 
+  74:Src/ILI9341_STM32_Driver.c **** //	-define your HSPI_INSTANCE in ILI9341_STM32_Driver.h
+  75:Src/ILI9341_STM32_Driver.c **** //	-define your CS, DC and RST outputs in ILI9341_STM32_Driver.h
+  76:Src/ILI9341_STM32_Driver.c **** //	-check if ILI9341_SCREEN_HEIGHT and ILI9341_SCREEN_WIDTH match your LCD size
+  77:Src/ILI9341_STM32_Driver.c **** //			++Library was written and tested for 320x240 screen size. Other sizes might have issues**
+  78:Src/ILI9341_STM32_Driver.c **** //	-in your main program initialize LCD with ILI9341_Init();
+  79:Src/ILI9341_STM32_Driver.c **** //	-library is now ready to be used. Driver library has only basic functions, for more advanced fun
+  80:Src/ILI9341_STM32_Driver.c **** //
+  81:Src/ILI9341_STM32_Driver.c **** //-----------------------------------
+  82:Src/ILI9341_STM32_Driver.c **** 
+  83:Src/ILI9341_STM32_Driver.c **** /* Includes ------------------------------------------------------------------*/
+  84:Src/ILI9341_STM32_Driver.c **** #include "ILI9341_STM32_Driver.h"
+  85:Src/ILI9341_STM32_Driver.c **** #include "spi.h"
+  86:Src/ILI9341_STM32_Driver.c **** #include "gpio.h"
+  87:Src/ILI9341_STM32_Driver.c **** 
+  88:Src/ILI9341_STM32_Driver.c **** /* Global Variables ------------------------------------------------------------------*/
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 3
+
+
+  89:Src/ILI9341_STM32_Driver.c **** volatile uint16_t LCD_HEIGHT = ILI9341_SCREEN_HEIGHT;
+  90:Src/ILI9341_STM32_Driver.c **** volatile uint16_t LCD_WIDTH	 = ILI9341_SCREEN_WIDTH;
+  91:Src/ILI9341_STM32_Driver.c **** 
+  92:Src/ILI9341_STM32_Driver.c **** /* Initialize SPI */
+  93:Src/ILI9341_STM32_Driver.c **** void ILI9341_SPI_Init(void)
+  94:Src/ILI9341_STM32_Driver.c **** {
+  28              		.loc 1 94 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 08B5     		push	{r3, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 3, -8
+  36              		.cfi_offset 14, -4
+  95:Src/ILI9341_STM32_Driver.c **** MX_SPI5_Init();																							//SPI INIT
+  37              		.loc 1 95 1 view .LVU1
+  38 0002 FFF7FEFF 		bl	MX_SPI5_Init
+  39              	.LVL0:
+  96:Src/ILI9341_STM32_Driver.c **** MX_GPIO_Init();																							//GPIO INIT
+  40              		.loc 1 96 1 view .LVU2
+  41 0006 FFF7FEFF 		bl	MX_GPIO_Init
+  42              	.LVL1:
+  97:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);	//CS OFF
+  43              		.loc 1 97 1 view .LVU3
+  44 000a 0022     		movs	r2, #0
+  45 000c 4FF48071 		mov	r1, #256
+  46 0010 0148     		ldr	r0, .L3
+  47 0012 FFF7FEFF 		bl	HAL_GPIO_WritePin
+  48              	.LVL2:
+  98:Src/ILI9341_STM32_Driver.c **** }
+  49              		.loc 1 98 1 is_stmt 0 view .LVU4
+  50 0016 08BD     		pop	{r3, pc}
+  51              	.L4:
+  52              		.align	2
+  53              	.L3:
+  54 0018 00080240 		.word	1073874944
+  55              		.cfi_endproc
+  56              	.LFE141:
+  58              		.section	.text.ILI9341_SPI_Send,"ax",%progbits
+  59              		.align	1
+  60              		.global	ILI9341_SPI_Send
+  61              		.syntax unified
+  62              		.thumb
+  63              		.thumb_func
+  64              		.fpu fpv5-d16
+  66              	ILI9341_SPI_Send:
+  67              	.LVL3:
+  68              	.LFB142:
+  99:Src/ILI9341_STM32_Driver.c **** 
+ 100:Src/ILI9341_STM32_Driver.c **** /*Send data (char) to LCD*/
+ 101:Src/ILI9341_STM32_Driver.c **** void ILI9341_SPI_Send(unsigned char SPI_Data)
+ 102:Src/ILI9341_STM32_Driver.c **** {
+  69              		.loc 1 102 1 is_stmt 1 view -0
+  70              		.cfi_startproc
+  71              		@ args = 0, pretend = 0, frame = 8
+  72              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 4
+
+
+  73              		.loc 1 102 1 is_stmt 0 view .LVU6
+  74 0000 00B5     		push	{lr}
+  75              	.LCFI1:
+  76              		.cfi_def_cfa_offset 4
+  77              		.cfi_offset 14, -4
+  78 0002 83B0     		sub	sp, sp, #12
+  79              	.LCFI2:
+  80              		.cfi_def_cfa_offset 16
+  81 0004 8DF80700 		strb	r0, [sp, #7]
+ 103:Src/ILI9341_STM32_Driver.c **** HAL_SPI_Transmit(HSPI_INSTANCE, &SPI_Data, 1, 1);
+  82              		.loc 1 103 1 is_stmt 1 view .LVU7
+  83 0008 0123     		movs	r3, #1
+  84 000a 1A46     		mov	r2, r3
+  85 000c 0DF10701 		add	r1, sp, #7
+  86 0010 0248     		ldr	r0, .L7
+  87              	.LVL4:
+  88              		.loc 1 103 1 is_stmt 0 view .LVU8
+  89 0012 FFF7FEFF 		bl	HAL_SPI_Transmit
+  90              	.LVL5:
+ 104:Src/ILI9341_STM32_Driver.c **** }
+  91              		.loc 1 104 1 view .LVU9
+  92 0016 03B0     		add	sp, sp, #12
+  93              	.LCFI3:
+  94              		.cfi_def_cfa_offset 4
+  95              		@ sp needed
+  96 0018 5DF804FB 		ldr	pc, [sp], #4
+  97              	.L8:
+  98              		.align	2
+  99              	.L7:
+ 100 001c 00000000 		.word	hspi5
+ 101              		.cfi_endproc
+ 102              	.LFE142:
+ 104              		.section	.text.ILI9341_Write_Command,"ax",%progbits
+ 105              		.align	1
+ 106              		.global	ILI9341_Write_Command
+ 107              		.syntax unified
+ 108              		.thumb
+ 109              		.thumb_func
+ 110              		.fpu fpv5-d16
+ 112              	ILI9341_Write_Command:
+ 113              	.LVL6:
+ 114              	.LFB143:
+ 105:Src/ILI9341_STM32_Driver.c **** 
+ 106:Src/ILI9341_STM32_Driver.c **** /* Send command (char) to LCD */
+ 107:Src/ILI9341_STM32_Driver.c **** void ILI9341_Write_Command(uint8_t Command)
+ 108:Src/ILI9341_STM32_Driver.c **** {
+ 115              		.loc 1 108 1 is_stmt 1 view -0
+ 116              		.cfi_startproc
+ 117              		@ args = 0, pretend = 0, frame = 0
+ 118              		@ frame_needed = 0, uses_anonymous_args = 0
+ 119              		.loc 1 108 1 is_stmt 0 view .LVU11
+ 120 0000 38B5     		push	{r3, r4, r5, lr}
+ 121              	.LCFI4:
+ 122              		.cfi_def_cfa_offset 16
+ 123              		.cfi_offset 3, -16
+ 124              		.cfi_offset 4, -12
+ 125              		.cfi_offset 5, -8
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 5
+
+
+ 126              		.cfi_offset 14, -4
+ 127 0002 0546     		mov	r5, r0
+ 109:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);
+ 128              		.loc 1 109 1 is_stmt 1 view .LVU12
+ 129 0004 0B4C     		ldr	r4, .L11
+ 130 0006 0022     		movs	r2, #0
+ 131 0008 4FF48071 		mov	r1, #256
+ 132 000c 2046     		mov	r0, r4
+ 133              	.LVL7:
+ 134              		.loc 1 109 1 is_stmt 0 view .LVU13
+ 135 000e FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 136              	.LVL8:
+ 110:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_DC_PORT, LCD_DC_PIN, GPIO_PIN_RESET);	
+ 137              		.loc 1 110 1 is_stmt 1 view .LVU14
+ 138 0012 0022     		movs	r2, #0
+ 139 0014 4FF40071 		mov	r1, #512
+ 140 0018 2046     		mov	r0, r4
+ 141 001a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 142              	.LVL9:
+ 111:Src/ILI9341_STM32_Driver.c **** ILI9341_SPI_Send(Command);
+ 143              		.loc 1 111 1 view .LVU15
+ 144 001e 2846     		mov	r0, r5
+ 145 0020 FFF7FEFF 		bl	ILI9341_SPI_Send
+ 146              	.LVL10:
+ 112:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);		
+ 147              		.loc 1 112 1 view .LVU16
+ 148 0024 0122     		movs	r2, #1
+ 149 0026 4FF48071 		mov	r1, #256
+ 150 002a 2046     		mov	r0, r4
+ 151 002c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 152              	.LVL11:
+ 113:Src/ILI9341_STM32_Driver.c **** }
+ 153              		.loc 1 113 1 is_stmt 0 view .LVU17
+ 154 0030 38BD     		pop	{r3, r4, r5, pc}
+ 155              	.L12:
+ 156 0032 00BF     		.align	2
+ 157              	.L11:
+ 158 0034 00080240 		.word	1073874944
+ 159              		.cfi_endproc
+ 160              	.LFE143:
+ 162              		.section	.text.ILI9341_Write_Data,"ax",%progbits
+ 163              		.align	1
+ 164              		.global	ILI9341_Write_Data
+ 165              		.syntax unified
+ 166              		.thumb
+ 167              		.thumb_func
+ 168              		.fpu fpv5-d16
+ 170              	ILI9341_Write_Data:
+ 171              	.LVL12:
+ 172              	.LFB144:
+ 114:Src/ILI9341_STM32_Driver.c **** 
+ 115:Src/ILI9341_STM32_Driver.c **** /* Send Data (char) to LCD */
+ 116:Src/ILI9341_STM32_Driver.c **** void ILI9341_Write_Data(uint8_t Data)
+ 117:Src/ILI9341_STM32_Driver.c **** {
+ 173              		.loc 1 117 1 is_stmt 1 view -0
+ 174              		.cfi_startproc
+ 175              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 6
+
+
+ 176              		@ frame_needed = 0, uses_anonymous_args = 0
+ 177              		.loc 1 117 1 is_stmt 0 view .LVU19
+ 178 0000 38B5     		push	{r3, r4, r5, lr}
+ 179              	.LCFI5:
+ 180              		.cfi_def_cfa_offset 16
+ 181              		.cfi_offset 3, -16
+ 182              		.cfi_offset 4, -12
+ 183              		.cfi_offset 5, -8
+ 184              		.cfi_offset 14, -4
+ 185 0002 0546     		mov	r5, r0
+ 118:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_DC_PORT, LCD_DC_PIN, GPIO_PIN_SET);	
+ 186              		.loc 1 118 1 is_stmt 1 view .LVU20
+ 187 0004 0B4C     		ldr	r4, .L15
+ 188 0006 0122     		movs	r2, #1
+ 189 0008 4FF40071 		mov	r1, #512
+ 190 000c 2046     		mov	r0, r4
+ 191              	.LVL13:
+ 192              		.loc 1 118 1 is_stmt 0 view .LVU21
+ 193 000e FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 194              	.LVL14:
+ 119:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);
+ 195              		.loc 1 119 1 is_stmt 1 view .LVU22
+ 196 0012 0022     		movs	r2, #0
+ 197 0014 4FF48071 		mov	r1, #256
+ 198 0018 2046     		mov	r0, r4
+ 199 001a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 200              	.LVL15:
+ 120:Src/ILI9341_STM32_Driver.c **** ILI9341_SPI_Send(Data);	
+ 201              		.loc 1 120 1 view .LVU23
+ 202 001e 2846     		mov	r0, r5
+ 203 0020 FFF7FEFF 		bl	ILI9341_SPI_Send
+ 204              	.LVL16:
+ 121:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);
+ 205              		.loc 1 121 1 view .LVU24
+ 206 0024 0122     		movs	r2, #1
+ 207 0026 4FF48071 		mov	r1, #256
+ 208 002a 2046     		mov	r0, r4
+ 209 002c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 210              	.LVL17:
+ 122:Src/ILI9341_STM32_Driver.c **** }
+ 211              		.loc 1 122 1 is_stmt 0 view .LVU25
+ 212 0030 38BD     		pop	{r3, r4, r5, pc}
+ 213              	.L16:
+ 214 0032 00BF     		.align	2
+ 215              	.L15:
+ 216 0034 00080240 		.word	1073874944
+ 217              		.cfi_endproc
+ 218              	.LFE144:
+ 220              		.section	.text.ILI9341_Set_Address,"ax",%progbits
+ 221              		.align	1
+ 222              		.global	ILI9341_Set_Address
+ 223              		.syntax unified
+ 224              		.thumb
+ 225              		.thumb_func
+ 226              		.fpu fpv5-d16
+ 228              	ILI9341_Set_Address:
+ 229              	.LVL18:
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 7
+
+
+ 230              	.LFB145:
+ 123:Src/ILI9341_STM32_Driver.c **** 
+ 124:Src/ILI9341_STM32_Driver.c **** /* Set Address - Location block - to draw into */
+ 125:Src/ILI9341_STM32_Driver.c **** void ILI9341_Set_Address(uint16_t X1, uint16_t Y1, uint16_t X2, uint16_t Y2)
+ 126:Src/ILI9341_STM32_Driver.c **** {
+ 231              		.loc 1 126 1 is_stmt 1 view -0
+ 232              		.cfi_startproc
+ 233              		@ args = 0, pretend = 0, frame = 0
+ 234              		@ frame_needed = 0, uses_anonymous_args = 0
+ 235              		.loc 1 126 1 is_stmt 0 view .LVU27
+ 236 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 237              	.LCFI6:
+ 238              		.cfi_def_cfa_offset 24
+ 239              		.cfi_offset 3, -24
+ 240              		.cfi_offset 4, -20
+ 241              		.cfi_offset 5, -16
+ 242              		.cfi_offset 6, -12
+ 243              		.cfi_offset 7, -8
+ 244              		.cfi_offset 14, -4
+ 245 0002 0746     		mov	r7, r0
+ 246 0004 0D46     		mov	r5, r1
+ 247 0006 1646     		mov	r6, r2
+ 248 0008 1C46     		mov	r4, r3
+ 127:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0x2A);
+ 249              		.loc 1 127 1 is_stmt 1 view .LVU28
+ 250 000a 2A20     		movs	r0, #42
+ 251              	.LVL19:
+ 252              		.loc 1 127 1 is_stmt 0 view .LVU29
+ 253 000c FFF7FEFF 		bl	ILI9341_Write_Command
+ 254              	.LVL20:
+ 128:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(X1>>8);
+ 255              		.loc 1 128 1 is_stmt 1 view .LVU30
+ 256 0010 380A     		lsrs	r0, r7, #8
+ 257 0012 FFF7FEFF 		bl	ILI9341_Write_Data
+ 258              	.LVL21:
+ 129:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(X1);
+ 259              		.loc 1 129 1 view .LVU31
+ 260 0016 F8B2     		uxtb	r0, r7
+ 261 0018 FFF7FEFF 		bl	ILI9341_Write_Data
+ 262              	.LVL22:
+ 130:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(X2>>8);
+ 263              		.loc 1 130 1 view .LVU32
+ 264 001c 300A     		lsrs	r0, r6, #8
+ 265 001e FFF7FEFF 		bl	ILI9341_Write_Data
+ 266              	.LVL23:
+ 131:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(X2);
+ 267              		.loc 1 131 1 view .LVU33
+ 268 0022 F0B2     		uxtb	r0, r6
+ 269 0024 FFF7FEFF 		bl	ILI9341_Write_Data
+ 270              	.LVL24:
+ 132:Src/ILI9341_STM32_Driver.c **** 
+ 133:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0x2B);
+ 271              		.loc 1 133 1 view .LVU34
+ 272 0028 2B20     		movs	r0, #43
+ 273 002a FFF7FEFF 		bl	ILI9341_Write_Command
+ 274              	.LVL25:
+ 134:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(Y1>>8);
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 8
+
+
+ 275              		.loc 1 134 1 view .LVU35
+ 276 002e 280A     		lsrs	r0, r5, #8
+ 277 0030 FFF7FEFF 		bl	ILI9341_Write_Data
+ 278              	.LVL26:
+ 135:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(Y1);
+ 279              		.loc 1 135 1 view .LVU36
+ 280 0034 E8B2     		uxtb	r0, r5
+ 281 0036 FFF7FEFF 		bl	ILI9341_Write_Data
+ 282              	.LVL27:
+ 136:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(Y2>>8);
+ 283              		.loc 1 136 1 view .LVU37
+ 284 003a 200A     		lsrs	r0, r4, #8
+ 285 003c FFF7FEFF 		bl	ILI9341_Write_Data
+ 286              	.LVL28:
+ 137:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(Y2);
+ 287              		.loc 1 137 1 view .LVU38
+ 288 0040 E0B2     		uxtb	r0, r4
+ 289 0042 FFF7FEFF 		bl	ILI9341_Write_Data
+ 290              	.LVL29:
+ 138:Src/ILI9341_STM32_Driver.c **** 
+ 139:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0x2C);
+ 291              		.loc 1 139 1 view .LVU39
+ 292 0046 2C20     		movs	r0, #44
+ 293 0048 FFF7FEFF 		bl	ILI9341_Write_Command
+ 294              	.LVL30:
+ 140:Src/ILI9341_STM32_Driver.c **** }
+ 295              		.loc 1 140 1 is_stmt 0 view .LVU40
+ 296 004c F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 297              		.cfi_endproc
+ 298              	.LFE145:
+ 300              		.section	.text.ILI9341_Reset,"ax",%progbits
+ 301              		.align	1
+ 302              		.global	ILI9341_Reset
+ 303              		.syntax unified
+ 304              		.thumb
+ 305              		.thumb_func
+ 306              		.fpu fpv5-d16
+ 308              	ILI9341_Reset:
+ 309              	.LFB146:
+ 141:Src/ILI9341_STM32_Driver.c **** 
+ 142:Src/ILI9341_STM32_Driver.c **** /*HARDWARE RESET*/
+ 143:Src/ILI9341_STM32_Driver.c **** void ILI9341_Reset(void)
+ 144:Src/ILI9341_STM32_Driver.c **** {
+ 310              		.loc 1 144 1 is_stmt 1 view -0
+ 311              		.cfi_startproc
+ 312              		@ args = 0, pretend = 0, frame = 0
+ 313              		@ frame_needed = 0, uses_anonymous_args = 0
+ 314 0000 10B5     		push	{r4, lr}
+ 315              	.LCFI7:
+ 316              		.cfi_def_cfa_offset 8
+ 317              		.cfi_offset 4, -8
+ 318              		.cfi_offset 14, -4
+ 145:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_RST_PORT, LCD_RST_PIN, GPIO_PIN_SET);
+ 319              		.loc 1 145 1 view .LVU42
+ 320 0002 0D4C     		ldr	r4, .L21
+ 321 0004 0122     		movs	r2, #1
+ 322 0006 4FF48061 		mov	r1, #1024
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 9
+
+
+ 323 000a 2046     		mov	r0, r4
+ 324 000c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 325              	.LVL31:
+ 146:Src/ILI9341_STM32_Driver.c **** HAL_Delay(200);
+ 326              		.loc 1 146 1 view .LVU43
+ 327 0010 C820     		movs	r0, #200
+ 328 0012 FFF7FEFF 		bl	HAL_Delay
+ 329              	.LVL32:
+ 147:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);
+ 330              		.loc 1 147 1 view .LVU44
+ 331 0016 0022     		movs	r2, #0
+ 332 0018 4FF48071 		mov	r1, #256
+ 333 001c 2046     		mov	r0, r4
+ 334 001e FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 335              	.LVL33:
+ 148:Src/ILI9341_STM32_Driver.c **** HAL_Delay(200);
+ 336              		.loc 1 148 1 view .LVU45
+ 337 0022 C820     		movs	r0, #200
+ 338 0024 FFF7FEFF 		bl	HAL_Delay
+ 339              	.LVL34:
+ 149:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_RST_PORT, LCD_RST_PIN, GPIO_PIN_SET);	
+ 340              		.loc 1 149 1 view .LVU46
+ 341 0028 0122     		movs	r2, #1
+ 342 002a 4FF48061 		mov	r1, #1024
+ 343 002e 2046     		mov	r0, r4
+ 344 0030 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 345              	.LVL35:
+ 150:Src/ILI9341_STM32_Driver.c **** }
+ 346              		.loc 1 150 1 is_stmt 0 view .LVU47
+ 347 0034 10BD     		pop	{r4, pc}
+ 348              	.L22:
+ 349 0036 00BF     		.align	2
+ 350              	.L21:
+ 351 0038 00080240 		.word	1073874944
+ 352              		.cfi_endproc
+ 353              	.LFE146:
+ 355              		.section	.text.ILI9341_Set_Rotation,"ax",%progbits
+ 356              		.align	1
+ 357              		.global	ILI9341_Set_Rotation
+ 358              		.syntax unified
+ 359              		.thumb
+ 360              		.thumb_func
+ 361              		.fpu fpv5-d16
+ 363              	ILI9341_Set_Rotation:
+ 364              	.LVL36:
+ 365              	.LFB147:
+ 151:Src/ILI9341_STM32_Driver.c **** 
+ 152:Src/ILI9341_STM32_Driver.c **** /*Ser rotation of the screen - changes x0 and y0*/
+ 153:Src/ILI9341_STM32_Driver.c **** void ILI9341_Set_Rotation(uint8_t Rotation) 
+ 154:Src/ILI9341_STM32_Driver.c **** {
+ 366              		.loc 1 154 1 is_stmt 1 view -0
+ 367              		.cfi_startproc
+ 368              		@ args = 0, pretend = 0, frame = 0
+ 369              		@ frame_needed = 0, uses_anonymous_args = 0
+ 370              		.loc 1 154 1 is_stmt 0 view .LVU49
+ 371 0000 10B5     		push	{r4, lr}
+ 372              	.LCFI8:
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 10
+
+
+ 373              		.cfi_def_cfa_offset 8
+ 374              		.cfi_offset 4, -8
+ 375              		.cfi_offset 14, -4
+ 376 0002 0446     		mov	r4, r0
+ 155:Src/ILI9341_STM32_Driver.c **** 	
+ 156:Src/ILI9341_STM32_Driver.c **** uint8_t screen_rotation = Rotation;
+ 377              		.loc 1 156 1 is_stmt 1 view .LVU50
+ 378              	.LVL37:
+ 157:Src/ILI9341_STM32_Driver.c **** 
+ 158:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0x36);
+ 379              		.loc 1 158 1 view .LVU51
+ 380 0004 3620     		movs	r0, #54
+ 381              	.LVL38:
+ 382              		.loc 1 158 1 is_stmt 0 view .LVU52
+ 383 0006 FFF7FEFF 		bl	ILI9341_Write_Command
+ 384              	.LVL39:
+ 159:Src/ILI9341_STM32_Driver.c **** HAL_Delay(1);
+ 385              		.loc 1 159 1 is_stmt 1 view .LVU53
+ 386 000a 0120     		movs	r0, #1
+ 387 000c FFF7FEFF 		bl	HAL_Delay
+ 388              	.LVL40:
+ 160:Src/ILI9341_STM32_Driver.c **** 	
+ 161:Src/ILI9341_STM32_Driver.c **** switch(screen_rotation) 
+ 389              		.loc 1 161 1 view .LVU54
+ 390 0010 032C     		cmp	r4, #3
+ 391 0012 0DD8     		bhi	.L23
+ 392 0014 DFE804F0 		tbb	[pc, r4]
+ 393              	.L26:
+ 394 0018 02       		.byte	(.L29-.L26)/2
+ 395 0019 0D       		.byte	(.L28-.L26)/2
+ 396 001a 18       		.byte	(.L27-.L26)/2
+ 397 001b 23       		.byte	(.L25-.L26)/2
+ 398              		.p2align 1
+ 399              	.L29:
+ 162:Src/ILI9341_STM32_Driver.c **** 	{
+ 163:Src/ILI9341_STM32_Driver.c **** 		case SCREEN_VERTICAL_1:
+ 164:Src/ILI9341_STM32_Driver.c **** 			ILI9341_Write_Data(0x40|0x08);
+ 400              		.loc 1 164 4 view .LVU55
+ 401 001c 4820     		movs	r0, #72
+ 402 001e FFF7FEFF 		bl	ILI9341_Write_Data
+ 403              	.LVL41:
+ 165:Src/ILI9341_STM32_Driver.c **** 			LCD_WIDTH = 240;
+ 404              		.loc 1 165 4 view .LVU56
+ 405              		.loc 1 165 14 is_stmt 0 view .LVU57
+ 406 0022 144B     		ldr	r3, .L31
+ 407 0024 F022     		movs	r2, #240
+ 408 0026 1A80     		strh	r2, [r3]	@ movhi
+ 166:Src/ILI9341_STM32_Driver.c **** 			LCD_HEIGHT = 320;
+ 409              		.loc 1 166 4 is_stmt 1 view .LVU58
+ 410              		.loc 1 166 15 is_stmt 0 view .LVU59
+ 411 0028 134B     		ldr	r3, .L31+4
+ 412 002a 4FF4A072 		mov	r2, #320
+ 413 002e 1A80     		strh	r2, [r3]	@ movhi
+ 167:Src/ILI9341_STM32_Driver.c **** 			break;
+ 414              		.loc 1 167 4 is_stmt 1 view .LVU60
+ 415              	.L23:
+ 168:Src/ILI9341_STM32_Driver.c **** 		case SCREEN_HORIZONTAL_1:
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 11
+
+
+ 169:Src/ILI9341_STM32_Driver.c **** 			ILI9341_Write_Data(0x20|0x08);
+ 170:Src/ILI9341_STM32_Driver.c **** 			LCD_WIDTH  = 320;
+ 171:Src/ILI9341_STM32_Driver.c **** 			LCD_HEIGHT = 240;
+ 172:Src/ILI9341_STM32_Driver.c **** 			break;
+ 173:Src/ILI9341_STM32_Driver.c **** 		case SCREEN_VERTICAL_2:
+ 174:Src/ILI9341_STM32_Driver.c **** 			ILI9341_Write_Data(0x80|0x08);
+ 175:Src/ILI9341_STM32_Driver.c **** 			LCD_WIDTH  = 240;
+ 176:Src/ILI9341_STM32_Driver.c **** 			LCD_HEIGHT = 320;
+ 177:Src/ILI9341_STM32_Driver.c **** 			break;
+ 178:Src/ILI9341_STM32_Driver.c **** 		case SCREEN_HORIZONTAL_2:
+ 179:Src/ILI9341_STM32_Driver.c **** 			ILI9341_Write_Data(0x40|0x80|0x20|0x08);
+ 180:Src/ILI9341_STM32_Driver.c **** 			LCD_WIDTH  = 320;
+ 181:Src/ILI9341_STM32_Driver.c **** 			LCD_HEIGHT = 240;
+ 182:Src/ILI9341_STM32_Driver.c **** 			break;
+ 183:Src/ILI9341_STM32_Driver.c **** 		default:
+ 184:Src/ILI9341_STM32_Driver.c **** 			//EXIT IF SCREEN ROTATION NOT VALID!
+ 185:Src/ILI9341_STM32_Driver.c **** 			break;
+ 186:Src/ILI9341_STM32_Driver.c **** 	}
+ 187:Src/ILI9341_STM32_Driver.c **** }
+ 416              		.loc 1 187 1 is_stmt 0 view .LVU61
+ 417 0030 10BD     		pop	{r4, pc}
+ 418              	.LVL42:
+ 419              	.L28:
+ 169:Src/ILI9341_STM32_Driver.c **** 			LCD_WIDTH  = 320;
+ 420              		.loc 1 169 4 is_stmt 1 view .LVU62
+ 421 0032 2820     		movs	r0, #40
+ 422 0034 FFF7FEFF 		bl	ILI9341_Write_Data
+ 423              	.LVL43:
+ 170:Src/ILI9341_STM32_Driver.c **** 			LCD_HEIGHT = 240;
+ 424              		.loc 1 170 4 view .LVU63
+ 170:Src/ILI9341_STM32_Driver.c **** 			LCD_HEIGHT = 240;
+ 425              		.loc 1 170 15 is_stmt 0 view .LVU64
+ 426 0038 0E4B     		ldr	r3, .L31
+ 427 003a 4FF4A072 		mov	r2, #320
+ 428 003e 1A80     		strh	r2, [r3]	@ movhi
+ 171:Src/ILI9341_STM32_Driver.c **** 			break;
+ 429              		.loc 1 171 4 is_stmt 1 view .LVU65
+ 171:Src/ILI9341_STM32_Driver.c **** 			break;
+ 430              		.loc 1 171 15 is_stmt 0 view .LVU66
+ 431 0040 0D4B     		ldr	r3, .L31+4
+ 432 0042 F022     		movs	r2, #240
+ 433 0044 1A80     		strh	r2, [r3]	@ movhi
+ 172:Src/ILI9341_STM32_Driver.c **** 		case SCREEN_VERTICAL_2:
+ 434              		.loc 1 172 4 is_stmt 1 view .LVU67
+ 435 0046 F3E7     		b	.L23
+ 436              	.L27:
+ 174:Src/ILI9341_STM32_Driver.c **** 			LCD_WIDTH  = 240;
+ 437              		.loc 1 174 4 view .LVU68
+ 438 0048 8820     		movs	r0, #136
+ 439 004a FFF7FEFF 		bl	ILI9341_Write_Data
+ 440              	.LVL44:
+ 175:Src/ILI9341_STM32_Driver.c **** 			LCD_HEIGHT = 320;
+ 441              		.loc 1 175 4 view .LVU69
+ 175:Src/ILI9341_STM32_Driver.c **** 			LCD_HEIGHT = 320;
+ 442              		.loc 1 175 15 is_stmt 0 view .LVU70
+ 443 004e 094B     		ldr	r3, .L31
+ 444 0050 F022     		movs	r2, #240
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 12
+
+
+ 445 0052 1A80     		strh	r2, [r3]	@ movhi
+ 176:Src/ILI9341_STM32_Driver.c **** 			break;
+ 446              		.loc 1 176 4 is_stmt 1 view .LVU71
+ 176:Src/ILI9341_STM32_Driver.c **** 			break;
+ 447              		.loc 1 176 15 is_stmt 0 view .LVU72
+ 448 0054 084B     		ldr	r3, .L31+4
+ 449 0056 4FF4A072 		mov	r2, #320
+ 450 005a 1A80     		strh	r2, [r3]	@ movhi
+ 177:Src/ILI9341_STM32_Driver.c **** 		case SCREEN_HORIZONTAL_2:
+ 451              		.loc 1 177 4 is_stmt 1 view .LVU73
+ 452 005c E8E7     		b	.L23
+ 453              	.L25:
+ 179:Src/ILI9341_STM32_Driver.c **** 			LCD_WIDTH  = 320;
+ 454              		.loc 1 179 4 view .LVU74
+ 455 005e E820     		movs	r0, #232
+ 456 0060 FFF7FEFF 		bl	ILI9341_Write_Data
+ 457              	.LVL45:
+ 180:Src/ILI9341_STM32_Driver.c **** 			LCD_HEIGHT = 240;
+ 458              		.loc 1 180 4 view .LVU75
+ 180:Src/ILI9341_STM32_Driver.c **** 			LCD_HEIGHT = 240;
+ 459              		.loc 1 180 15 is_stmt 0 view .LVU76
+ 460 0064 034B     		ldr	r3, .L31
+ 461 0066 4FF4A072 		mov	r2, #320
+ 462 006a 1A80     		strh	r2, [r3]	@ movhi
+ 181:Src/ILI9341_STM32_Driver.c **** 			break;
+ 463              		.loc 1 181 4 is_stmt 1 view .LVU77
+ 181:Src/ILI9341_STM32_Driver.c **** 			break;
+ 464              		.loc 1 181 15 is_stmt 0 view .LVU78
+ 465 006c 024B     		ldr	r3, .L31+4
+ 466 006e F022     		movs	r2, #240
+ 467 0070 1A80     		strh	r2, [r3]	@ movhi
+ 182:Src/ILI9341_STM32_Driver.c **** 		default:
+ 468              		.loc 1 182 4 is_stmt 1 view .LVU79
+ 469              		.loc 1 187 1 is_stmt 0 view .LVU80
+ 470 0072 DDE7     		b	.L23
+ 471              	.L32:
+ 472              		.align	2
+ 473              	.L31:
+ 474 0074 00000000 		.word	.LANCHOR0
+ 475 0078 00000000 		.word	.LANCHOR1
+ 476              		.cfi_endproc
+ 477              	.LFE147:
+ 479              		.section	.text.ILI9341_Enable,"ax",%progbits
+ 480              		.align	1
+ 481              		.global	ILI9341_Enable
+ 482              		.syntax unified
+ 483              		.thumb
+ 484              		.thumb_func
+ 485              		.fpu fpv5-d16
+ 487              	ILI9341_Enable:
+ 488              	.LFB148:
+ 188:Src/ILI9341_STM32_Driver.c **** 
+ 189:Src/ILI9341_STM32_Driver.c **** /*Enable LCD display*/
+ 190:Src/ILI9341_STM32_Driver.c **** void ILI9341_Enable(void)
+ 191:Src/ILI9341_STM32_Driver.c **** {
+ 489              		.loc 1 191 1 is_stmt 1 view -0
+ 490              		.cfi_startproc
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 13
+
+
+ 491              		@ args = 0, pretend = 0, frame = 0
+ 492              		@ frame_needed = 0, uses_anonymous_args = 0
+ 493 0000 08B5     		push	{r3, lr}
+ 494              	.LCFI9:
+ 495              		.cfi_def_cfa_offset 8
+ 496              		.cfi_offset 3, -8
+ 497              		.cfi_offset 14, -4
+ 192:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_RST_PORT, LCD_RST_PIN, GPIO_PIN_SET);
+ 498              		.loc 1 192 1 view .LVU82
+ 499 0002 0122     		movs	r2, #1
+ 500 0004 4FF48061 		mov	r1, #1024
+ 501 0008 0148     		ldr	r0, .L35
+ 502 000a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 503              	.LVL46:
+ 193:Src/ILI9341_STM32_Driver.c **** }
+ 504              		.loc 1 193 1 is_stmt 0 view .LVU83
+ 505 000e 08BD     		pop	{r3, pc}
+ 506              	.L36:
+ 507              		.align	2
+ 508              	.L35:
+ 509 0010 00080240 		.word	1073874944
+ 510              		.cfi_endproc
+ 511              	.LFE148:
+ 513              		.section	.text.ILI9341_Init,"ax",%progbits
+ 514              		.align	1
+ 515              		.global	ILI9341_Init
+ 516              		.syntax unified
+ 517              		.thumb
+ 518              		.thumb_func
+ 519              		.fpu fpv5-d16
+ 521              	ILI9341_Init:
+ 522              	.LFB149:
+ 194:Src/ILI9341_STM32_Driver.c **** 
+ 195:Src/ILI9341_STM32_Driver.c **** /*Initialize LCD display*/
+ 196:Src/ILI9341_STM32_Driver.c **** void ILI9341_Init(void)
+ 197:Src/ILI9341_STM32_Driver.c **** {
+ 523              		.loc 1 197 1 is_stmt 1 view -0
+ 524              		.cfi_startproc
+ 525              		@ args = 0, pretend = 0, frame = 0
+ 526              		@ frame_needed = 0, uses_anonymous_args = 0
+ 527 0000 08B5     		push	{r3, lr}
+ 528              	.LCFI10:
+ 529              		.cfi_def_cfa_offset 8
+ 530              		.cfi_offset 3, -8
+ 531              		.cfi_offset 14, -4
+ 198:Src/ILI9341_STM32_Driver.c **** 
+ 199:Src/ILI9341_STM32_Driver.c **** ILI9341_Enable();
+ 532              		.loc 1 199 1 view .LVU85
+ 533 0002 FFF7FEFF 		bl	ILI9341_Enable
+ 534              	.LVL47:
+ 200:Src/ILI9341_STM32_Driver.c **** ILI9341_SPI_Init();
+ 535              		.loc 1 200 1 view .LVU86
+ 536 0006 FFF7FEFF 		bl	ILI9341_SPI_Init
+ 537              	.LVL48:
+ 201:Src/ILI9341_STM32_Driver.c **** ILI9341_Reset();
+ 538              		.loc 1 201 1 view .LVU87
+ 539 000a FFF7FEFF 		bl	ILI9341_Reset
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 14
+
+
+ 540              	.LVL49:
+ 202:Src/ILI9341_STM32_Driver.c **** 
+ 203:Src/ILI9341_STM32_Driver.c **** //SOFTWARE RESET
+ 204:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0x01);
+ 541              		.loc 1 204 1 view .LVU88
+ 542 000e 0120     		movs	r0, #1
+ 543 0010 FFF7FEFF 		bl	ILI9341_Write_Command
+ 544              	.LVL50:
+ 205:Src/ILI9341_STM32_Driver.c **** HAL_Delay(1000);
+ 545              		.loc 1 205 1 view .LVU89
+ 546 0014 4FF47A70 		mov	r0, #1000
+ 547 0018 FFF7FEFF 		bl	HAL_Delay
+ 548              	.LVL51:
+ 206:Src/ILI9341_STM32_Driver.c **** 	
+ 207:Src/ILI9341_STM32_Driver.c **** //POWER CONTROL A
+ 208:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0xCB);
+ 549              		.loc 1 208 1 view .LVU90
+ 550 001c CB20     		movs	r0, #203
+ 551 001e FFF7FEFF 		bl	ILI9341_Write_Command
+ 552              	.LVL52:
+ 209:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x39);
+ 553              		.loc 1 209 1 view .LVU91
+ 554 0022 3920     		movs	r0, #57
+ 555 0024 FFF7FEFF 		bl	ILI9341_Write_Data
+ 556              	.LVL53:
+ 210:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x2C);
+ 557              		.loc 1 210 1 view .LVU92
+ 558 0028 2C20     		movs	r0, #44
+ 559 002a FFF7FEFF 		bl	ILI9341_Write_Data
+ 560              	.LVL54:
+ 211:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x00);
+ 561              		.loc 1 211 1 view .LVU93
+ 562 002e 0020     		movs	r0, #0
+ 563 0030 FFF7FEFF 		bl	ILI9341_Write_Data
+ 564              	.LVL55:
+ 212:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x34);
+ 565              		.loc 1 212 1 view .LVU94
+ 566 0034 3420     		movs	r0, #52
+ 567 0036 FFF7FEFF 		bl	ILI9341_Write_Data
+ 568              	.LVL56:
+ 213:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x02);
+ 569              		.loc 1 213 1 view .LVU95
+ 570 003a 0220     		movs	r0, #2
+ 571 003c FFF7FEFF 		bl	ILI9341_Write_Data
+ 572              	.LVL57:
+ 214:Src/ILI9341_STM32_Driver.c **** 
+ 215:Src/ILI9341_STM32_Driver.c **** //POWER CONTROL B
+ 216:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0xCF);
+ 573              		.loc 1 216 1 view .LVU96
+ 574 0040 CF20     		movs	r0, #207
+ 575 0042 FFF7FEFF 		bl	ILI9341_Write_Command
+ 576              	.LVL58:
+ 217:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x00);
+ 577              		.loc 1 217 1 view .LVU97
+ 578 0046 0020     		movs	r0, #0
+ 579 0048 FFF7FEFF 		bl	ILI9341_Write_Data
+ 580              	.LVL59:
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 15
+
+
+ 218:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0xC1);
+ 581              		.loc 1 218 1 view .LVU98
+ 582 004c C120     		movs	r0, #193
+ 583 004e FFF7FEFF 		bl	ILI9341_Write_Data
+ 584              	.LVL60:
+ 219:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x30);
+ 585              		.loc 1 219 1 view .LVU99
+ 586 0052 3020     		movs	r0, #48
+ 587 0054 FFF7FEFF 		bl	ILI9341_Write_Data
+ 588              	.LVL61:
+ 220:Src/ILI9341_STM32_Driver.c **** 
+ 221:Src/ILI9341_STM32_Driver.c **** //DRIVER TIMING CONTROL A
+ 222:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0xE8);
+ 589              		.loc 1 222 1 view .LVU100
+ 590 0058 E820     		movs	r0, #232
+ 591 005a FFF7FEFF 		bl	ILI9341_Write_Command
+ 592              	.LVL62:
+ 223:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x85);
+ 593              		.loc 1 223 1 view .LVU101
+ 594 005e 8520     		movs	r0, #133
+ 595 0060 FFF7FEFF 		bl	ILI9341_Write_Data
+ 596              	.LVL63:
+ 224:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x00);
+ 597              		.loc 1 224 1 view .LVU102
+ 598 0064 0020     		movs	r0, #0
+ 599 0066 FFF7FEFF 		bl	ILI9341_Write_Data
+ 600              	.LVL64:
+ 225:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x78);
+ 601              		.loc 1 225 1 view .LVU103
+ 602 006a 7820     		movs	r0, #120
+ 603 006c FFF7FEFF 		bl	ILI9341_Write_Data
+ 604              	.LVL65:
+ 226:Src/ILI9341_STM32_Driver.c **** 
+ 227:Src/ILI9341_STM32_Driver.c **** //DRIVER TIMING CONTROL B
+ 228:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0xEA);
+ 605              		.loc 1 228 1 view .LVU104
+ 606 0070 EA20     		movs	r0, #234
+ 607 0072 FFF7FEFF 		bl	ILI9341_Write_Command
+ 608              	.LVL66:
+ 229:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x00);
+ 609              		.loc 1 229 1 view .LVU105
+ 610 0076 0020     		movs	r0, #0
+ 611 0078 FFF7FEFF 		bl	ILI9341_Write_Data
+ 612              	.LVL67:
+ 230:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x00);
+ 613              		.loc 1 230 1 view .LVU106
+ 614 007c 0020     		movs	r0, #0
+ 615 007e FFF7FEFF 		bl	ILI9341_Write_Data
+ 616              	.LVL68:
+ 231:Src/ILI9341_STM32_Driver.c **** 
+ 232:Src/ILI9341_STM32_Driver.c **** //POWER ON SEQUENCE CONTROL
+ 233:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0xED);
+ 617              		.loc 1 233 1 view .LVU107
+ 618 0082 ED20     		movs	r0, #237
+ 619 0084 FFF7FEFF 		bl	ILI9341_Write_Command
+ 620              	.LVL69:
+ 234:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x64);
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 16
+
+
+ 621              		.loc 1 234 1 view .LVU108
+ 622 0088 6420     		movs	r0, #100
+ 623 008a FFF7FEFF 		bl	ILI9341_Write_Data
+ 624              	.LVL70:
+ 235:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x03);
+ 625              		.loc 1 235 1 view .LVU109
+ 626 008e 0320     		movs	r0, #3
+ 627 0090 FFF7FEFF 		bl	ILI9341_Write_Data
+ 628              	.LVL71:
+ 236:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x12);
+ 629              		.loc 1 236 1 view .LVU110
+ 630 0094 1220     		movs	r0, #18
+ 631 0096 FFF7FEFF 		bl	ILI9341_Write_Data
+ 632              	.LVL72:
+ 237:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x81);
+ 633              		.loc 1 237 1 view .LVU111
+ 634 009a 8120     		movs	r0, #129
+ 635 009c FFF7FEFF 		bl	ILI9341_Write_Data
+ 636              	.LVL73:
+ 238:Src/ILI9341_STM32_Driver.c **** 
+ 239:Src/ILI9341_STM32_Driver.c **** //PUMP RATIO CONTROL
+ 240:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0xF7);
+ 637              		.loc 1 240 1 view .LVU112
+ 638 00a0 F720     		movs	r0, #247
+ 639 00a2 FFF7FEFF 		bl	ILI9341_Write_Command
+ 640              	.LVL74:
+ 241:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x20);
+ 641              		.loc 1 241 1 view .LVU113
+ 642 00a6 2020     		movs	r0, #32
+ 643 00a8 FFF7FEFF 		bl	ILI9341_Write_Data
+ 644              	.LVL75:
+ 242:Src/ILI9341_STM32_Driver.c **** 
+ 243:Src/ILI9341_STM32_Driver.c **** //POWER CONTROL,VRH[5:0]
+ 244:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0xC0);
+ 645              		.loc 1 244 1 view .LVU114
+ 646 00ac C020     		movs	r0, #192
+ 647 00ae FFF7FEFF 		bl	ILI9341_Write_Command
+ 648              	.LVL76:
+ 245:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x23);
+ 649              		.loc 1 245 1 view .LVU115
+ 650 00b2 2320     		movs	r0, #35
+ 651 00b4 FFF7FEFF 		bl	ILI9341_Write_Data
+ 652              	.LVL77:
+ 246:Src/ILI9341_STM32_Driver.c **** 
+ 247:Src/ILI9341_STM32_Driver.c **** //POWER CONTROL,SAP[2:0];BT[3:0]
+ 248:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0xC1);
+ 653              		.loc 1 248 1 view .LVU116
+ 654 00b8 C120     		movs	r0, #193
+ 655 00ba FFF7FEFF 		bl	ILI9341_Write_Command
+ 656              	.LVL78:
+ 249:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x10);
+ 657              		.loc 1 249 1 view .LVU117
+ 658 00be 1020     		movs	r0, #16
+ 659 00c0 FFF7FEFF 		bl	ILI9341_Write_Data
+ 660              	.LVL79:
+ 250:Src/ILI9341_STM32_Driver.c **** 
+ 251:Src/ILI9341_STM32_Driver.c **** //VCM CONTROL
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 17
+
+
+ 252:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0xC5);
+ 661              		.loc 1 252 1 view .LVU118
+ 662 00c4 C520     		movs	r0, #197
+ 663 00c6 FFF7FEFF 		bl	ILI9341_Write_Command
+ 664              	.LVL80:
+ 253:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x3E);
+ 665              		.loc 1 253 1 view .LVU119
+ 666 00ca 3E20     		movs	r0, #62
+ 667 00cc FFF7FEFF 		bl	ILI9341_Write_Data
+ 668              	.LVL81:
+ 254:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x28);
+ 669              		.loc 1 254 1 view .LVU120
+ 670 00d0 2820     		movs	r0, #40
+ 671 00d2 FFF7FEFF 		bl	ILI9341_Write_Data
+ 672              	.LVL82:
+ 255:Src/ILI9341_STM32_Driver.c **** 
+ 256:Src/ILI9341_STM32_Driver.c **** //VCM CONTROL 2
+ 257:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0xC7);
+ 673              		.loc 1 257 1 view .LVU121
+ 674 00d6 C720     		movs	r0, #199
+ 675 00d8 FFF7FEFF 		bl	ILI9341_Write_Command
+ 676              	.LVL83:
+ 258:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x86);
+ 677              		.loc 1 258 1 view .LVU122
+ 678 00dc 8620     		movs	r0, #134
+ 679 00de FFF7FEFF 		bl	ILI9341_Write_Data
+ 680              	.LVL84:
+ 259:Src/ILI9341_STM32_Driver.c **** 
+ 260:Src/ILI9341_STM32_Driver.c **** //MEMORY ACCESS CONTROL
+ 261:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0x36);
+ 681              		.loc 1 261 1 view .LVU123
+ 682 00e2 3620     		movs	r0, #54
+ 683 00e4 FFF7FEFF 		bl	ILI9341_Write_Command
+ 684              	.LVL85:
+ 262:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x48);
+ 685              		.loc 1 262 1 view .LVU124
+ 686 00e8 4820     		movs	r0, #72
+ 687 00ea FFF7FEFF 		bl	ILI9341_Write_Data
+ 688              	.LVL86:
+ 263:Src/ILI9341_STM32_Driver.c **** 
+ 264:Src/ILI9341_STM32_Driver.c **** //PIXEL FORMAT
+ 265:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0x3A);
+ 689              		.loc 1 265 1 view .LVU125
+ 690 00ee 3A20     		movs	r0, #58
+ 691 00f0 FFF7FEFF 		bl	ILI9341_Write_Command
+ 692              	.LVL87:
+ 266:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x55);
+ 693              		.loc 1 266 1 view .LVU126
+ 694 00f4 5520     		movs	r0, #85
+ 695 00f6 FFF7FEFF 		bl	ILI9341_Write_Data
+ 696              	.LVL88:
+ 267:Src/ILI9341_STM32_Driver.c **** 
+ 268:Src/ILI9341_STM32_Driver.c **** //FRAME RATIO CONTROL, STANDARD RGB COLOR
+ 269:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0xB1);
+ 697              		.loc 1 269 1 view .LVU127
+ 698 00fa B120     		movs	r0, #177
+ 699 00fc FFF7FEFF 		bl	ILI9341_Write_Command
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 18
+
+
+ 700              	.LVL89:
+ 270:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x00);
+ 701              		.loc 1 270 1 view .LVU128
+ 702 0100 0020     		movs	r0, #0
+ 703 0102 FFF7FEFF 		bl	ILI9341_Write_Data
+ 704              	.LVL90:
+ 271:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x18);
+ 705              		.loc 1 271 1 view .LVU129
+ 706 0106 1820     		movs	r0, #24
+ 707 0108 FFF7FEFF 		bl	ILI9341_Write_Data
+ 708              	.LVL91:
+ 272:Src/ILI9341_STM32_Driver.c **** 
+ 273:Src/ILI9341_STM32_Driver.c **** //DISPLAY FUNCTION CONTROL
+ 274:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0xB6);
+ 709              		.loc 1 274 1 view .LVU130
+ 710 010c B620     		movs	r0, #182
+ 711 010e FFF7FEFF 		bl	ILI9341_Write_Command
+ 712              	.LVL92:
+ 275:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x08);
+ 713              		.loc 1 275 1 view .LVU131
+ 714 0112 0820     		movs	r0, #8
+ 715 0114 FFF7FEFF 		bl	ILI9341_Write_Data
+ 716              	.LVL93:
+ 276:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x82);
+ 717              		.loc 1 276 1 view .LVU132
+ 718 0118 8220     		movs	r0, #130
+ 719 011a FFF7FEFF 		bl	ILI9341_Write_Data
+ 720              	.LVL94:
+ 277:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x27);
+ 721              		.loc 1 277 1 view .LVU133
+ 722 011e 2720     		movs	r0, #39
+ 723 0120 FFF7FEFF 		bl	ILI9341_Write_Data
+ 724              	.LVL95:
+ 278:Src/ILI9341_STM32_Driver.c **** 
+ 279:Src/ILI9341_STM32_Driver.c **** //3GAMMA FUNCTION DISABLE
+ 280:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0xF2);
+ 725              		.loc 1 280 1 view .LVU134
+ 726 0124 F220     		movs	r0, #242
+ 727 0126 FFF7FEFF 		bl	ILI9341_Write_Command
+ 728              	.LVL96:
+ 281:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x00);
+ 729              		.loc 1 281 1 view .LVU135
+ 730 012a 0020     		movs	r0, #0
+ 731 012c FFF7FEFF 		bl	ILI9341_Write_Data
+ 732              	.LVL97:
+ 282:Src/ILI9341_STM32_Driver.c **** 
+ 283:Src/ILI9341_STM32_Driver.c **** //GAMMA CURVE SELECTED
+ 284:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0x26);
+ 733              		.loc 1 284 1 view .LVU136
+ 734 0130 2620     		movs	r0, #38
+ 735 0132 FFF7FEFF 		bl	ILI9341_Write_Command
+ 736              	.LVL98:
+ 285:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x01);
+ 737              		.loc 1 285 1 view .LVU137
+ 738 0136 0120     		movs	r0, #1
+ 739 0138 FFF7FEFF 		bl	ILI9341_Write_Data
+ 740              	.LVL99:
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 19
+
+
+ 286:Src/ILI9341_STM32_Driver.c **** 
+ 287:Src/ILI9341_STM32_Driver.c **** //POSITIVE GAMMA CORRECTION
+ 288:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0xE0);
+ 741              		.loc 1 288 1 view .LVU138
+ 742 013c E020     		movs	r0, #224
+ 743 013e FFF7FEFF 		bl	ILI9341_Write_Command
+ 744              	.LVL100:
+ 289:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x0F);
+ 745              		.loc 1 289 1 view .LVU139
+ 746 0142 0F20     		movs	r0, #15
+ 747 0144 FFF7FEFF 		bl	ILI9341_Write_Data
+ 748              	.LVL101:
+ 290:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x31);
+ 749              		.loc 1 290 1 view .LVU140
+ 750 0148 3120     		movs	r0, #49
+ 751 014a FFF7FEFF 		bl	ILI9341_Write_Data
+ 752              	.LVL102:
+ 291:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x2B);
+ 753              		.loc 1 291 1 view .LVU141
+ 754 014e 2B20     		movs	r0, #43
+ 755 0150 FFF7FEFF 		bl	ILI9341_Write_Data
+ 756              	.LVL103:
+ 292:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x0C);
+ 757              		.loc 1 292 1 view .LVU142
+ 758 0154 0C20     		movs	r0, #12
+ 759 0156 FFF7FEFF 		bl	ILI9341_Write_Data
+ 760              	.LVL104:
+ 293:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x0E);
+ 761              		.loc 1 293 1 view .LVU143
+ 762 015a 0E20     		movs	r0, #14
+ 763 015c FFF7FEFF 		bl	ILI9341_Write_Data
+ 764              	.LVL105:
+ 294:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x08);
+ 765              		.loc 1 294 1 view .LVU144
+ 766 0160 0820     		movs	r0, #8
+ 767 0162 FFF7FEFF 		bl	ILI9341_Write_Data
+ 768              	.LVL106:
+ 295:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x4E);
+ 769              		.loc 1 295 1 view .LVU145
+ 770 0166 4E20     		movs	r0, #78
+ 771 0168 FFF7FEFF 		bl	ILI9341_Write_Data
+ 772              	.LVL107:
+ 296:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0xF1);
+ 773              		.loc 1 296 1 view .LVU146
+ 774 016c F120     		movs	r0, #241
+ 775 016e FFF7FEFF 		bl	ILI9341_Write_Data
+ 776              	.LVL108:
+ 297:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x37);
+ 777              		.loc 1 297 1 view .LVU147
+ 778 0172 3720     		movs	r0, #55
+ 779 0174 FFF7FEFF 		bl	ILI9341_Write_Data
+ 780              	.LVL109:
+ 298:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x07);
+ 781              		.loc 1 298 1 view .LVU148
+ 782 0178 0720     		movs	r0, #7
+ 783 017a FFF7FEFF 		bl	ILI9341_Write_Data
+ 784              	.LVL110:
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 20
+
+
+ 299:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x10);
+ 785              		.loc 1 299 1 view .LVU149
+ 786 017e 1020     		movs	r0, #16
+ 787 0180 FFF7FEFF 		bl	ILI9341_Write_Data
+ 788              	.LVL111:
+ 300:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x03);
+ 789              		.loc 1 300 1 view .LVU150
+ 790 0184 0320     		movs	r0, #3
+ 791 0186 FFF7FEFF 		bl	ILI9341_Write_Data
+ 792              	.LVL112:
+ 301:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x0E);
+ 793              		.loc 1 301 1 view .LVU151
+ 794 018a 0E20     		movs	r0, #14
+ 795 018c FFF7FEFF 		bl	ILI9341_Write_Data
+ 796              	.LVL113:
+ 302:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x09);
+ 797              		.loc 1 302 1 view .LVU152
+ 798 0190 0920     		movs	r0, #9
+ 799 0192 FFF7FEFF 		bl	ILI9341_Write_Data
+ 800              	.LVL114:
+ 303:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x00);
+ 801              		.loc 1 303 1 view .LVU153
+ 802 0196 0020     		movs	r0, #0
+ 803 0198 FFF7FEFF 		bl	ILI9341_Write_Data
+ 804              	.LVL115:
+ 304:Src/ILI9341_STM32_Driver.c **** 
+ 305:Src/ILI9341_STM32_Driver.c **** //NEGATIVE GAMMA CORRECTION
+ 306:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0xE1);
+ 805              		.loc 1 306 1 view .LVU154
+ 806 019c E120     		movs	r0, #225
+ 807 019e FFF7FEFF 		bl	ILI9341_Write_Command
+ 808              	.LVL116:
+ 307:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x00);
+ 809              		.loc 1 307 1 view .LVU155
+ 810 01a2 0020     		movs	r0, #0
+ 811 01a4 FFF7FEFF 		bl	ILI9341_Write_Data
+ 812              	.LVL117:
+ 308:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x0E);
+ 813              		.loc 1 308 1 view .LVU156
+ 814 01a8 0E20     		movs	r0, #14
+ 815 01aa FFF7FEFF 		bl	ILI9341_Write_Data
+ 816              	.LVL118:
+ 309:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x14);
+ 817              		.loc 1 309 1 view .LVU157
+ 818 01ae 1420     		movs	r0, #20
+ 819 01b0 FFF7FEFF 		bl	ILI9341_Write_Data
+ 820              	.LVL119:
+ 310:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x03);
+ 821              		.loc 1 310 1 view .LVU158
+ 822 01b4 0320     		movs	r0, #3
+ 823 01b6 FFF7FEFF 		bl	ILI9341_Write_Data
+ 824              	.LVL120:
+ 311:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x11);
+ 825              		.loc 1 311 1 view .LVU159
+ 826 01ba 1120     		movs	r0, #17
+ 827 01bc FFF7FEFF 		bl	ILI9341_Write_Data
+ 828              	.LVL121:
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 21
+
+
+ 312:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x07);
+ 829              		.loc 1 312 1 view .LVU160
+ 830 01c0 0720     		movs	r0, #7
+ 831 01c2 FFF7FEFF 		bl	ILI9341_Write_Data
+ 832              	.LVL122:
+ 313:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x31);
+ 833              		.loc 1 313 1 view .LVU161
+ 834 01c6 3120     		movs	r0, #49
+ 835 01c8 FFF7FEFF 		bl	ILI9341_Write_Data
+ 836              	.LVL123:
+ 314:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0xC1);
+ 837              		.loc 1 314 1 view .LVU162
+ 838 01cc C120     		movs	r0, #193
+ 839 01ce FFF7FEFF 		bl	ILI9341_Write_Data
+ 840              	.LVL124:
+ 315:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x48);
+ 841              		.loc 1 315 1 view .LVU163
+ 842 01d2 4820     		movs	r0, #72
+ 843 01d4 FFF7FEFF 		bl	ILI9341_Write_Data
+ 844              	.LVL125:
+ 316:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x08);
+ 845              		.loc 1 316 1 view .LVU164
+ 846 01d8 0820     		movs	r0, #8
+ 847 01da FFF7FEFF 		bl	ILI9341_Write_Data
+ 848              	.LVL126:
+ 317:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x0F);
+ 849              		.loc 1 317 1 view .LVU165
+ 850 01de 0F20     		movs	r0, #15
+ 851 01e0 FFF7FEFF 		bl	ILI9341_Write_Data
+ 852              	.LVL127:
+ 318:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x0C);
+ 853              		.loc 1 318 1 view .LVU166
+ 854 01e4 0C20     		movs	r0, #12
+ 855 01e6 FFF7FEFF 		bl	ILI9341_Write_Data
+ 856              	.LVL128:
+ 319:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x31);
+ 857              		.loc 1 319 1 view .LVU167
+ 858 01ea 3120     		movs	r0, #49
+ 859 01ec FFF7FEFF 		bl	ILI9341_Write_Data
+ 860              	.LVL129:
+ 320:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x36);
+ 861              		.loc 1 320 1 view .LVU168
+ 862 01f0 3620     		movs	r0, #54
+ 863 01f2 FFF7FEFF 		bl	ILI9341_Write_Data
+ 864              	.LVL130:
+ 321:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Data(0x0F);
+ 865              		.loc 1 321 1 view .LVU169
+ 866 01f6 0F20     		movs	r0, #15
+ 867 01f8 FFF7FEFF 		bl	ILI9341_Write_Data
+ 868              	.LVL131:
+ 322:Src/ILI9341_STM32_Driver.c **** 
+ 323:Src/ILI9341_STM32_Driver.c **** //EXIT SLEEP
+ 324:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0x11);
+ 869              		.loc 1 324 1 view .LVU170
+ 870 01fc 1120     		movs	r0, #17
+ 871 01fe FFF7FEFF 		bl	ILI9341_Write_Command
+ 872              	.LVL132:
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 22
+
+
+ 325:Src/ILI9341_STM32_Driver.c **** HAL_Delay(120);
+ 873              		.loc 1 325 1 view .LVU171
+ 874 0202 7820     		movs	r0, #120
+ 875 0204 FFF7FEFF 		bl	HAL_Delay
+ 876              	.LVL133:
+ 326:Src/ILI9341_STM32_Driver.c **** 
+ 327:Src/ILI9341_STM32_Driver.c **** //TURN ON DISPLAY
+ 328:Src/ILI9341_STM32_Driver.c **** ILI9341_Write_Command(0x29);
+ 877              		.loc 1 328 1 view .LVU172
+ 878 0208 2920     		movs	r0, #41
+ 879 020a FFF7FEFF 		bl	ILI9341_Write_Command
+ 880              	.LVL134:
+ 329:Src/ILI9341_STM32_Driver.c **** 
+ 330:Src/ILI9341_STM32_Driver.c **** //STARTING ROTATION
+ 331:Src/ILI9341_STM32_Driver.c **** ILI9341_Set_Rotation(SCREEN_VERTICAL_1);
+ 881              		.loc 1 331 1 view .LVU173
+ 882 020e 0020     		movs	r0, #0
+ 883 0210 FFF7FEFF 		bl	ILI9341_Set_Rotation
+ 884              	.LVL135:
+ 332:Src/ILI9341_STM32_Driver.c **** }
+ 885              		.loc 1 332 1 is_stmt 0 view .LVU174
+ 886 0214 08BD     		pop	{r3, pc}
+ 887              		.cfi_endproc
+ 888              	.LFE149:
+ 890              		.section	.text.ILI9341_Draw_Colour,"ax",%progbits
+ 891              		.align	1
+ 892              		.global	ILI9341_Draw_Colour
+ 893              		.syntax unified
+ 894              		.thumb
+ 895              		.thumb_func
+ 896              		.fpu fpv5-d16
+ 898              	ILI9341_Draw_Colour:
+ 899              	.LVL136:
+ 900              	.LFB150:
+ 333:Src/ILI9341_STM32_Driver.c **** 
+ 334:Src/ILI9341_STM32_Driver.c **** //INTERNAL FUNCTION OF LIBRARY, USAGE NOT RECOMENDED, USE Draw_Pixel INSTEAD
+ 335:Src/ILI9341_STM32_Driver.c **** /*Sends single pixel colour information to LCD*/
+ 336:Src/ILI9341_STM32_Driver.c **** void ILI9341_Draw_Colour(uint16_t Colour)
+ 337:Src/ILI9341_STM32_Driver.c **** {
+ 901              		.loc 1 337 1 is_stmt 1 view -0
+ 902              		.cfi_startproc
+ 903              		@ args = 0, pretend = 0, frame = 8
+ 904              		@ frame_needed = 0, uses_anonymous_args = 0
+ 905              		.loc 1 337 1 is_stmt 0 view .LVU176
+ 906 0000 10B5     		push	{r4, lr}
+ 907              	.LCFI11:
+ 908              		.cfi_def_cfa_offset 8
+ 909              		.cfi_offset 4, -8
+ 910              		.cfi_offset 14, -4
+ 911 0002 82B0     		sub	sp, sp, #8
+ 912              	.LCFI12:
+ 913              		.cfi_def_cfa_offset 16
+ 338:Src/ILI9341_STM32_Driver.c **** //SENDS COLOUR
+ 339:Src/ILI9341_STM32_Driver.c **** unsigned char TempBuffer[2] = {Colour>>8, Colour};	
+ 914              		.loc 1 339 1 is_stmt 1 view .LVU177
+ 915              		.loc 1 339 15 is_stmt 0 view .LVU178
+ 916 0004 030A     		lsrs	r3, r0, #8
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 23
+
+
+ 917 0006 8DF80430 		strb	r3, [sp, #4]
+ 918 000a 8DF80500 		strb	r0, [sp, #5]
+ 340:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_DC_PORT, LCD_DC_PIN, GPIO_PIN_SET);	
+ 919              		.loc 1 340 1 is_stmt 1 view .LVU179
+ 920 000e 0D4C     		ldr	r4, .L41
+ 921 0010 0122     		movs	r2, #1
+ 922 0012 4FF40071 		mov	r1, #512
+ 923 0016 2046     		mov	r0, r4
+ 924              	.LVL137:
+ 925              		.loc 1 340 1 is_stmt 0 view .LVU180
+ 926 0018 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 927              	.LVL138:
+ 341:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);
+ 928              		.loc 1 341 1 is_stmt 1 view .LVU181
+ 929 001c 0022     		movs	r2, #0
+ 930 001e 4FF48071 		mov	r1, #256
+ 931 0022 2046     		mov	r0, r4
+ 932 0024 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 933              	.LVL139:
+ 342:Src/ILI9341_STM32_Driver.c **** HAL_SPI_Transmit(HSPI_INSTANCE, TempBuffer, 2, 1);	
+ 934              		.loc 1 342 1 view .LVU182
+ 935 0028 0123     		movs	r3, #1
+ 936 002a 0222     		movs	r2, #2
+ 937 002c 01A9     		add	r1, sp, #4
+ 938 002e 0648     		ldr	r0, .L41+4
+ 939 0030 FFF7FEFF 		bl	HAL_SPI_Transmit
+ 940              	.LVL140:
+ 343:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);
+ 941              		.loc 1 343 1 view .LVU183
+ 942 0034 0122     		movs	r2, #1
+ 943 0036 4FF48071 		mov	r1, #256
+ 944 003a 2046     		mov	r0, r4
+ 945 003c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 946              	.LVL141:
+ 344:Src/ILI9341_STM32_Driver.c **** }
+ 947              		.loc 1 344 1 is_stmt 0 view .LVU184
+ 948 0040 02B0     		add	sp, sp, #8
+ 949              	.LCFI13:
+ 950              		.cfi_def_cfa_offset 8
+ 951              		@ sp needed
+ 952 0042 10BD     		pop	{r4, pc}
+ 953              	.L42:
+ 954              		.align	2
+ 955              	.L41:
+ 956 0044 00080240 		.word	1073874944
+ 957 0048 00000000 		.word	hspi5
+ 958              		.cfi_endproc
+ 959              	.LFE150:
+ 961              		.section	.text.ILI9341_Draw_Colour_Burst,"ax",%progbits
+ 962              		.align	1
+ 963              		.global	ILI9341_Draw_Colour_Burst
+ 964              		.syntax unified
+ 965              		.thumb
+ 966              		.thumb_func
+ 967              		.fpu fpv5-d16
+ 969              	ILI9341_Draw_Colour_Burst:
+ 970              	.LVL142:
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 24
+
+
+ 971              	.LFB151:
+ 345:Src/ILI9341_STM32_Driver.c **** 
+ 346:Src/ILI9341_STM32_Driver.c **** //INTERNAL FUNCTION OF LIBRARY
+ 347:Src/ILI9341_STM32_Driver.c **** /*Sends block colour information to LCD*/
+ 348:Src/ILI9341_STM32_Driver.c **** void ILI9341_Draw_Colour_Burst(uint16_t Colour, uint32_t Size)
+ 349:Src/ILI9341_STM32_Driver.c **** {
+ 972              		.loc 1 349 1 is_stmt 1 view -0
+ 973              		.cfi_startproc
+ 974              		@ args = 0, pretend = 0, frame = 0
+ 975              		@ frame_needed = 1, uses_anonymous_args = 0
+ 976              		.loc 1 349 1 is_stmt 0 view .LVU186
+ 977 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 978              	.LCFI14:
+ 979              		.cfi_def_cfa_offset 32
+ 980              		.cfi_offset 4, -32
+ 981              		.cfi_offset 5, -28
+ 982              		.cfi_offset 6, -24
+ 983              		.cfi_offset 7, -20
+ 984              		.cfi_offset 8, -16
+ 985              		.cfi_offset 9, -12
+ 986              		.cfi_offset 10, -8
+ 987              		.cfi_offset 14, -4
+ 988 0004 00AF     		add	r7, sp, #0
+ 989              	.LCFI15:
+ 990              		.cfi_def_cfa_register 7
+ 991 0006 0646     		mov	r6, r0
+ 992 0008 0D46     		mov	r5, r1
+ 350:Src/ILI9341_STM32_Driver.c **** //SENDS COLOUR
+ 351:Src/ILI9341_STM32_Driver.c **** uint32_t Buffer_Size = 0;
+ 993              		.loc 1 351 1 is_stmt 1 view .LVU187
+ 994              	.LVL143:
+ 352:Src/ILI9341_STM32_Driver.c **** if((Size*2) < BURST_MAX_SIZE)
+ 995              		.loc 1 352 1 view .LVU188
+ 996              		.loc 1 352 9 is_stmt 0 view .LVU189
+ 997 000a 4FEA4108 		lsl	r8, r1, #1
+ 998              		.loc 1 352 3 view .LVU190
+ 999 000e B8F5FA7F 		cmp	r8, #500
+ 1000 0012 01D3     		bcc	.L44
+ 353:Src/ILI9341_STM32_Driver.c **** {
+ 354:Src/ILI9341_STM32_Driver.c **** 	Buffer_Size = Size;
+ 355:Src/ILI9341_STM32_Driver.c **** }
+ 356:Src/ILI9341_STM32_Driver.c **** else
+ 357:Src/ILI9341_STM32_Driver.c **** {
+ 358:Src/ILI9341_STM32_Driver.c **** 	Buffer_Size = BURST_MAX_SIZE;
+ 1001              		.loc 1 358 14 view .LVU191
+ 1002 0014 4FF4FA75 		mov	r5, #500
+ 1003              	.L44:
+ 1004              	.LVL144:
+ 359:Src/ILI9341_STM32_Driver.c **** }
+ 360:Src/ILI9341_STM32_Driver.c **** 	
+ 361:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_DC_PORT, LCD_DC_PIN, GPIO_PIN_SET);	
+ 1005              		.loc 1 361 1 is_stmt 1 view .LVU192
+ 1006 0018 1E4C     		ldr	r4, .L54
+ 1007 001a 0122     		movs	r2, #1
+ 1008 001c 4FF40071 		mov	r1, #512
+ 1009              	.LVL145:
+ 1010              		.loc 1 361 1 is_stmt 0 view .LVU193
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 25
+
+
+ 1011 0020 2046     		mov	r0, r4
+ 1012              	.LVL146:
+ 1013              		.loc 1 361 1 view .LVU194
+ 1014 0022 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1015              	.LVL147:
+ 362:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);
+ 1016              		.loc 1 362 1 is_stmt 1 view .LVU195
+ 1017 0026 0022     		movs	r2, #0
+ 1018 0028 4FF48071 		mov	r1, #256
+ 1019 002c 2046     		mov	r0, r4
+ 1020 002e FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1021              	.LVL148:
+ 363:Src/ILI9341_STM32_Driver.c **** 
+ 364:Src/ILI9341_STM32_Driver.c **** unsigned char chifted = 	Colour>>8;;
+ 1022              		.loc 1 364 1 view .LVU196
+ 1023              		.loc 1 364 15 is_stmt 0 view .LVU197
+ 1024 0032 310A     		lsrs	r1, r6, #8
+ 1025              	.LVL149:
+ 1026              		.loc 1 364 36 is_stmt 1 view .LVU198
+ 365:Src/ILI9341_STM32_Driver.c **** unsigned char burst_buffer[Buffer_Size];
+ 1027              		.loc 1 365 1 view .LVU199
+ 1028              		.loc 1 365 15 is_stmt 0 view .LVU200
+ 1029 0034 EB1D     		adds	r3, r5, #7
+ 1030 0036 23F00703 		bic	r3, r3, #7
+ 1031 003a ADEB030D 		sub	sp, sp, r3
+ 1032 003e 6C46     		mov	r4, sp
+ 1033              	.LVL150:
+ 366:Src/ILI9341_STM32_Driver.c **** for(uint32_t j = 0; j < Buffer_Size; j+=2)
+ 1034              		.loc 1 366 1 is_stmt 1 view .LVU201
+ 1035              	.LBB2:
+ 1036              		.loc 1 366 5 view .LVU202
+ 1037              		.loc 1 366 14 is_stmt 0 view .LVU203
+ 1038 0040 0023     		movs	r3, #0
+ 1039              	.LVL151:
+ 1040              	.L45:
+ 1041              		.loc 1 366 21 is_stmt 1 discriminator 1 view .LVU204
+ 1042              		.loc 1 366 1 is_stmt 0 discriminator 1 view .LVU205
+ 1043 0042 AB42     		cmp	r3, r5
+ 1044 0044 04D2     		bcs	.L53
+ 367:Src/ILI9341_STM32_Driver.c **** 	{
+ 368:Src/ILI9341_STM32_Driver.c **** 		burst_buffer[j] = 	chifted;
+ 1045              		.loc 1 368 3 is_stmt 1 discriminator 3 view .LVU206
+ 1046              		.loc 1 368 19 is_stmt 0 discriminator 3 view .LVU207
+ 1047 0046 E154     		strb	r1, [r4, r3]
+ 369:Src/ILI9341_STM32_Driver.c **** 		burst_buffer[j+1] = Colour;
+ 1048              		.loc 1 369 3 is_stmt 1 discriminator 3 view .LVU208
+ 1049              		.loc 1 369 17 is_stmt 0 discriminator 3 view .LVU209
+ 1050 0048 5A1C     		adds	r2, r3, #1
+ 1051              		.loc 1 369 21 discriminator 3 view .LVU210
+ 1052 004a A654     		strb	r6, [r4, r2]
+ 366:Src/ILI9341_STM32_Driver.c **** for(uint32_t j = 0; j < Buffer_Size; j+=2)
+ 1053              		.loc 1 366 38 is_stmt 1 discriminator 3 view .LVU211
+ 366:Src/ILI9341_STM32_Driver.c **** for(uint32_t j = 0; j < Buffer_Size; j+=2)
+ 1054              		.loc 1 366 39 is_stmt 0 discriminator 3 view .LVU212
+ 1055 004c 0233     		adds	r3, r3, #2
+ 1056              	.LVL152:
+ 366:Src/ILI9341_STM32_Driver.c **** for(uint32_t j = 0; j < Buffer_Size; j+=2)
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 26
+
+
+ 1057              		.loc 1 366 39 discriminator 3 view .LVU213
+ 1058 004e F8E7     		b	.L45
+ 1059              	.L53:
+ 366:Src/ILI9341_STM32_Driver.c **** for(uint32_t j = 0; j < Buffer_Size; j+=2)
+ 1060              		.loc 1 366 39 discriminator 3 view .LVU214
+ 1061              	.LBE2:
+ 370:Src/ILI9341_STM32_Driver.c **** 	}
+ 371:Src/ILI9341_STM32_Driver.c **** 
+ 372:Src/ILI9341_STM32_Driver.c **** uint32_t Sending_Size = Size*2;
+ 1062              		.loc 1 372 1 is_stmt 1 view .LVU215
+ 1063              	.LVL153:
+ 373:Src/ILI9341_STM32_Driver.c **** uint32_t Sending_in_Block = Sending_Size/Buffer_Size;
+ 1064              		.loc 1 373 1 view .LVU216
+ 1065              		.loc 1 373 10 is_stmt 0 view .LVU217
+ 1066 0050 B8FBF5F9 		udiv	r9, r8, r5
+ 1067              	.LVL154:
+ 374:Src/ILI9341_STM32_Driver.c **** uint32_t Remainder_from_block = Sending_Size%Buffer_Size;
+ 1068              		.loc 1 374 1 is_stmt 1 view .LVU218
+ 1069              		.loc 1 374 10 is_stmt 0 view .LVU219
+ 1070 0054 05FB198A 		mls	r10, r5, r9, r8
+ 1071              	.LVL155:
+ 375:Src/ILI9341_STM32_Driver.c **** 
+ 376:Src/ILI9341_STM32_Driver.c **** if(Sending_in_Block != 0)
+ 1072              		.loc 1 376 1 is_stmt 1 view .LVU220
+ 1073              		.loc 1 376 3 is_stmt 0 view .LVU221
+ 1074 0058 A845     		cmp	r8, r5
+ 1075 005a 0FD2     		bcs	.L51
+ 1076              	.LVL156:
+ 1077              	.L48:
+ 377:Src/ILI9341_STM32_Driver.c **** {
+ 378:Src/ILI9341_STM32_Driver.c **** 	for(uint32_t j = 0; j < (Sending_in_Block); j++)
+ 379:Src/ILI9341_STM32_Driver.c **** 		{
+ 380:Src/ILI9341_STM32_Driver.c **** 		HAL_SPI_Transmit(HSPI_INSTANCE, (unsigned char *)burst_buffer, Buffer_Size, 10);	
+ 381:Src/ILI9341_STM32_Driver.c **** 		}
+ 382:Src/ILI9341_STM32_Driver.c **** }
+ 383:Src/ILI9341_STM32_Driver.c **** 
+ 384:Src/ILI9341_STM32_Driver.c **** //REMAINDER!
+ 385:Src/ILI9341_STM32_Driver.c **** HAL_SPI_Transmit(HSPI_INSTANCE, (unsigned char *)burst_buffer, Remainder_from_block, 10);	
+ 1078              		.loc 1 385 1 is_stmt 1 view .LVU222
+ 1079 005c 0A23     		movs	r3, #10
+ 1080 005e 1FFA8AF2 		uxth	r2, r10
+ 1081 0062 2146     		mov	r1, r4
+ 1082 0064 0C48     		ldr	r0, .L54+4
+ 1083 0066 FFF7FEFF 		bl	HAL_SPI_Transmit
+ 1084              	.LVL157:
+ 386:Src/ILI9341_STM32_Driver.c **** 	
+ 387:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);
+ 1085              		.loc 1 387 1 view .LVU223
+ 1086 006a 0122     		movs	r2, #1
+ 1087 006c 4FF48071 		mov	r1, #256
+ 1088 0070 0848     		ldr	r0, .L54
+ 1089 0072 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1090              	.LVL158:
+ 388:Src/ILI9341_STM32_Driver.c **** }
+ 1091              		.loc 1 388 1 is_stmt 0 view .LVU224
+ 1092 0076 BD46     		mov	sp, r7
+ 1093              	.LCFI16:
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 27
+
+
+ 1094              		.cfi_remember_state
+ 1095              		.cfi_def_cfa_register 13
+ 1096              		@ sp needed
+ 1097 0078 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 1098              	.LVL159:
+ 1099              	.L51:
+ 1100              	.LCFI17:
+ 1101              		.cfi_restore_state
+ 1102              	.LBB3:
+ 378:Src/ILI9341_STM32_Driver.c **** 		{
+ 1103              		.loc 1 378 15 view .LVU225
+ 1104 007c 0026     		movs	r6, #0
+ 1105              	.LVL160:
+ 1106              	.L47:
+ 378:Src/ILI9341_STM32_Driver.c **** 		{
+ 1107              		.loc 1 378 22 is_stmt 1 discriminator 1 view .LVU226
+ 378:Src/ILI9341_STM32_Driver.c **** 		{
+ 1108              		.loc 1 378 2 is_stmt 0 discriminator 1 view .LVU227
+ 1109 007e 4E45     		cmp	r6, r9
+ 1110 0080 ECD2     		bcs	.L48
+ 380:Src/ILI9341_STM32_Driver.c **** 		}
+ 1111              		.loc 1 380 3 is_stmt 1 discriminator 3 view .LVU228
+ 1112 0082 0A23     		movs	r3, #10
+ 1113 0084 AAB2     		uxth	r2, r5
+ 1114 0086 2146     		mov	r1, r4
+ 1115 0088 0348     		ldr	r0, .L54+4
+ 1116 008a FFF7FEFF 		bl	HAL_SPI_Transmit
+ 1117              	.LVL161:
+ 378:Src/ILI9341_STM32_Driver.c **** 		{
+ 1118              		.loc 1 378 46 discriminator 3 view .LVU229
+ 378:Src/ILI9341_STM32_Driver.c **** 		{
+ 1119              		.loc 1 378 47 is_stmt 0 discriminator 3 view .LVU230
+ 1120 008e 0136     		adds	r6, r6, #1
+ 1121              	.LVL162:
+ 378:Src/ILI9341_STM32_Driver.c **** 		{
+ 1122              		.loc 1 378 47 discriminator 3 view .LVU231
+ 1123 0090 F5E7     		b	.L47
+ 1124              	.L55:
+ 1125 0092 00BF     		.align	2
+ 1126              	.L54:
+ 1127 0094 00080240 		.word	1073874944
+ 1128 0098 00000000 		.word	hspi5
+ 1129              	.LBE3:
+ 1130              		.cfi_endproc
+ 1131              	.LFE151:
+ 1133              		.section	.text.ILI9341_Fill_Screen,"ax",%progbits
+ 1134              		.align	1
+ 1135              		.global	ILI9341_Fill_Screen
+ 1136              		.syntax unified
+ 1137              		.thumb
+ 1138              		.thumb_func
+ 1139              		.fpu fpv5-d16
+ 1141              	ILI9341_Fill_Screen:
+ 1142              	.LVL163:
+ 1143              	.LFB152:
+ 389:Src/ILI9341_STM32_Driver.c **** 
+ 390:Src/ILI9341_STM32_Driver.c **** //FILL THE ENTIRE SCREEN WITH SELECTED COLOUR (either #define-d ones or custom 16bit)
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 28
+
+
+ 391:Src/ILI9341_STM32_Driver.c **** /*Sets address (entire screen) and Sends Height*Width ammount of colour information to LCD*/
+ 392:Src/ILI9341_STM32_Driver.c **** void ILI9341_Fill_Screen(uint16_t Colour)
+ 393:Src/ILI9341_STM32_Driver.c **** {
+ 1144              		.loc 1 393 1 is_stmt 1 view -0
+ 1145              		.cfi_startproc
+ 1146              		@ args = 0, pretend = 0, frame = 0
+ 1147              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1148              		.loc 1 393 1 is_stmt 0 view .LVU233
+ 1149 0000 70B5     		push	{r4, r5, r6, lr}
+ 1150              	.LCFI18:
+ 1151              		.cfi_def_cfa_offset 16
+ 1152              		.cfi_offset 4, -16
+ 1153              		.cfi_offset 5, -12
+ 1154              		.cfi_offset 6, -8
+ 1155              		.cfi_offset 14, -4
+ 1156 0002 0446     		mov	r4, r0
+ 394:Src/ILI9341_STM32_Driver.c **** ILI9341_Set_Address(0,0,LCD_WIDTH,LCD_HEIGHT);	
+ 1157              		.loc 1 394 1 is_stmt 1 view .LVU234
+ 1158 0004 094E     		ldr	r6, .L58
+ 1159 0006 3288     		ldrh	r2, [r6]
+ 1160 0008 094D     		ldr	r5, .L58+4
+ 1161 000a 2B88     		ldrh	r3, [r5]
+ 1162 000c 9BB2     		uxth	r3, r3
+ 1163 000e 92B2     		uxth	r2, r2
+ 1164 0010 0021     		movs	r1, #0
+ 1165 0012 0846     		mov	r0, r1
+ 1166              	.LVL164:
+ 1167              		.loc 1 394 1 is_stmt 0 view .LVU235
+ 1168 0014 FFF7FEFF 		bl	ILI9341_Set_Address
+ 1169              	.LVL165:
+ 395:Src/ILI9341_STM32_Driver.c **** ILI9341_Draw_Colour_Burst(Colour, LCD_WIDTH*LCD_HEIGHT);	
+ 1170              		.loc 1 395 1 is_stmt 1 view .LVU236
+ 1171              		.loc 1 395 44 is_stmt 0 view .LVU237
+ 1172 0018 3388     		ldrh	r3, [r6]
+ 1173 001a 9BB2     		uxth	r3, r3
+ 1174 001c 2988     		ldrh	r1, [r5]
+ 1175 001e 89B2     		uxth	r1, r1
+ 1176              		.loc 1 395 1 view .LVU238
+ 1177 0020 01FB03F1 		mul	r1, r1, r3
+ 1178 0024 2046     		mov	r0, r4
+ 1179 0026 FFF7FEFF 		bl	ILI9341_Draw_Colour_Burst
+ 1180              	.LVL166:
+ 396:Src/ILI9341_STM32_Driver.c **** }
+ 1181              		.loc 1 396 1 view .LVU239
+ 1182 002a 70BD     		pop	{r4, r5, r6, pc}
+ 1183              	.L59:
+ 1184              		.align	2
+ 1185              	.L58:
+ 1186 002c 00000000 		.word	.LANCHOR0
+ 1187 0030 00000000 		.word	.LANCHOR1
+ 1188              		.cfi_endproc
+ 1189              	.LFE152:
+ 1191              		.section	.text.ILI9341_Draw_Pixel,"ax",%progbits
+ 1192              		.align	1
+ 1193              		.global	ILI9341_Draw_Pixel
+ 1194              		.syntax unified
+ 1195              		.thumb
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 29
+
+
+ 1196              		.thumb_func
+ 1197              		.fpu fpv5-d16
+ 1199              	ILI9341_Draw_Pixel:
+ 1200              	.LVL167:
+ 1201              	.LFB153:
+ 397:Src/ILI9341_STM32_Driver.c **** 
+ 398:Src/ILI9341_STM32_Driver.c **** //DRAW PIXEL AT XY POSITION WITH SELECTED COLOUR
+ 399:Src/ILI9341_STM32_Driver.c **** //
+ 400:Src/ILI9341_STM32_Driver.c **** //Location is dependant on screen orientation. x0 and y0 locations change with orientations.
+ 401:Src/ILI9341_STM32_Driver.c **** //Using pixels to draw big simple structures is not recommended as it is really slow
+ 402:Src/ILI9341_STM32_Driver.c **** //Try using either rectangles or lines if possible
+ 403:Src/ILI9341_STM32_Driver.c **** //
+ 404:Src/ILI9341_STM32_Driver.c **** void ILI9341_Draw_Pixel(uint16_t X,uint16_t Y,uint16_t Colour) 
+ 405:Src/ILI9341_STM32_Driver.c **** {
+ 1202              		.loc 1 405 1 is_stmt 1 view -0
+ 1203              		.cfi_startproc
+ 1204              		@ args = 0, pretend = 0, frame = 16
+ 1205              		@ frame_needed = 0, uses_anonymous_args = 0
+ 406:Src/ILI9341_STM32_Driver.c **** if((X >=LCD_WIDTH) || (Y >=LCD_HEIGHT)) return;	//OUT OF BOUNDS!
+ 1206              		.loc 1 406 1 view .LVU241
+ 1207              		.loc 1 406 7 is_stmt 0 view .LVU242
+ 1208 0000 5D4B     		ldr	r3, .L69
+ 1209 0002 1B88     		ldrh	r3, [r3]
+ 1210 0004 9BB2     		uxth	r3, r3
+ 1211              		.loc 1 406 3 view .LVU243
+ 1212 0006 8342     		cmp	r3, r0
+ 1213 0008 40F2B580 		bls	.L65
+ 405:Src/ILI9341_STM32_Driver.c **** if((X >=LCD_WIDTH) || (Y >=LCD_HEIGHT)) return;	//OUT OF BOUNDS!
+ 1214              		.loc 1 405 1 discriminator 2 view .LVU244
+ 1215 000c F0B5     		push	{r4, r5, r6, r7, lr}
+ 1216              	.LCFI19:
+ 1217              		.cfi_def_cfa_offset 20
+ 1218              		.cfi_offset 4, -20
+ 1219              		.cfi_offset 5, -16
+ 1220              		.cfi_offset 6, -12
+ 1221              		.cfi_offset 7, -8
+ 1222              		.cfi_offset 14, -4
+ 1223 000e 85B0     		sub	sp, sp, #20
+ 1224              	.LCFI20:
+ 1225              		.cfi_def_cfa_offset 40
+ 1226 0010 0446     		mov	r4, r0
+ 1227 0012 0E46     		mov	r6, r1
+ 1228 0014 1746     		mov	r7, r2
+ 1229              		.loc 1 406 26 discriminator 2 view .LVU245
+ 1230 0016 594B     		ldr	r3, .L69+4
+ 1231 0018 1B88     		ldrh	r3, [r3]
+ 1232 001a 9BB2     		uxth	r3, r3
+ 1233              		.loc 1 406 20 discriminator 2 view .LVU246
+ 1234 001c 8B42     		cmp	r3, r1
+ 1235 001e 01D8     		bhi	.L68
+ 1236              	.LVL168:
+ 1237              	.L60:
+ 407:Src/ILI9341_STM32_Driver.c **** 	
+ 408:Src/ILI9341_STM32_Driver.c **** //ADDRESS
+ 409:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_DC_PORT, LCD_DC_PIN, GPIO_PIN_RESET);	
+ 410:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);
+ 411:Src/ILI9341_STM32_Driver.c **** ILI9341_SPI_Send(0x2A);
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 30
+
+
+ 412:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_DC_PORT, LCD_DC_PIN, GPIO_PIN_SET);	
+ 413:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);		
+ 414:Src/ILI9341_STM32_Driver.c **** 
+ 415:Src/ILI9341_STM32_Driver.c **** //XDATA
+ 416:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);	
+ 417:Src/ILI9341_STM32_Driver.c **** unsigned char Temp_Buffer[4] = {X>>8,X, (X+1)>>8, (X+1)};
+ 418:Src/ILI9341_STM32_Driver.c **** HAL_SPI_Transmit(HSPI_INSTANCE, Temp_Buffer, 4, 1);
+ 419:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);
+ 420:Src/ILI9341_STM32_Driver.c **** 
+ 421:Src/ILI9341_STM32_Driver.c **** //ADDRESS
+ 422:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_DC_PORT, LCD_DC_PIN, GPIO_PIN_RESET);	
+ 423:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);	
+ 424:Src/ILI9341_STM32_Driver.c **** ILI9341_SPI_Send(0x2B);
+ 425:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_DC_PORT, LCD_DC_PIN, GPIO_PIN_SET);			
+ 426:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);			
+ 427:Src/ILI9341_STM32_Driver.c **** 
+ 428:Src/ILI9341_STM32_Driver.c **** //YDATA
+ 429:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);
+ 430:Src/ILI9341_STM32_Driver.c **** unsigned char Temp_Buffer1[4] = {Y>>8,Y, (Y+1)>>8, (Y+1)};
+ 431:Src/ILI9341_STM32_Driver.c **** HAL_SPI_Transmit(HSPI_INSTANCE, Temp_Buffer1, 4, 1);
+ 432:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);
+ 433:Src/ILI9341_STM32_Driver.c **** 
+ 434:Src/ILI9341_STM32_Driver.c **** //ADDRESS	
+ 435:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_DC_PORT, LCD_DC_PIN, GPIO_PIN_RESET);	
+ 436:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);	
+ 437:Src/ILI9341_STM32_Driver.c **** ILI9341_SPI_Send(0x2C);
+ 438:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_DC_PORT, LCD_DC_PIN, GPIO_PIN_SET);			
+ 439:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);			
+ 440:Src/ILI9341_STM32_Driver.c **** 
+ 441:Src/ILI9341_STM32_Driver.c **** //COLOUR	
+ 442:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);
+ 443:Src/ILI9341_STM32_Driver.c **** unsigned char Temp_Buffer2[2] = {Colour>>8, Colour};
+ 444:Src/ILI9341_STM32_Driver.c **** HAL_SPI_Transmit(HSPI_INSTANCE, Temp_Buffer2, 2, 1);
+ 445:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);
+ 446:Src/ILI9341_STM32_Driver.c **** 	
+ 447:Src/ILI9341_STM32_Driver.c **** }
+ 1238              		.loc 1 447 1 view .LVU247
+ 1239 0020 05B0     		add	sp, sp, #20
+ 1240              	.LCFI21:
+ 1241              		.cfi_remember_state
+ 1242              		.cfi_def_cfa_offset 20
+ 1243              		@ sp needed
+ 1244 0022 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 1245              	.LVL169:
+ 1246              	.L68:
+ 1247              	.LCFI22:
+ 1248              		.cfi_restore_state
+ 409:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);
+ 1249              		.loc 1 409 1 is_stmt 1 view .LVU248
+ 1250 0024 564D     		ldr	r5, .L69+8
+ 1251 0026 0022     		movs	r2, #0
+ 1252              	.LVL170:
+ 409:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);
+ 1253              		.loc 1 409 1 is_stmt 0 view .LVU249
+ 1254 0028 4FF40071 		mov	r1, #512
+ 1255              	.LVL171:
+ 409:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 31
+
+
+ 1256              		.loc 1 409 1 view .LVU250
+ 1257 002c 2846     		mov	r0, r5
+ 1258              	.LVL172:
+ 409:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);
+ 1259              		.loc 1 409 1 view .LVU251
+ 1260 002e FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1261              	.LVL173:
+ 410:Src/ILI9341_STM32_Driver.c **** ILI9341_SPI_Send(0x2A);
+ 1262              		.loc 1 410 1 is_stmt 1 view .LVU252
+ 1263 0032 0022     		movs	r2, #0
+ 1264 0034 4FF48071 		mov	r1, #256
+ 1265 0038 2846     		mov	r0, r5
+ 1266 003a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1267              	.LVL174:
+ 411:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_DC_PORT, LCD_DC_PIN, GPIO_PIN_SET);	
+ 1268              		.loc 1 411 1 view .LVU253
+ 1269 003e 2A20     		movs	r0, #42
+ 1270 0040 FFF7FEFF 		bl	ILI9341_SPI_Send
+ 1271              	.LVL175:
+ 412:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);		
+ 1272              		.loc 1 412 1 view .LVU254
+ 1273 0044 0122     		movs	r2, #1
+ 1274 0046 4FF40071 		mov	r1, #512
+ 1275 004a 2846     		mov	r0, r5
+ 1276 004c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1277              	.LVL176:
+ 413:Src/ILI9341_STM32_Driver.c **** 
+ 1278              		.loc 1 413 1 view .LVU255
+ 1279 0050 0122     		movs	r2, #1
+ 1280 0052 4FF48071 		mov	r1, #256
+ 1281 0056 2846     		mov	r0, r5
+ 1282 0058 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1283              	.LVL177:
+ 416:Src/ILI9341_STM32_Driver.c **** unsigned char Temp_Buffer[4] = {X>>8,X, (X+1)>>8, (X+1)};
+ 1284              		.loc 1 416 1 view .LVU256
+ 1285 005c 0022     		movs	r2, #0
+ 1286 005e 4FF48071 		mov	r1, #256
+ 1287 0062 2846     		mov	r0, r5
+ 1288 0064 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1289              	.LVL178:
+ 417:Src/ILI9341_STM32_Driver.c **** HAL_SPI_Transmit(HSPI_INSTANCE, Temp_Buffer, 4, 1);
+ 1290              		.loc 1 417 1 view .LVU257
+ 417:Src/ILI9341_STM32_Driver.c **** HAL_SPI_Transmit(HSPI_INSTANCE, Temp_Buffer, 4, 1);
+ 1291              		.loc 1 417 15 is_stmt 0 view .LVU258
+ 1292 0068 230A     		lsrs	r3, r4, #8
+ 1293 006a 8DF80C30 		strb	r3, [sp, #12]
+ 1294 006e E3B2     		uxtb	r3, r4
+ 1295 0070 8DF80D30 		strb	r3, [sp, #13]
+ 417:Src/ILI9341_STM32_Driver.c **** HAL_SPI_Transmit(HSPI_INSTANCE, Temp_Buffer, 4, 1);
+ 1296              		.loc 1 417 43 view .LVU259
+ 1297 0074 0134     		adds	r4, r4, #1
+ 417:Src/ILI9341_STM32_Driver.c **** HAL_SPI_Transmit(HSPI_INSTANCE, Temp_Buffer, 4, 1);
+ 1298              		.loc 1 417 46 view .LVU260
+ 1299 0076 2412     		asrs	r4, r4, #8
+ 417:Src/ILI9341_STM32_Driver.c **** HAL_SPI_Transmit(HSPI_INSTANCE, Temp_Buffer, 4, 1);
+ 1300              		.loc 1 417 15 view .LVU261
+ 1301 0078 8DF80E40 		strb	r4, [sp, #14]
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 32
+
+
+ 417:Src/ILI9341_STM32_Driver.c **** HAL_SPI_Transmit(HSPI_INSTANCE, Temp_Buffer, 4, 1);
+ 1302              		.loc 1 417 53 view .LVU262
+ 1303 007c 0133     		adds	r3, r3, #1
+ 417:Src/ILI9341_STM32_Driver.c **** HAL_SPI_Transmit(HSPI_INSTANCE, Temp_Buffer, 4, 1);
+ 1304              		.loc 1 417 15 view .LVU263
+ 1305 007e 8DF80F30 		strb	r3, [sp, #15]
+ 418:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);
+ 1306              		.loc 1 418 1 is_stmt 1 view .LVU264
+ 1307 0082 404C     		ldr	r4, .L69+12
+ 1308 0084 0123     		movs	r3, #1
+ 1309 0086 0422     		movs	r2, #4
+ 1310 0088 03A9     		add	r1, sp, #12
+ 1311 008a 2046     		mov	r0, r4
+ 1312 008c FFF7FEFF 		bl	HAL_SPI_Transmit
+ 1313              	.LVL179:
+ 419:Src/ILI9341_STM32_Driver.c **** 
+ 1314              		.loc 1 419 1 view .LVU265
+ 1315 0090 0122     		movs	r2, #1
+ 1316 0092 4FF48071 		mov	r1, #256
+ 1317 0096 2846     		mov	r0, r5
+ 1318 0098 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1319              	.LVL180:
+ 422:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);	
+ 1320              		.loc 1 422 1 view .LVU266
+ 1321 009c 0022     		movs	r2, #0
+ 1322 009e 4FF40071 		mov	r1, #512
+ 1323 00a2 2846     		mov	r0, r5
+ 1324 00a4 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1325              	.LVL181:
+ 423:Src/ILI9341_STM32_Driver.c **** ILI9341_SPI_Send(0x2B);
+ 1326              		.loc 1 423 1 view .LVU267
+ 1327 00a8 0022     		movs	r2, #0
+ 1328 00aa 4FF48071 		mov	r1, #256
+ 1329 00ae 2846     		mov	r0, r5
+ 1330 00b0 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1331              	.LVL182:
+ 424:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_DC_PORT, LCD_DC_PIN, GPIO_PIN_SET);			
+ 1332              		.loc 1 424 1 view .LVU268
+ 1333 00b4 2B20     		movs	r0, #43
+ 1334 00b6 FFF7FEFF 		bl	ILI9341_SPI_Send
+ 1335              	.LVL183:
+ 425:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);			
+ 1336              		.loc 1 425 1 view .LVU269
+ 1337 00ba 0122     		movs	r2, #1
+ 1338 00bc 4FF40071 		mov	r1, #512
+ 1339 00c0 2846     		mov	r0, r5
+ 1340 00c2 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1341              	.LVL184:
+ 426:Src/ILI9341_STM32_Driver.c **** 
+ 1342              		.loc 1 426 1 view .LVU270
+ 1343 00c6 0122     		movs	r2, #1
+ 1344 00c8 4FF48071 		mov	r1, #256
+ 1345 00cc 2846     		mov	r0, r5
+ 1346 00ce FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1347              	.LVL185:
+ 429:Src/ILI9341_STM32_Driver.c **** unsigned char Temp_Buffer1[4] = {Y>>8,Y, (Y+1)>>8, (Y+1)};
+ 1348              		.loc 1 429 1 view .LVU271
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 33
+
+
+ 1349 00d2 0022     		movs	r2, #0
+ 1350 00d4 4FF48071 		mov	r1, #256
+ 1351 00d8 2846     		mov	r0, r5
+ 1352 00da FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1353              	.LVL186:
+ 430:Src/ILI9341_STM32_Driver.c **** HAL_SPI_Transmit(HSPI_INSTANCE, Temp_Buffer1, 4, 1);
+ 1354              		.loc 1 430 1 view .LVU272
+ 430:Src/ILI9341_STM32_Driver.c **** HAL_SPI_Transmit(HSPI_INSTANCE, Temp_Buffer1, 4, 1);
+ 1355              		.loc 1 430 15 is_stmt 0 view .LVU273
+ 1356 00de 330A     		lsrs	r3, r6, #8
+ 1357 00e0 8DF80830 		strb	r3, [sp, #8]
+ 1358 00e4 F3B2     		uxtb	r3, r6
+ 1359 00e6 8DF80930 		strb	r3, [sp, #9]
+ 430:Src/ILI9341_STM32_Driver.c **** HAL_SPI_Transmit(HSPI_INSTANCE, Temp_Buffer1, 4, 1);
+ 1360              		.loc 1 430 44 view .LVU274
+ 1361 00ea 0136     		adds	r6, r6, #1
+ 430:Src/ILI9341_STM32_Driver.c **** HAL_SPI_Transmit(HSPI_INSTANCE, Temp_Buffer1, 4, 1);
+ 1362              		.loc 1 430 47 view .LVU275
+ 1363 00ec 3612     		asrs	r6, r6, #8
+ 430:Src/ILI9341_STM32_Driver.c **** HAL_SPI_Transmit(HSPI_INSTANCE, Temp_Buffer1, 4, 1);
+ 1364              		.loc 1 430 15 view .LVU276
+ 1365 00ee 8DF80A60 		strb	r6, [sp, #10]
+ 430:Src/ILI9341_STM32_Driver.c **** HAL_SPI_Transmit(HSPI_INSTANCE, Temp_Buffer1, 4, 1);
+ 1366              		.loc 1 430 54 view .LVU277
+ 1367 00f2 0133     		adds	r3, r3, #1
+ 430:Src/ILI9341_STM32_Driver.c **** HAL_SPI_Transmit(HSPI_INSTANCE, Temp_Buffer1, 4, 1);
+ 1368              		.loc 1 430 15 view .LVU278
+ 1369 00f4 8DF80B30 		strb	r3, [sp, #11]
+ 431:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);
+ 1370              		.loc 1 431 1 is_stmt 1 view .LVU279
+ 1371 00f8 0123     		movs	r3, #1
+ 1372 00fa 0422     		movs	r2, #4
+ 1373 00fc 02A9     		add	r1, sp, #8
+ 1374 00fe 2046     		mov	r0, r4
+ 1375 0100 FFF7FEFF 		bl	HAL_SPI_Transmit
+ 1376              	.LVL187:
+ 432:Src/ILI9341_STM32_Driver.c **** 
+ 1377              		.loc 1 432 1 view .LVU280
+ 1378 0104 0122     		movs	r2, #1
+ 1379 0106 4FF48071 		mov	r1, #256
+ 1380 010a 2846     		mov	r0, r5
+ 1381 010c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1382              	.LVL188:
+ 435:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);	
+ 1383              		.loc 1 435 1 view .LVU281
+ 1384 0110 0022     		movs	r2, #0
+ 1385 0112 4FF40071 		mov	r1, #512
+ 1386 0116 2846     		mov	r0, r5
+ 1387 0118 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1388              	.LVL189:
+ 436:Src/ILI9341_STM32_Driver.c **** ILI9341_SPI_Send(0x2C);
+ 1389              		.loc 1 436 1 view .LVU282
+ 1390 011c 0022     		movs	r2, #0
+ 1391 011e 4FF48071 		mov	r1, #256
+ 1392 0122 2846     		mov	r0, r5
+ 1393 0124 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1394              	.LVL190:
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 34
+
+
+ 437:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_DC_PORT, LCD_DC_PIN, GPIO_PIN_SET);			
+ 1395              		.loc 1 437 1 view .LVU283
+ 1396 0128 2C20     		movs	r0, #44
+ 1397 012a FFF7FEFF 		bl	ILI9341_SPI_Send
+ 1398              	.LVL191:
+ 438:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);			
+ 1399              		.loc 1 438 1 view .LVU284
+ 1400 012e 0122     		movs	r2, #1
+ 1401 0130 4FF40071 		mov	r1, #512
+ 1402 0134 2846     		mov	r0, r5
+ 1403 0136 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1404              	.LVL192:
+ 439:Src/ILI9341_STM32_Driver.c **** 
+ 1405              		.loc 1 439 1 view .LVU285
+ 1406 013a 0122     		movs	r2, #1
+ 1407 013c 4FF48071 		mov	r1, #256
+ 1408 0140 2846     		mov	r0, r5
+ 1409 0142 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1410              	.LVL193:
+ 442:Src/ILI9341_STM32_Driver.c **** unsigned char Temp_Buffer2[2] = {Colour>>8, Colour};
+ 1411              		.loc 1 442 1 view .LVU286
+ 1412 0146 0022     		movs	r2, #0
+ 1413 0148 4FF48071 		mov	r1, #256
+ 1414 014c 2846     		mov	r0, r5
+ 1415 014e FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1416              	.LVL194:
+ 443:Src/ILI9341_STM32_Driver.c **** HAL_SPI_Transmit(HSPI_INSTANCE, Temp_Buffer2, 2, 1);
+ 1417              		.loc 1 443 1 view .LVU287
+ 443:Src/ILI9341_STM32_Driver.c **** HAL_SPI_Transmit(HSPI_INSTANCE, Temp_Buffer2, 2, 1);
+ 1418              		.loc 1 443 15 is_stmt 0 view .LVU288
+ 1419 0152 3B0A     		lsrs	r3, r7, #8
+ 1420 0154 8DF80430 		strb	r3, [sp, #4]
+ 1421 0158 8DF80570 		strb	r7, [sp, #5]
+ 444:Src/ILI9341_STM32_Driver.c **** HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_SET);
+ 1422              		.loc 1 444 1 is_stmt 1 view .LVU289
+ 1423 015c 0123     		movs	r3, #1
+ 1424 015e 0222     		movs	r2, #2
+ 1425 0160 01A9     		add	r1, sp, #4
+ 1426 0162 2046     		mov	r0, r4
+ 1427 0164 FFF7FEFF 		bl	HAL_SPI_Transmit
+ 1428              	.LVL195:
+ 445:Src/ILI9341_STM32_Driver.c **** 	
+ 1429              		.loc 1 445 1 view .LVU290
+ 1430 0168 0122     		movs	r2, #1
+ 1431 016a 4FF48071 		mov	r1, #256
+ 1432 016e 2846     		mov	r0, r5
+ 1433 0170 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 1434              	.LVL196:
+ 1435 0174 54E7     		b	.L60
+ 1436              	.LVL197:
+ 1437              	.L65:
+ 1438              	.LCFI23:
+ 1439              		.cfi_def_cfa_offset 0
+ 1440              		.cfi_restore 4
+ 1441              		.cfi_restore 5
+ 1442              		.cfi_restore 6
+ 1443              		.cfi_restore 7
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 35
+
+
+ 1444              		.cfi_restore 14
+ 445:Src/ILI9341_STM32_Driver.c **** 	
+ 1445              		.loc 1 445 1 is_stmt 0 view .LVU291
+ 1446 0176 7047     		bx	lr
+ 1447              	.L70:
+ 1448              		.align	2
+ 1449              	.L69:
+ 1450 0178 00000000 		.word	.LANCHOR0
+ 1451 017c 00000000 		.word	.LANCHOR1
+ 1452 0180 00080240 		.word	1073874944
+ 1453 0184 00000000 		.word	hspi5
+ 1454              		.cfi_endproc
+ 1455              	.LFE153:
+ 1457              		.section	.text.ILI9341_Draw_Rectangle,"ax",%progbits
+ 1458              		.align	1
+ 1459              		.global	ILI9341_Draw_Rectangle
+ 1460              		.syntax unified
+ 1461              		.thumb
+ 1462              		.thumb_func
+ 1463              		.fpu fpv5-d16
+ 1465              	ILI9341_Draw_Rectangle:
+ 1466              	.LVL198:
+ 1467              	.LFB154:
+ 448:Src/ILI9341_STM32_Driver.c **** 
+ 449:Src/ILI9341_STM32_Driver.c **** //DRAW RECTANGLE OF SET SIZE AND HEIGTH AT X and Y POSITION WITH CUSTOM COLOUR
+ 450:Src/ILI9341_STM32_Driver.c **** //
+ 451:Src/ILI9341_STM32_Driver.c **** //Rectangle is hollow. X and Y positions mark the upper left corner of rectangle
+ 452:Src/ILI9341_STM32_Driver.c **** //As with all other draw calls x0 and y0 locations dependant on screen orientation
+ 453:Src/ILI9341_STM32_Driver.c **** //
+ 454:Src/ILI9341_STM32_Driver.c **** 
+ 455:Src/ILI9341_STM32_Driver.c **** void ILI9341_Draw_Rectangle(uint16_t X, uint16_t Y, uint16_t Width, uint16_t Height, uint16_t Colou
+ 456:Src/ILI9341_STM32_Driver.c **** {
+ 1468              		.loc 1 456 1 is_stmt 1 view -0
+ 1469              		.cfi_startproc
+ 1470              		@ args = 4, pretend = 0, frame = 0
+ 1471              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1472              		.loc 1 456 1 is_stmt 0 view .LVU293
+ 1473 0000 38B5     		push	{r3, r4, r5, lr}
+ 1474              	.LCFI24:
+ 1475              		.cfi_def_cfa_offset 16
+ 1476              		.cfi_offset 3, -16
+ 1477              		.cfi_offset 4, -12
+ 1478              		.cfi_offset 5, -8
+ 1479              		.cfi_offset 14, -4
+ 1480 0002 1C46     		mov	r4, r3
+ 457:Src/ILI9341_STM32_Driver.c **** if((X >=LCD_WIDTH) || (Y >=LCD_HEIGHT)) return;
+ 1481              		.loc 1 457 1 is_stmt 1 view .LVU294
+ 1482              		.loc 1 457 7 is_stmt 0 view .LVU295
+ 1483 0004 184B     		ldr	r3, .L76
+ 1484              	.LVL199:
+ 1485              		.loc 1 457 7 view .LVU296
+ 1486 0006 1B88     		ldrh	r3, [r3]
+ 1487 0008 9BB2     		uxth	r3, r3
+ 1488              		.loc 1 457 3 view .LVU297
+ 1489 000a 8342     		cmp	r3, r0
+ 1490 000c 2BD9     		bls	.L71
+ 1491 000e 1546     		mov	r5, r2
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 36
+
+
+ 1492              		.loc 1 457 26 discriminator 2 view .LVU298
+ 1493 0010 164B     		ldr	r3, .L76+4
+ 1494 0012 1B88     		ldrh	r3, [r3]
+ 1495 0014 9BB2     		uxth	r3, r3
+ 1496              		.loc 1 457 20 discriminator 2 view .LVU299
+ 1497 0016 8B42     		cmp	r3, r1
+ 1498 0018 25D9     		bls	.L71
+ 458:Src/ILI9341_STM32_Driver.c **** if((X+Width-1)>=LCD_WIDTH)
+ 1499              		.loc 1 458 1 is_stmt 1 view .LVU300
+ 1500              		.loc 1 458 6 is_stmt 0 view .LVU301
+ 1501 001a 8218     		adds	r2, r0, r2
+ 1502              	.LVL200:
+ 1503              		.loc 1 458 15 view .LVU302
+ 1504 001c 124B     		ldr	r3, .L76
+ 1505 001e 1B88     		ldrh	r3, [r3]
+ 1506 0020 9BB2     		uxth	r3, r3
+ 1507              		.loc 1 458 3 view .LVU303
+ 1508 0022 9A42     		cmp	r2, r3
+ 1509 0024 04DD     		ble	.L73
+ 459:Src/ILI9341_STM32_Driver.c **** 	{
+ 460:Src/ILI9341_STM32_Driver.c **** 		Width=LCD_WIDTH-X;
+ 1510              		.loc 1 460 3 is_stmt 1 view .LVU304
+ 1511              		.loc 1 460 18 is_stmt 0 view .LVU305
+ 1512 0026 104B     		ldr	r3, .L76
+ 1513 0028 1D88     		ldrh	r5, [r3]
+ 1514 002a ADB2     		uxth	r5, r5
+ 1515              		.loc 1 460 8 view .LVU306
+ 1516 002c 2D1A     		subs	r5, r5, r0
+ 1517 002e ADB2     		uxth	r5, r5
+ 1518              	.LVL201:
+ 1519              	.L73:
+ 461:Src/ILI9341_STM32_Driver.c **** 	}
+ 462:Src/ILI9341_STM32_Driver.c **** if((Y+Height-1)>=LCD_HEIGHT)
+ 1520              		.loc 1 462 1 is_stmt 1 view .LVU307
+ 1521              		.loc 1 462 6 is_stmt 0 view .LVU308
+ 1522 0030 0A19     		adds	r2, r1, r4
+ 1523              		.loc 1 462 16 view .LVU309
+ 1524 0032 0E4B     		ldr	r3, .L76+4
+ 1525 0034 1B88     		ldrh	r3, [r3]
+ 1526 0036 9BB2     		uxth	r3, r3
+ 1527              		.loc 1 462 3 view .LVU310
+ 1528 0038 9A42     		cmp	r2, r3
+ 1529 003a 04DD     		ble	.L74
+ 463:Src/ILI9341_STM32_Driver.c **** 	{
+ 464:Src/ILI9341_STM32_Driver.c **** 		Height=LCD_HEIGHT-Y;
+ 1530              		.loc 1 464 3 is_stmt 1 view .LVU311
+ 1531              		.loc 1 464 20 is_stmt 0 view .LVU312
+ 1532 003c 0B4B     		ldr	r3, .L76+4
+ 1533 003e 1C88     		ldrh	r4, [r3]
+ 1534 0040 A4B2     		uxth	r4, r4
+ 1535              		.loc 1 464 9 view .LVU313
+ 1536 0042 641A     		subs	r4, r4, r1
+ 1537 0044 A4B2     		uxth	r4, r4
+ 1538              	.LVL202:
+ 1539              	.L74:
+ 465:Src/ILI9341_STM32_Driver.c **** 	}
+ 466:Src/ILI9341_STM32_Driver.c **** ILI9341_Set_Address(X, Y, X+Width-1, Y+Height-1);
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 37
+
+
+ 1540              		.loc 1 466 1 is_stmt 1 view .LVU314
+ 1541              		.loc 1 466 28 is_stmt 0 view .LVU315
+ 1542 0046 2A18     		adds	r2, r5, r0
+ 1543 0048 92B2     		uxth	r2, r2
+ 1544              		.loc 1 466 39 view .LVU316
+ 1545 004a 6318     		adds	r3, r4, r1
+ 1546 004c 9BB2     		uxth	r3, r3
+ 1547              		.loc 1 466 1 view .LVU317
+ 1548 004e 013B     		subs	r3, r3, #1
+ 1549 0050 013A     		subs	r2, r2, #1
+ 1550 0052 9BB2     		uxth	r3, r3
+ 1551 0054 92B2     		uxth	r2, r2
+ 1552 0056 FFF7FEFF 		bl	ILI9341_Set_Address
+ 1553              	.LVL203:
+ 467:Src/ILI9341_STM32_Driver.c **** ILI9341_Draw_Colour_Burst(Colour, Height*Width);
+ 1554              		.loc 1 467 1 is_stmt 1 view .LVU318
+ 1555 005a 05FB04F1 		mul	r1, r5, r4
+ 1556 005e BDF81000 		ldrh	r0, [sp, #16]
+ 1557 0062 FFF7FEFF 		bl	ILI9341_Draw_Colour_Burst
+ 1558              	.LVL204:
+ 1559              	.L71:
+ 468:Src/ILI9341_STM32_Driver.c **** }
+ 1560              		.loc 1 468 1 is_stmt 0 view .LVU319
+ 1561 0066 38BD     		pop	{r3, r4, r5, pc}
+ 1562              	.LVL205:
+ 1563              	.L77:
+ 1564              		.loc 1 468 1 view .LVU320
+ 1565              		.align	2
+ 1566              	.L76:
+ 1567 0068 00000000 		.word	.LANCHOR0
+ 1568 006c 00000000 		.word	.LANCHOR1
+ 1569              		.cfi_endproc
+ 1570              	.LFE154:
+ 1572              		.section	.text.ILI9341_Draw_Horizontal_Line,"ax",%progbits
+ 1573              		.align	1
+ 1574              		.global	ILI9341_Draw_Horizontal_Line
+ 1575              		.syntax unified
+ 1576              		.thumb
+ 1577              		.thumb_func
+ 1578              		.fpu fpv5-d16
+ 1580              	ILI9341_Draw_Horizontal_Line:
+ 1581              	.LVL206:
+ 1582              	.LFB155:
+ 469:Src/ILI9341_STM32_Driver.c **** 
+ 470:Src/ILI9341_STM32_Driver.c **** //DRAW LINE FROM X,Y LOCATION to X+Width,Y LOCATION
+ 471:Src/ILI9341_STM32_Driver.c **** void ILI9341_Draw_Horizontal_Line(uint16_t X, uint16_t Y, uint16_t Width, uint16_t Colour)
+ 472:Src/ILI9341_STM32_Driver.c **** {
+ 1583              		.loc 1 472 1 is_stmt 1 view -0
+ 1584              		.cfi_startproc
+ 1585              		@ args = 0, pretend = 0, frame = 0
+ 1586              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1587              		.loc 1 472 1 is_stmt 0 view .LVU322
+ 1588 0000 38B5     		push	{r3, r4, r5, lr}
+ 1589              	.LCFI25:
+ 1590              		.cfi_def_cfa_offset 16
+ 1591              		.cfi_offset 3, -16
+ 1592              		.cfi_offset 4, -12
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 38
+
+
+ 1593              		.cfi_offset 5, -8
+ 1594              		.cfi_offset 14, -4
+ 1595 0002 1446     		mov	r4, r2
+ 1596 0004 1D46     		mov	r5, r3
+ 473:Src/ILI9341_STM32_Driver.c **** if((X >=LCD_WIDTH) || (Y >=LCD_HEIGHT)) return;
+ 1597              		.loc 1 473 1 is_stmt 1 view .LVU323
+ 1598              		.loc 1 473 7 is_stmt 0 view .LVU324
+ 1599 0006 104B     		ldr	r3, .L82
+ 1600              	.LVL207:
+ 1601              		.loc 1 473 7 view .LVU325
+ 1602 0008 1A88     		ldrh	r2, [r3]
+ 1603              	.LVL208:
+ 1604              		.loc 1 473 7 view .LVU326
+ 1605 000a 92B2     		uxth	r2, r2
+ 1606              		.loc 1 473 3 view .LVU327
+ 1607 000c 8242     		cmp	r2, r0
+ 1608 000e 1AD9     		bls	.L78
+ 1609              		.loc 1 473 26 discriminator 2 view .LVU328
+ 1610 0010 0E4B     		ldr	r3, .L82+4
+ 1611 0012 1B88     		ldrh	r3, [r3]
+ 1612 0014 9BB2     		uxth	r3, r3
+ 1613              		.loc 1 473 20 discriminator 2 view .LVU329
+ 1614 0016 8B42     		cmp	r3, r1
+ 1615 0018 15D9     		bls	.L78
+ 474:Src/ILI9341_STM32_Driver.c **** if((X+Width-1)>=LCD_WIDTH)
+ 1616              		.loc 1 474 1 is_stmt 1 view .LVU330
+ 1617              		.loc 1 474 6 is_stmt 0 view .LVU331
+ 1618 001a 0219     		adds	r2, r0, r4
+ 1619              		.loc 1 474 15 view .LVU332
+ 1620 001c 0A4B     		ldr	r3, .L82
+ 1621 001e 1B88     		ldrh	r3, [r3]
+ 1622 0020 9BB2     		uxth	r3, r3
+ 1623              		.loc 1 474 3 view .LVU333
+ 1624 0022 9A42     		cmp	r2, r3
+ 1625 0024 04DD     		ble	.L80
+ 475:Src/ILI9341_STM32_Driver.c **** 	{
+ 476:Src/ILI9341_STM32_Driver.c **** 		Width=LCD_WIDTH-X;
+ 1626              		.loc 1 476 3 is_stmt 1 view .LVU334
+ 1627              		.loc 1 476 18 is_stmt 0 view .LVU335
+ 1628 0026 084B     		ldr	r3, .L82
+ 1629 0028 1C88     		ldrh	r4, [r3]
+ 1630 002a A4B2     		uxth	r4, r4
+ 1631              		.loc 1 476 8 view .LVU336
+ 1632 002c 241A     		subs	r4, r4, r0
+ 1633 002e A4B2     		uxth	r4, r4
+ 1634              	.LVL209:
+ 1635              	.L80:
+ 477:Src/ILI9341_STM32_Driver.c **** 	}
+ 478:Src/ILI9341_STM32_Driver.c **** ILI9341_Set_Address(X, Y, X+Width-1, Y);
+ 1636              		.loc 1 478 1 is_stmt 1 view .LVU337
+ 1637              		.loc 1 478 28 is_stmt 0 view .LVU338
+ 1638 0030 2218     		adds	r2, r4, r0
+ 1639 0032 92B2     		uxth	r2, r2
+ 1640              		.loc 1 478 1 view .LVU339
+ 1641 0034 013A     		subs	r2, r2, #1
+ 1642 0036 0B46     		mov	r3, r1
+ 1643 0038 92B2     		uxth	r2, r2
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 39
+
+
+ 1644 003a FFF7FEFF 		bl	ILI9341_Set_Address
+ 1645              	.LVL210:
+ 479:Src/ILI9341_STM32_Driver.c **** ILI9341_Draw_Colour_Burst(Colour, Width);
+ 1646              		.loc 1 479 1 is_stmt 1 view .LVU340
+ 1647 003e 2146     		mov	r1, r4
+ 1648 0040 2846     		mov	r0, r5
+ 1649 0042 FFF7FEFF 		bl	ILI9341_Draw_Colour_Burst
+ 1650              	.LVL211:
+ 1651              	.L78:
+ 480:Src/ILI9341_STM32_Driver.c **** }
+ 1652              		.loc 1 480 1 is_stmt 0 view .LVU341
+ 1653 0046 38BD     		pop	{r3, r4, r5, pc}
+ 1654              	.L83:
+ 1655              		.align	2
+ 1656              	.L82:
+ 1657 0048 00000000 		.word	.LANCHOR0
+ 1658 004c 00000000 		.word	.LANCHOR1
+ 1659              		.cfi_endproc
+ 1660              	.LFE155:
+ 1662              		.section	.text.ILI9341_Draw_Vertical_Line,"ax",%progbits
+ 1663              		.align	1
+ 1664              		.global	ILI9341_Draw_Vertical_Line
+ 1665              		.syntax unified
+ 1666              		.thumb
+ 1667              		.thumb_func
+ 1668              		.fpu fpv5-d16
+ 1670              	ILI9341_Draw_Vertical_Line:
+ 1671              	.LVL212:
+ 1672              	.LFB156:
+ 481:Src/ILI9341_STM32_Driver.c **** 
+ 482:Src/ILI9341_STM32_Driver.c **** //DRAW LINE FROM X,Y LOCATION to X,Y+Height LOCATION
+ 483:Src/ILI9341_STM32_Driver.c **** void ILI9341_Draw_Vertical_Line(uint16_t X, uint16_t Y, uint16_t Height, uint16_t Colour)
+ 484:Src/ILI9341_STM32_Driver.c **** {
+ 1673              		.loc 1 484 1 is_stmt 1 view -0
+ 1674              		.cfi_startproc
+ 1675              		@ args = 0, pretend = 0, frame = 0
+ 1676              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1677              		.loc 1 484 1 is_stmt 0 view .LVU343
+ 1678 0000 38B5     		push	{r3, r4, r5, lr}
+ 1679              	.LCFI26:
+ 1680              		.cfi_def_cfa_offset 16
+ 1681              		.cfi_offset 3, -16
+ 1682              		.cfi_offset 4, -12
+ 1683              		.cfi_offset 5, -8
+ 1684              		.cfi_offset 14, -4
+ 1685 0002 1446     		mov	r4, r2
+ 1686 0004 1D46     		mov	r5, r3
+ 485:Src/ILI9341_STM32_Driver.c **** if((X >=LCD_WIDTH) || (Y >=LCD_HEIGHT)) return;
+ 1687              		.loc 1 485 1 is_stmt 1 view .LVU344
+ 1688              		.loc 1 485 7 is_stmt 0 view .LVU345
+ 1689 0006 104B     		ldr	r3, .L88
+ 1690              	.LVL213:
+ 1691              		.loc 1 485 7 view .LVU346
+ 1692 0008 1A88     		ldrh	r2, [r3]
+ 1693              	.LVL214:
+ 1694              		.loc 1 485 7 view .LVU347
+ 1695 000a 92B2     		uxth	r2, r2
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 40
+
+
+ 1696              		.loc 1 485 3 view .LVU348
+ 1697 000c 8242     		cmp	r2, r0
+ 1698 000e 1AD9     		bls	.L84
+ 1699              		.loc 1 485 26 discriminator 2 view .LVU349
+ 1700 0010 0E4B     		ldr	r3, .L88+4
+ 1701 0012 1B88     		ldrh	r3, [r3]
+ 1702 0014 9BB2     		uxth	r3, r3
+ 1703              		.loc 1 485 20 discriminator 2 view .LVU350
+ 1704 0016 8B42     		cmp	r3, r1
+ 1705 0018 15D9     		bls	.L84
+ 486:Src/ILI9341_STM32_Driver.c **** if((Y+Height-1)>=LCD_HEIGHT)
+ 1706              		.loc 1 486 1 is_stmt 1 view .LVU351
+ 1707              		.loc 1 486 6 is_stmt 0 view .LVU352
+ 1708 001a 0A19     		adds	r2, r1, r4
+ 1709              		.loc 1 486 16 view .LVU353
+ 1710 001c 0B4B     		ldr	r3, .L88+4
+ 1711 001e 1B88     		ldrh	r3, [r3]
+ 1712 0020 9BB2     		uxth	r3, r3
+ 1713              		.loc 1 486 3 view .LVU354
+ 1714 0022 9A42     		cmp	r2, r3
+ 1715 0024 04DD     		ble	.L86
+ 487:Src/ILI9341_STM32_Driver.c **** 	{
+ 488:Src/ILI9341_STM32_Driver.c **** 		Height=LCD_HEIGHT-Y;
+ 1716              		.loc 1 488 3 is_stmt 1 view .LVU355
+ 1717              		.loc 1 488 20 is_stmt 0 view .LVU356
+ 1718 0026 094B     		ldr	r3, .L88+4
+ 1719 0028 1C88     		ldrh	r4, [r3]
+ 1720 002a A4B2     		uxth	r4, r4
+ 1721              		.loc 1 488 9 view .LVU357
+ 1722 002c 641A     		subs	r4, r4, r1
+ 1723 002e A4B2     		uxth	r4, r4
+ 1724              	.LVL215:
+ 1725              	.L86:
+ 489:Src/ILI9341_STM32_Driver.c **** 	}
+ 490:Src/ILI9341_STM32_Driver.c **** ILI9341_Set_Address(X, Y, X, Y+Height-1);
+ 1726              		.loc 1 490 1 is_stmt 1 view .LVU358
+ 1727              		.loc 1 490 31 is_stmt 0 view .LVU359
+ 1728 0030 6318     		adds	r3, r4, r1
+ 1729 0032 9BB2     		uxth	r3, r3
+ 1730              		.loc 1 490 1 view .LVU360
+ 1731 0034 013B     		subs	r3, r3, #1
+ 1732 0036 9BB2     		uxth	r3, r3
+ 1733 0038 0246     		mov	r2, r0
+ 1734 003a FFF7FEFF 		bl	ILI9341_Set_Address
+ 1735              	.LVL216:
+ 491:Src/ILI9341_STM32_Driver.c **** ILI9341_Draw_Colour_Burst(Colour, Height);
+ 1736              		.loc 1 491 1 is_stmt 1 view .LVU361
+ 1737 003e 2146     		mov	r1, r4
+ 1738 0040 2846     		mov	r0, r5
+ 1739 0042 FFF7FEFF 		bl	ILI9341_Draw_Colour_Burst
+ 1740              	.LVL217:
+ 1741              	.L84:
+ 492:Src/ILI9341_STM32_Driver.c **** }
+ 1742              		.loc 1 492 1 is_stmt 0 view .LVU362
+ 1743 0046 38BD     		pop	{r3, r4, r5, pc}
+ 1744              	.L89:
+ 1745              		.align	2
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 41
+
+
+ 1746              	.L88:
+ 1747 0048 00000000 		.word	.LANCHOR0
+ 1748 004c 00000000 		.word	.LANCHOR1
+ 1749              		.cfi_endproc
+ 1750              	.LFE156:
+ 1752              		.global	LCD_WIDTH
+ 1753              		.global	LCD_HEIGHT
+ 1754              		.section	.data.LCD_HEIGHT,"aw"
+ 1755              		.align	1
+ 1756              		.set	.LANCHOR1,. + 0
+ 1759              	LCD_HEIGHT:
+ 1760 0000 F000     		.short	240
+ 1761              		.section	.data.LCD_WIDTH,"aw"
+ 1762              		.align	1
+ 1763              		.set	.LANCHOR0,. + 0
+ 1766              	LCD_WIDTH:
+ 1767 0000 4001     		.short	320
+ 1768              		.text
+ 1769              	.Letext0:
+ 1770              		.file 2 "c:\\vsarm\\armcc\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 1771              		.file 3 "c:\\vsarm\\armcc\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 1772              		.file 4 "Drivers/CMSIS/Include/core_cm7.h"
+ 1773              		.file 5 "Drivers/CMSIS/Device/ST/STM32F7xx/Include/system_stm32f7xx.h"
+ 1774              		.file 6 "Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f767xx.h"
+ 1775              		.file 7 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_def.h"
+ 1776              		.file 8 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_gpio.h"
+ 1777              		.file 9 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dma.h"
+ 1778              		.file 10 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_spi.h"
+ 1779              		.file 11 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h"
+ 1780              		.file 12 "Inc/spi.h"
+ 1781              		.file 13 "Inc/gpio.h"
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 42
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 ILI9341_STM32_Driver.c
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:17     .text.ILI9341_SPI_Init:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:25     .text.ILI9341_SPI_Init:00000000 ILI9341_SPI_Init
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:54     .text.ILI9341_SPI_Init:00000018 $d
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:59     .text.ILI9341_SPI_Send:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:66     .text.ILI9341_SPI_Send:00000000 ILI9341_SPI_Send
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:100    .text.ILI9341_SPI_Send:0000001c $d
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:105    .text.ILI9341_Write_Command:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:112    .text.ILI9341_Write_Command:00000000 ILI9341_Write_Command
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:158    .text.ILI9341_Write_Command:00000034 $d
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:163    .text.ILI9341_Write_Data:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:170    .text.ILI9341_Write_Data:00000000 ILI9341_Write_Data
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:216    .text.ILI9341_Write_Data:00000034 $d
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:221    .text.ILI9341_Set_Address:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:228    .text.ILI9341_Set_Address:00000000 ILI9341_Set_Address
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:301    .text.ILI9341_Reset:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:308    .text.ILI9341_Reset:00000000 ILI9341_Reset
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:351    .text.ILI9341_Reset:00000038 $d
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:356    .text.ILI9341_Set_Rotation:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:363    .text.ILI9341_Set_Rotation:00000000 ILI9341_Set_Rotation
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:394    .text.ILI9341_Set_Rotation:00000018 $d
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:398    .text.ILI9341_Set_Rotation:0000001c $t
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:474    .text.ILI9341_Set_Rotation:00000074 $d
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:480    .text.ILI9341_Enable:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:487    .text.ILI9341_Enable:00000000 ILI9341_Enable
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:509    .text.ILI9341_Enable:00000010 $d
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:514    .text.ILI9341_Init:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:521    .text.ILI9341_Init:00000000 ILI9341_Init
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:891    .text.ILI9341_Draw_Colour:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:898    .text.ILI9341_Draw_Colour:00000000 ILI9341_Draw_Colour
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:956    .text.ILI9341_Draw_Colour:00000044 $d
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:962    .text.ILI9341_Draw_Colour_Burst:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:969    .text.ILI9341_Draw_Colour_Burst:00000000 ILI9341_Draw_Colour_Burst
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:1127   .text.ILI9341_Draw_Colour_Burst:00000094 $d
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:1134   .text.ILI9341_Fill_Screen:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:1141   .text.ILI9341_Fill_Screen:00000000 ILI9341_Fill_Screen
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:1186   .text.ILI9341_Fill_Screen:0000002c $d
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:1192   .text.ILI9341_Draw_Pixel:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:1199   .text.ILI9341_Draw_Pixel:00000000 ILI9341_Draw_Pixel
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:1450   .text.ILI9341_Draw_Pixel:00000178 $d
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:1458   .text.ILI9341_Draw_Rectangle:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:1465   .text.ILI9341_Draw_Rectangle:00000000 ILI9341_Draw_Rectangle
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:1567   .text.ILI9341_Draw_Rectangle:00000068 $d
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:1573   .text.ILI9341_Draw_Horizontal_Line:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:1580   .text.ILI9341_Draw_Horizontal_Line:00000000 ILI9341_Draw_Horizontal_Line
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:1657   .text.ILI9341_Draw_Horizontal_Line:00000048 $d
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:1663   .text.ILI9341_Draw_Vertical_Line:00000000 $t
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:1670   .text.ILI9341_Draw_Vertical_Line:00000000 ILI9341_Draw_Vertical_Line
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:1747   .text.ILI9341_Draw_Vertical_Line:00000048 $d
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:1766   .data.LCD_WIDTH:00000000 LCD_WIDTH
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:1759   .data.LCD_HEIGHT:00000000 LCD_HEIGHT
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:1755   .data.LCD_HEIGHT:00000000 $d
+C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s:1762   .data.LCD_WIDTH:00000000 $d
+
+UNDEFINED SYMBOLS
+MX_SPI5_Init
+ARM GAS  C:\Users\Haruka\AppData\Local\Temp\ccwWCqvk.s 			page 43
+
+
+MX_GPIO_Init
+HAL_GPIO_WritePin
+HAL_SPI_Transmit
+hspi5
+HAL_Delay
